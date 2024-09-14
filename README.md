@@ -7,3 +7,16 @@
 5) Do **NOT** push secrets (ex. api keys)
 6) Use meaningful names for commits
 7) Struggling with GIT? Ask **Pavly**
+
+### How to contribute?
+
+#### Create a new branch
+`git checkout -b "branch_name"`
+#### Commit to the branch
+`git add .`
+`git commit -m "Meaningful Commit Message"
+`git push`
+**Note:** this should create a pull request with the changes
+#### Wait for review
+at least one review is needed
+#### Merge :)
