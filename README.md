@@ -20,6 +20,10 @@
 
 `git checkout -b "branch_name"`
 
+#### Or switch to an existing branch
+
+`git checkout "existing_branch_name"`
+
 #### Commit to the branch
 
 `git add .`
