@@ -12,7 +12,7 @@
 
 #### Clone the Repository
 
-`git clone "repo link"`
+`git clone https://github.com/Pevooo/graduation-project.git`
 
 ### How to contribute?
 
