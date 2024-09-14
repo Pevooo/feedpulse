@@ -30,7 +30,7 @@
 
 `git commit -m "Meaningful Commit Message"`
 
-`git push`
+`git push --set-updtream origin "branch_name"`
 
 **Note:** this should create a pull request with the changes
 
