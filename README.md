@@ -8,6 +8,12 @@
 6) Use meaningful names for commits
 7) Struggling with GIT? Ask **Pavly**
 
+### Getting Started
+
+#### Clone the Repository
+
+`git clone "repo link"`
+
 ### How to contribute?
 
 #### Create a new branch
