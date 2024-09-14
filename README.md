@@ -1,8 +1,9 @@
 # Graduation Project
 ### Repository Guidelines
-1) Don't push to the main branch directly without a code review with **Pavly** (unless it's super urgent)
+1) Don't push to the main branch directly
 2) Create a branch for the task or the change you want to make (This is to reduce conflicts)
-3) **Unit tests**: We won't be able to handle a lot of functionality without Unit tests
-4) Do **NOT** push secrets (ex. api keys)
-5) Use meaningful names for commits
-6) Struggling with GIT? Ask **Pavly**
+3) Creste a pull request with every change you want to commit to the main branch
+4) **Unit tests**: We won't be able to handle a lot of functionality without Unit tests
+5) Do **NOT** push secrets (ex. api keys)
+6) Use meaningful names for commits
+7) Struggling with GIT? Ask **Pavly**
