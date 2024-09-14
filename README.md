@@ -8,15 +8,32 @@
 6) Use meaningful names for commits
 7) Struggling with GIT? Ask **Pavly**
 
+### Getting Started
+
+#### Clone the Repository
+
+`git clone https://github.com/Pevooo/graduation-project.git`
+
 ### How to contribute?
 
 #### Create a new branch
+
 `git checkout -b "branch_name"`
+
+#### Or switch to an existing branch
+
+`git checkout "existing_branch_name"`
+
 #### Commit to the branch
+
 `git add .`
+
 `git commit -m "Meaningful Commit Message"`
+
 `git push`
+
 **Note:** this should create a pull request with the changes
+
 #### Wait for review
 at least one review is needed
 #### Merge :)
