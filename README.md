@@ -14,7 +14,7 @@
 `git checkout -b "branch_name"`
 #### Commit to the branch
 `git add .`
-`git commit -m "Meaningful Commit Message"
+`git commit -m "Meaningful Commit Message"`
 `git push`
 **Note:** this should create a pull request with the changes
 #### Wait for review
