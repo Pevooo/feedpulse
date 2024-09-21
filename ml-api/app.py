@@ -15,4 +15,8 @@ def index() -> str:
             candidate_answer = request.form.get("candidate_answer")
 
             return render_template('test/test_models.html')
+        
+
+if __name__ == "__main__":
+    app.run()
 
