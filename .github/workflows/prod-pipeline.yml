@@ -1,0 +1,62 @@
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  packages: read
+  contents: read  # Allow reading the repository contents
+  actions: read   # Allow actions to run
+  security-events: write  # Allow uploading security events
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: 'javascript,python,csharp'  # Adjust based on your project's languages
+
+      - name: Build
+        run: |
+          cd code-ql  # Ensure this directory contains your project files
+          dotnet restore  # Restore dependencies
+          dotnet build    # Build the project
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          # Here should be the commands to build
+
+      - name: Test
+        run: |
+          # Here should be the commands to test
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Build
+        run: |
+          # Here should be the commands to build
+
+      - name: Deploy
+        run: |
+          # Here should be the commands to deploy

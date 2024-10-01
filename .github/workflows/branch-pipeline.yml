@@ -1,9 +1,7 @@
-name: Main Pipeline
-
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - main
 
 permissions:
   packages: read
@@ -47,7 +45,3 @@ jobs:
       - name: Test
         run: |
           # Here should be the commands to test
-
-      - name: Deploy
-        run: |
-          # Here should be the commands to deploy
