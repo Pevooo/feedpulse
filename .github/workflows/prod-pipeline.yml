@@ -1,3 +1,5 @@
+name: Production Pipeline
+
 on:
   push:
     branches:
@@ -52,7 +54,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       - name: Build
         run: |
           # Here should be the commands to build
