@@ -16,15 +16,15 @@
 
 ### How to contribute?
 
-#### Create a new branch
+#### Step 1A: Create a new branch
 
 `git checkout -b "branch_name"`
 
-#### Or switch to an existing branch
+#### Step 1B: Or switch to an existing branch
 
 `git checkout "existing_branch_name"`
 
-#### Commit to the branch
+#### Step 2: Commit to the branch
 
 `git add .`
 
@@ -34,6 +34,6 @@
 
 **Note:** this should create a pull request with the changes
 
-#### Wait for review
+#### Step 3: Wait for review
 at least one review is needed
-#### Merge :)
+#### Step 4: Merge :)
