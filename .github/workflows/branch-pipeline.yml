@@ -1,0 +1,28 @@
+name: Branch Pipeline
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+permissions:
+  packages: read
+  contents: read  # Allow reading the repository contents
+  actions: read   # Allow actions to run
+  security-events: write  # Allow uploading security events
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          # Here should be the commands to build
+
+      - name: Test
+        run: |
+          # Here should be the commands to test
