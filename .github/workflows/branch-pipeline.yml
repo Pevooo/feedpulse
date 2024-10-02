@@ -12,27 +12,45 @@ permissions:
   security-events: write  # Allow uploading security events
 
 jobs:
-  analyze:
-    name: Analyze
+  python:
+    name: Python Clean Code Check
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
         with:
-          languages: 'javascript,python,csharp'  # Adjust based on your project's languages
+          python-version: '3.10.6'
 
-      - name: Build
+      - name: Install dependencies
         run: |
-          cd code-ql  # Ensure this directory contains your project files
-          dotnet restore  # Restore dependencies
-          dotnet build    # Build the project
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8  # Ensure Flake8 is installed
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+      - name: Run Flake8
+        run: flake8 .
+  csharp:
+    name: C# Clean Code Check [Need Action]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: |
+          #dotnet restore
+
+      - name: Run linting
+        run: |
+          #dotnet format --verify-no-changes
   test:
     name: Build and Test
     runs-on: ubuntu-latest
