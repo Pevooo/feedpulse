@@ -32,6 +32,25 @@ jobs:
 
       - name: Run Flake8
         run: flake8 .
+  csharp:
+    name: C# Clean Code Check [Need Action]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: |
+          #dotnet restore
+
+      - name: Run linting
+        run: |
+          #dotnet format --verify-no-changes
   test:
     name: Build and Test
     runs-on: ubuntu-latest
