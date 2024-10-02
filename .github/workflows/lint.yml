@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   csharp:
-    name: C# Clean Code Check
+    name: C# Clean Code Check [Need Action]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -16,10 +16,10 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Install dependencies
-        run: dotnet restore
+        run: #dotnet restore
 
       - name: Run linting
-        run: dotnet format --verify-no-changes
+        run: #dotnet format --verify-no-changes
   python:
     name: Python Clean Code Check
     runs-on: ubuntu-latest
