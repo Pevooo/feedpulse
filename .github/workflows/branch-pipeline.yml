@@ -31,6 +31,8 @@ jobs:
           pip install flake8  # Ensure Flake8 is installed
 
       - name: Run Flake8
+        env: 
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: flake8 .
   csharp:
     name: C# Clean Code Check [Need Action]
@@ -63,5 +65,7 @@ jobs:
           # Here should be the commands to build
 
       - name: Test
+        env: 
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           # Here should be the commands to test
