@@ -15,5 +15,4 @@ class ComplaintFilter:
         return "yes" in response.lower()
 
     def wrap_text(self, text: str) -> str:
-        return f"You will be provided with some text and you have to tell if it's a \
-        complaint or not using only one word (YES or NO).\nHere is the text: \"{text}\"."
+        return f"You will be provided with some text and you have to tell if it's a complaint or not using only one word (YES or NO).\nHere is the text: \"{text}\"."

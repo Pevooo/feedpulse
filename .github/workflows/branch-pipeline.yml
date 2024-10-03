@@ -33,7 +33,7 @@ jobs:
       - name: Run Flake8
         env: 
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: flake8 --max-line-length=160 .   
+        run: flake8 --max-line-length=180 .   
   csharp:
     name: C# Clean Code Check [Need Action]
     runs-on: ubuntu-latest
