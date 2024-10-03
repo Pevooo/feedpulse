@@ -11,10 +11,10 @@ class ComplaintFilter:
         Returns true if the text is a complaint
         """
 
-        response: str = self.model.generate_content(self.__wrap_text(text)).text
+        response: str = self.model.generate_content(self.wrap_text(text)).text
         return "yes" in response.lower()
 
-    def __wrap_text(self, text: str) -> str:
+    def wrap_text(self, text: str) -> str:
         return f"""
         You will be some text and you have to tell if it's a complaint or not using only one word (YES or NO).
         Here is the text: "{text}".
