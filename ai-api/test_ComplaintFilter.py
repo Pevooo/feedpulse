@@ -1,8 +1,8 @@
 import unittest
 from ComplaintFilter import ComplaintFilter
 
+
 class TestComplaintFiler(unittest.TestCase):
-    
     def test_wrap_text(self):
         complaint_filter = ComplaintFilter()
         self.assertEqual(
