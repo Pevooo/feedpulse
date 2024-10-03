@@ -16,6 +16,6 @@ class ComplaintFilter:
 
     def wrap_text(self, text: str) -> str:
         return f"""
-        You will be some text and you have to tell if it's a complaint or not using only one word (YES or NO).
-        Here is the text: "{text}".
-        """
+                You will be some text and you have to tell if it's a complaint or not using only one word (YES or NO).
+                Here is the text: "{text}".
+                """
