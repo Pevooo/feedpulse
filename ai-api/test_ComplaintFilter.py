@@ -7,7 +7,7 @@ class TestComplaintFiler(unittest.TestCase):
         complaint_filter = ComplaintFilter()
         self.assertEqual(
             complaint_filter.__wrap_text("hello"),
-            f"""
+            """
             You will be some text and you have to tell if it's a complaint or not using only one word (YES or NO).
             Here is the text: "hello".
             """,
