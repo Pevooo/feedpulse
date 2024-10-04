@@ -6,8 +6,8 @@ on:
         - main
 
 jobs:
-  deploy:
-    name: Deploy
+  ai:
+    name: AI API
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -21,6 +21,28 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Test
+        env: 
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -m unittest discover -s "ai-api" -p "test_*.py"
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy
+        if: success()
+        run: echo "Deploying..."
+  application:
+    name: Main Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          # Here should be the commands to build
 
       - name: Test
         env: 
