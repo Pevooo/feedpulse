@@ -1,6 +1,9 @@
 name: Default Pipeline
 
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - main
 
 jobs:  
   test:
