@@ -1,0 +1,44 @@
+name: Clean Code Check
+
+on: [push]
+
+jobs:
+  python:
+    name: Python
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.6'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8  # Ensure Flake8 is installed
+
+      - name: Run Flake8
+        run: flake8 --max-line-length=180 .   
+  csharp:
+    name: C# [Need Action]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: |
+          #dotnet restore
+
+      - name: Run linting
+        run: |
+          #dotnet format --verify-no-changes
