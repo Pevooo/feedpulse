@@ -12,29 +12,32 @@
 
 #### Clone the Repository
 
-  `git clone https://github.com/Pevooo/graduation-project.git`
+`git clone https://github.com/Pevooo/graduation-project.git`
 
 ### How to contribute?
 
-  #### Step 1A: Create a new branch
+#### Step 1A: Create a new branch
+
+`git checkout -b "branch_name"`
+
+#### Step 1B: Or switch to an existing branch
   
-    `git checkout -b "branch_name"`
+`git checkout "existing_branch_name"`
   
-  #### Step 1B: Or switch to an existing branch
+#### Step 2: Commit to the branch
   
-    `git checkout "existing_branch_name"`
+`git add .`
+
+`git commit -m "Meaningful Commit Message"`
   
-  #### Step 2: Commit to the branch
+`git push --set-upstream origin "branch_name"`
+
+**Note:** this should create a pull request with the changes
   
-    `git add .`
-    
-    `git commit -m "Meaningful Commit Message"`
-    
-    `git push --set-upstream origin "branch_name"`
-  
-    **Note:** this should create a pull request with the changes
-  
-  #### Step 3: Wait for review
-    At least one review is needed
-  #### Step 4: Squash and Merge
-    This should merge your commits into one commit and merge it with main
+#### Step 3: Wait for review
+
+At least one review is needed
+
+#### Step 4: Squash and Merge
+
+This should merge your commits into one commit and merge it with main
