@@ -1,9 +1,9 @@
 class ComplaintFilter:
     def __init__(self) -> None:
-        import os
         import google.generativeai as genai
+        from constants import Credential
 
-        genai.configure(api_key=os.environ['GEMINI_API_KEY'])
+        genai.configure(api_key=Credential.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-1.5-flash")
 
     def __call__(self, text: str) -> bool:
