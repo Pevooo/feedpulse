@@ -7,9 +7,9 @@ class TestComplaintFiler(unittest.TestCase):
         complaint_filter = ComplaintFilter()
         self.assertEqual(
             complaint_filter.wrap_text("hello"),
-            (f"You will be provided with a text. Respond in two parts as follows:\n"
-                f"1. Is it a complaint? Answer with 'yes' or 'no'.\n"
-                f"2. Does the complaint have a specific topic? Answer with 'has a topic' or 'no topic'.\n\n"
+            ("You will be provided with a text. Respond in two parts as follows:\n"
+                "1. Is it a complaint? Answer with 'yes' or 'no'.\n"
+                "2. Does the complaint have a specific topic? Answer with 'has a topic' or 'no topic'.\n\n"
                 f"Here is the text: \"hello\".")
         )
 
