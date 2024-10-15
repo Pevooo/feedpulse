@@ -10,7 +10,7 @@ class TestComplaintFiler(unittest.TestCase):
             ("You will be provided with a text. Respond in two parts as follows:\n"
                 "1. Is it a complaint? Answer with 'yes' or 'no'.\n"
                 "2. Does the complaint have a specific topic? Answer with 'has a topic' or 'no topic'.\n\n"
-                f"Here is the text: \"hello\".")
+                "Here is the text: \"hello\".")
         )
 
     def test_service_connection_complaint_with_topic(self):
