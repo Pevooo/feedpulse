@@ -3,7 +3,7 @@ class ComplaintFilter:
         import os
         import google.generativeai as genai
 
-        genai.configure(api_key='AIzaSyDYCeBNULacfL5cbG7hdd7OBpql-KFgYdQ')
+        genai.configure(api_key=os.environ['GEMINI_API_KEY'])
         self.model = genai.GenerativeModel("gemini-1.5-flash")
 
     def __call__(self, text: str) -> dict:
