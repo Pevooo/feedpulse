@@ -6,7 +6,7 @@ class ComplaintFilter:
         genai.configure(api_key=os.environ['GEMINI_API_KEY'])
         self.model = genai.GenerativeModel("gemini-1.5-flash")
 
-    def __call__(self, text: str) -> dict:
+    def __call__(self, text: str) -> dict[str, bool]:
         """
         Returns a dictionary indicating if the text is a complaint and if it has a topic
         """
