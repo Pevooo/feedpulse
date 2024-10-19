@@ -1,5 +1,5 @@
 import unittest
-from ComplaintFilter import ComplaintFilter
+from complaint_filter import ComplaintFilter
 
 
 class TestComplaintFiler(unittest.TestCase):
