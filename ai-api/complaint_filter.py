@@ -1,20 +1,19 @@
+import os
+import google.generativeai as genai
+
+
 class ComplaintFilterResult:
-    def __init__(self, type, has_topic) -> None:
-        self.type = type
+    def __init__(self, text_type, has_topic) -> None:
+        self.text_type = text_type
         self.has_topic = has_topic
 
 
 class ComplaintFilter:
-
     def __init__(self) -> None:
-        import os
-        import google.generativeai as genai
-
         genai.configure(api_key=os.environ["GEMINI_API_KEY"])
         self.model = genai.GenerativeModel("gemini-1.5-flash")
 
     def __call__(self, text: str) -> ComplaintFilterResult:
-
         """
         "It returns whether it's a complaint or a compliment, and if it has topic
         """

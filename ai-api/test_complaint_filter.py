@@ -1,5 +1,5 @@
 import unittest
-from ComplaintFilter import ComplaintFilter
+from complaint_filter import ComplaintFilter
 
 
 class TestComplaintFiler(unittest.TestCase):
@@ -18,13 +18,13 @@ class TestComplaintFiler(unittest.TestCase):
     def test_service_connection_complaint_with_topic(self):
         complaint_filter = ComplaintFilter()
         result = complaint_filter("The service was bad, and the food was cold.")
-        self.assertEqual(result.type, "complaint")
+        self.assertEqual(result.text_type, "complaint")
         self.assertTrue(result.has_topic)
 
     def test_service_connection_complaint_without_topic(self):
         complaint_filter = ComplaintFilter()
         result = complaint_filter("This is really bad.")
-        self.assertEqual(result.type, "complaint")
+        self.assertEqual(result.text_type, "complaint")
         self.assertFalse(result.has_topic)
 
     def test_service_connection_compliment_with_topic(self):
@@ -32,11 +32,11 @@ class TestComplaintFiler(unittest.TestCase):
         result = complaint_filter(
             "The food was amazing, and the service was excellent."
         )
-        self.assertEqual(result.type, "compliment")
+        self.assertEqual(result.text_type, "compliment")
         self.assertTrue(result.has_topic)
 
     def test_service_connection_compliment_without_topic(self):
         complaint_filter = ComplaintFilter()
         result = complaint_filter("This is wonderful.")
-        self.assertEqual(result.type, "compliment")
+        self.assertEqual(result.text_type, "compliment")
         self.assertFalse(result.has_topic)

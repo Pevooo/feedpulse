@@ -1,11 +1,15 @@
+"""
+This script's main purpose is to enable local running of the project automatically
+"""
+
 import subprocess
 import threading
 import os
 import webbrowser
 
-# Run this script if you want to build, test and run the project locally
-
-AI_API_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ai-api"))
+AI_API_DIRECTORY = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ai-api")
+)
 
 
 def main() -> None:
@@ -21,11 +25,15 @@ def main() -> None:
 
 
 def run_command(command: str) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
+    return subprocess.run(
+        command, shell=True, check=True, text=True, capture_output=True
+    )
 
 
 def install_dependancies() -> None:
-    run_command(f"pip install -r \"{os.path.join(AI_API_DIRECTORY, 'requirements.txt')}\"")
+    run_command(
+        f"pip install -r \"{os.path.join(AI_API_DIRECTORY, 'requirements.txt')}\""
+    )
 
 
 def run_ai_api() -> None:
