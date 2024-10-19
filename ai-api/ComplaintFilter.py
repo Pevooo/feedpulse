@@ -16,7 +16,7 @@ class ComplaintFilter:
     def __call__(self, text: str) -> ComplaintFilterResult:
 
         """
-        Returns a ComplaintFilterResult indicating if the text is a complaint and if it has a topic
+        "It returns whether it's a complaint or a compliment, and if it has topic
         """
 
         response: str = self.model.generate_content(self.wrap_text(text)).text.lower()

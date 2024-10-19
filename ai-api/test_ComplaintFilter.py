@@ -9,7 +9,7 @@ class TestComplaintFiler(unittest.TestCase):
             complaint_filter.wrap_text("hello"),
             (
                 "You will be provided with a text. Respond in two parts as follows:\n"
-                "1. Is it a complaint or a compliment? Answer with 'complaint', 'compliment', or 'neutral'.\n"
+                "1. Is it a complaint, a compliment, or neutral? Answer with 'complaint', 'compliment', or 'neutral'.\n"
                 "2. Does the complaint or compliment have a specific topic? Answer with 'yes' or 'no'.\n\n"
                 'Here is the text: "hello".'
             ),
@@ -32,11 +32,11 @@ class TestComplaintFiler(unittest.TestCase):
         result = complaint_filter(
             "The food was amazing, and the service was excellent."
         )
-        self.assertEqual(result.type, "complaint")
+        self.assertEqual(result.type, "compliment")
         self.assertTrue(result.has_topic)
 
     def test_service_connection_compliment_without_topic(self):
         complaint_filter = ComplaintFilter()
         result = complaint_filter("This is wonderful.")
-        self.assertEqual(result.type, "complaint")
+        self.assertEqual(result.type, "compliment")
         self.assertFalse(result.has_topic)
