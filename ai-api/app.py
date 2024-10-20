@@ -1,9 +1,9 @@
 import os
 from flask import Flask, render_template, request, jsonify
-from feedback_classifier import ComplaintFilter
+from feedback_classifier import FeedbackClassifier
 
 app = Flask(__name__)
-complaint_filter = ComplaintFilter()
+feedback_classifier = FeedbackClassifier()
 
 is_production = os.getenv("PROD")
 
@@ -21,7 +21,7 @@ def index():
     else:
         text = request.form["text"]
 
-        result = complaint_filter(text)
+        result = feedback_classifier(text)
         has_topic = result.has_topic
         text_type = result.text_type
 
