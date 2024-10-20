@@ -8,6 +8,14 @@
 6) Use meaningful names for commits
 7) Struggling with GIT? Ask **Pavly**
 
+### How to run?
+Ensure Python 3.10.6 and .NET 8 are installed
+You can run locally by executing the following command:
+
+`python util/local_runner.py`
+
+This script will automatically install the dependancies needed (if not installed already) and run both the web api and the ai api.
+
 ### Getting Started
 
 #### Clone the Repository
