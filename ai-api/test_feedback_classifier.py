@@ -1,5 +1,5 @@
 import unittest
-from complaint_filter import ComplaintFilter
+from feedback_classifier import ComplaintFilter
 
 
 class TestComplaintFiler(unittest.TestCase):

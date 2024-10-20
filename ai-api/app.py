@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify
-from complaint_filter import ComplaintFilter
+from feedback_classifier import ComplaintFilter
 
 app = Flask(__name__)
 complaint_filter = ComplaintFilter()
