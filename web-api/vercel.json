@@ -2,8 +2,8 @@
     "version": 2,
     "builds": [
       {
-        "src": "web-api.csproj",
-        "use": "@vercel/dotnet"
+        "src": "Dockerfile",
+        "use": "@vercel/docker"
       }
     ],
     "routes": [
