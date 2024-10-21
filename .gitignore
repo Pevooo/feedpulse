@@ -15,9 +15,6 @@ __pycache__/
 *.pdb
 *.mdb
 
-# User secrets
-secrets.json
-
 # Published output
 publish/
 
@@ -35,5 +32,3 @@ publish/
 *.seed
 *.sublime-workspace
 
-# Environment variables
-.env
