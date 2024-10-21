@@ -1,1 +1,34 @@
 __pycache__/
+
+# Visual Studio specific files
+.vs/
+*.sln
+*.user
+*.suo
+*.csproj.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+*.exe
+*.dll
+*.pdb
+*.mdb
+
+# Published output
+publish/
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# Others
+*.log
+*.tmp
+*.cache
+*.pid
+*.seed
+*.sublime-workspace
+
