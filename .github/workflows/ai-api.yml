@@ -1,4 +1,4 @@
-name: Default Pipeline
+name: AI API
 
 on: [push]
 
@@ -9,10 +9,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Build
-        run: |
-          # Here should be the commands to build
 
       - name: Install dependencies
         run: |

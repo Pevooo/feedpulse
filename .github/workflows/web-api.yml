@@ -1,0 +1,26 @@
+name: WEB API
+
+on: [push]
+
+jobs:  
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.x
+
+      - name: Build
+        run: |
+          dotnet build web-api
+
+      - name: Restore dependencies
+        run: dotnet restore web-api/web-api.csproj
+
+      - name: Test
+        run: dotnet test web-api/web-api.csproj --no-build --verbosity normal
