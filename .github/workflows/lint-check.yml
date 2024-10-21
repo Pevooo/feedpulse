@@ -24,21 +24,20 @@ jobs:
       - name: Run Flake8
         run: flake8 --max-line-length=180 .   
   csharp:
-    name: C# [Need Action]
+    name: C#
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '8.x'
 
-      - name: Install dependencies
-        run: |
-          #dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore web-api/web-api.csproj
 
       - name: Run linting
         run: |
-          #dotnet format --verify-no-changes
+          dotnet format web-api/web-api.csproj --verify-no-changes
