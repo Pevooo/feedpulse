@@ -1,0 +1,16 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "web-api.csproj",
+        "use": "@vercel/dotnet"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "web-api.dll"
+      }
+    ]
+  }
+  
