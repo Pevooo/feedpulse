@@ -1,5 +1,4 @@
-import os
-import google.generativeai as genai
+from gemini_model import GeminiModel
 
 
 class FeedbackClassifierResult:
@@ -10,15 +9,14 @@ class FeedbackClassifierResult:
 
 class FeedbackClassifier:
     def __init__(self) -> None:
-        genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = GeminiModel()
 
     def __call__(self, text: str) -> FeedbackClassifierResult:
         """
         "It returns whether it's a complaint or a compliment, and if it has topic
         """
 
-        response: str = self.model.generate_content(self.wrap_text(text)).text.lower()
+        response: str = self.model.generate_content(self.wrap_text(text)).lower()
         text_type = "neutral"
         if "complaint" in response:
             text_type = "complaint"
