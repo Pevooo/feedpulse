@@ -1,6 +1,6 @@
 import os
 import google.generativeai as genai
-import model
+import models.model as model
 
 
 class GeminiModel(model.Model):

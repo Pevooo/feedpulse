@@ -1,5 +1,5 @@
 import unittest
-from feedback_classifier import FeedbackClassifier
+from src.feedback_classifier import FeedbackClassifier
 
 
 class TestFeedbackClassifier(unittest.TestCase):

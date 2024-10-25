@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify
-from feedback_classifier import FeedbackClassifier
+from src.feedback_classifier import FeedbackClassifier
 
 app = Flask(__name__)
 feedback_classifier = FeedbackClassifier()
