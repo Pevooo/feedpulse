@@ -1,4 +1,4 @@
-from gemini_model import GeminiModel
+from models.gemini_model import GeminiModel
 
 
 class FeedbackClassifierResult:
