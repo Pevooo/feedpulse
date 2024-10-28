@@ -17,7 +17,7 @@ class Tweet:
 
 
 class XDataProvider:
-    def __init__(self, username: str, email: str, password: str) -> None:
+    def __init__(self) -> None:
         self.client = twikit.Client("en-US")
 
     async def login(self, username: str, email: str, password: str):
