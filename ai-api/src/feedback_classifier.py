@@ -1,4 +1,4 @@
-from models.gemini_model import GeminiModel
+from models.model import Model
 
 
 class FeedbackClassifierResult:
@@ -8,12 +8,19 @@ class FeedbackClassifierResult:
 
 
 class FeedbackClassifier:
-    def __init__(self) -> None:
-        self.model = GeminiModel()
+    def __init__(self, model: Model) -> None:
+        self.model = model
 
     def __call__(self, text: str) -> FeedbackClassifierResult:
         """
-        "It returns whether it's a complaint or a compliment, and if it has topic
+        Classifies the provided text as a complaint, compliment, or neutral and detects if it has a specific topic.
+
+        Args:
+            text (str): The text to classify.
+
+        Returns:
+            FeedbackClassifierResult: An instance of FeedbackClassifierResult with the classification
+                results if the classification.
         """
 
         response: str = self.model.generate_content(self.wrap_text(text)).lower()

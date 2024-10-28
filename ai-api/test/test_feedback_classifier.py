@@ -1,10 +1,11 @@
 import unittest
 from src.feedback_classifier import FeedbackClassifier
+from models.gemini_model import GeminiModel
 
 
 class TestFeedbackClassifier(unittest.TestCase):
     def test_wrap_text(self):
-        feedback_classifier = FeedbackClassifier()
+        feedback_classifier = FeedbackClassifier(GeminiModel())
         self.assertEqual(
             feedback_classifier.wrap_text("hello"),
             (
@@ -16,19 +17,19 @@ class TestFeedbackClassifier(unittest.TestCase):
         )
 
     def test_service_connection_complaint_with_topic(self):
-        feedback_classifier = FeedbackClassifier()
+        feedback_classifier = FeedbackClassifier(GeminiModel())
         result = feedback_classifier("The service was bad, and the food was cold.")
         self.assertEqual(result.text_type, "complaint")
         self.assertTrue(result.has_topic)
 
     def test_service_connection_complaint_without_topic(self):
-        feedback_classifier = FeedbackClassifier()
+        feedback_classifier = FeedbackClassifier(GeminiModel())
         result = feedback_classifier("This is really bad.")
         self.assertEqual(result.text_type, "complaint")
         self.assertFalse(result.has_topic)
 
     def test_service_connection_compliment_with_topic(self):
-        feedback_classifier = FeedbackClassifier()
+        feedback_classifier = FeedbackClassifier(GeminiModel())
         result = feedback_classifier(
             "The food was amazing, and the service was excellent."
         )
@@ -36,7 +37,7 @@ class TestFeedbackClassifier(unittest.TestCase):
         self.assertTrue(result.has_topic)
 
     def test_service_connection_compliment_without_topic(self):
-        feedback_classifier = FeedbackClassifier()
+        feedback_classifier = FeedbackClassifier(GeminiModel())
         result = feedback_classifier("This is wonderful.")
         self.assertEqual(result.text_type, "compliment")
         self.assertFalse(result.has_topic)
