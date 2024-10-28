@@ -31,6 +31,15 @@ class FacebookDataProvider:
         self.access_token = access_token
 
     def get_posts(self, page_id: str) -> list[Post]:
+        """
+        Gets the posts from Facebook page using a page id
+
+        Args:
+            page_id (str): The id of the intended page.
+
+        Returns:
+            posts (list[Post]): A list containing all the collected posts.
+        """
         url = f"{FACEBOOK_GRAPH_URL}{page_id}"
         params = {
             "access_token": self.access_token,

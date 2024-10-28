@@ -27,8 +27,17 @@ class XDataProvider:
             password=password,
         )
 
-    async def get_tweets(self, num_tweets: int, query: str) -> list[twikit.Tweet]:
+    async def get_tweets(self, num_tweets: int, query: str) -> list[Tweet]:
+        """
+        Gets the tweets from X using a given query
 
+        Args:
+            num_tweets (int): The number of tweets to get.
+            query (str): The keyword to query
+
+        Returns:
+            all_tweets (list[Tweet]): A list containing all the collected tweets.
+        """
         tweets = await self.client.search_tweet(query, "Latest")
         counts = 0
 

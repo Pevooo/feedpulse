@@ -1,5 +1,17 @@
 """
-This script's main purpose is to enable local running of the project automatically
+This script facilitates the automatic local setup and execution of the AI and Web APIs for the project.
+
+Functionality:
+    - Installs necessary dependencies for the AI API.
+    - Builds and runs both the AI API and the Web API in parallel threads.
+    - Opens default browser tabs for each API's local URL.
+
+Usage:
+    - Run this script directly to initialize the AI and Web APIs locally:
+      `python local_runner.py`
+
+Requirements:
+    - Ensure python 3.10.6 is installed for the AI API and the .NET environment for the Web API is properly configured.
 """
 
 import subprocess
