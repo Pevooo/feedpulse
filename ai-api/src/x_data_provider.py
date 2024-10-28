@@ -12,7 +12,7 @@ class Tweet:
         self.user: str = tweet.user.name
         self.date: datetime = tweet.created_at_datetime
         self.replies: list[Tweet] = (
-            list(map(Tweet, tweet.replies)) if tweet.replies else None
+            list(map(Tweet, tweet.replies)) if tweet.replies else []
         )
 
 
