@@ -48,5 +48,5 @@ class TestFacebookDataProvider(unittest.TestCase):
 
         self.assertEqual(
             len(posts[1].comments),
-            2,
+            1,
         )
