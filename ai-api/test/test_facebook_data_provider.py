@@ -73,7 +73,7 @@ class TestFacebookDataProvider(unittest.TestCase):
             "test",
         )
 
-    @patch("request.get")
+    @patch("requests.get")
     def test_get_posts_post_comments_created_time(self, mock_get):
         mock_get.return_value.json.return_value = FAKE_API_RESPONSE
         data_provider = FacebookDataProvider(Mock())
