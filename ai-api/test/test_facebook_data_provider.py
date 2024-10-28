@@ -1,7 +1,6 @@
 import unittest
-import requests
 from unittest.mock import patch, Mock
-from src.facebook_data_provider import Post, Comment, FacebookDataProvider
+from src.facebook_data_provider import FacebookDataProvider
 
 
 FAKE_API_RESPONSE = {
