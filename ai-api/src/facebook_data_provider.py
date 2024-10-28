@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime
-from typing import Any
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
