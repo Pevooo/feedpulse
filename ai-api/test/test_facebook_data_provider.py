@@ -27,7 +27,7 @@ FAKE_API_RESPONSE = {
 class TestFacebookDataProvider(unittest.TestCase):
 
     @patch("requests.get")
-    def test_get_posts(self, mock_get):
+    def test_get_posts_post_message_value(self, mock_get):
         # Whenever send request is called: return FAKE_API_RESPONSE
         mock_get.return_value.json.return_value = FAKE_API_RESPONSE
 
@@ -42,6 +42,17 @@ class TestFacebookDataProvider(unittest.TestCase):
         )
 
         self.assertEqual(
+            posts[1].text,
+            "hello, world!",
+        )
+
+    @patch("requests.get")
+    def test_get_posts_post_comments_list_size(self, mock_get):
+        mock_get.return_value.json.return_value = FAKE_API_RESPONSE
+        data_provider = FacebookDataProvider(Mock())
+        posts = data_provider.get_posts(Mock())
+
+        self.assertEqual(
             len(posts[0].comments),
             0,
         )
@@ -49,4 +60,15 @@ class TestFacebookDataProvider(unittest.TestCase):
         self.assertEqual(
             len(posts[1].comments),
             1,
+        )
+
+    @patch("requests.get")
+    def test_get_posts_post_comments_value(self, mock_get):
+        mock_get.return_value.json.return_value = FAKE_API_RESPONSE
+        data_provider = FacebookDataProvider(Mock())
+        posts = data_provider.get_posts(Mock())
+
+        self.assertEqual(
+            posts[1].comments[0].text,
+            "test",
         )
