@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, Mock
 from src.facebook_data_provider import FacebookDataProvider
+from datetime import datetime
 
 
 FAKE_API_RESPONSE = {
@@ -79,7 +80,8 @@ class TestFacebookDataProvider(unittest.TestCase):
         data_provider = FacebookDataProvider(Mock())
         posts = data_provider.get_posts(Mock())
 
+        expected_time = datetime.fromisoformat("2024-10-28T10:53:26+00:00")
         self.assertEqual(
             posts[1].comments[0].time_created,
-            "2024-10-28T10:53:26+0000",
+            expected_time,
         )
