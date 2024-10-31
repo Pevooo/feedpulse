@@ -31,4 +31,5 @@ publish/
 *.pid
 *.seed
 *.sublime-workspace
+Migrations/
 
