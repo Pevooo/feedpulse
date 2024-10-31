@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using web_api.Data;
 
@@ -11,9 +12,11 @@ using web_api.Data;
 namespace web_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241031123426_AddRoles")]
+    partial class AddRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,6 +175,34 @@ namespace web_api.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("web_api.Models.ORGSocial", b =>
+                {
+                    b.Property<int>("ORGSocialId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ORGSocialId"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrganizationId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ORGSocialId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("ORGSocials");
+                });
+
             modelBuilder.Entity("web_api.Models.Organization", b =>
                 {
                     b.Property<string>("Id")
@@ -192,7 +223,7 @@ namespace web_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Describtion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -251,34 +282,6 @@ namespace web_api.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("web_api.Models.OrganizationSocial", b =>
-                {
-                    b.Property<int>("OrganizationSocialId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrganizationSocialId"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OrganizationId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("OrganizationSocialId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("OrganizationId");
-
-                    b.ToTable("ORGSocials");
                 });
 
             modelBuilder.Entity("web_api.Models.Report", b =>
@@ -362,6 +365,25 @@ namespace web_api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("web_api.Models.ORGSocial", b =>
+                {
+                    b.HasOne("web_api.Models.Category", "Category")
+                        .WithMany("URlS")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("web_api.Models.Organization", "Organization")
+                        .WithMany("ORGSocials")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Organization");
+                });
+
             modelBuilder.Entity("web_api.Models.Organization", b =>
                 {
                     b.OwnsMany("web_api.Models.RefreshToken", "RefreshTokens", b1 =>
@@ -397,25 +419,6 @@ namespace web_api.Migrations
                         });
 
                     b.Navigation("RefreshTokens");
-                });
-
-            modelBuilder.Entity("web_api.Models.OrganizationSocial", b =>
-                {
-                    b.HasOne("web_api.Models.Category", "Category")
-                        .WithMany("URlS")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("web_api.Models.Organization", "Organization")
-                        .WithMany("ORGSocials")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("web_api.Models.Report", b =>
