@@ -28,7 +28,7 @@ class TestFacebookDataProvider(unittest.TestCase):
 
     @patch("requests.get")
     def test_get_posts_post_message_value(self, mock_get):
-        # Whenever send request is called: return FAKE_API_RESPONSE
+        # Whenever `requests.get` is called: return FAKE_API_RESPONSE+
         mock_get.return_value.json.return_value = FAKE_API_RESPONSE
 
         # Pass anything as access token as we don't use it in the test
