@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch, Mock
 from src.feedback_classifier import FeedbackClassifier
 from models.gemini_model import GeminiModel
 
@@ -16,28 +17,72 @@ class TestFeedbackClassifier(unittest.TestCase):
             ),
         )
 
-    def test_service_connection_complaint_with_topic(self):
+    @patch.object(GeminiModel, "generate_content")
+    def test_complaint_with_topic(self, mock_generate_content):
         feedback_classifier = FeedbackClassifier(GeminiModel())
-        result = feedback_classifier("The service was bad, and the food was cold.")
+        mock_generate_content.return_value = "Complaint, Yes"
+        result = feedback_classifier(Mock())
+
+        mock_generate_content.assert_called_once()
         self.assertEqual(result.text_type, "complaint")
         self.assertTrue(result.has_topic)
 
-    def test_service_connection_complaint_without_topic(self):
+    @patch.object(GeminiModel, "generate_content")
+    def test_complaint_without_topic(self, mock_generate_content):
         feedback_classifier = FeedbackClassifier(GeminiModel())
-        result = feedback_classifier("This is really bad.")
+        mock_generate_content.return_value = "Complaint, No"
+        result = feedback_classifier(Mock())
+
+        mock_generate_content.assert_called_once()
         self.assertEqual(result.text_type, "complaint")
         self.assertFalse(result.has_topic)
 
-    def test_service_connection_compliment_with_topic(self):
+    @patch.object(GeminiModel, "generate_content")
+    def test_compliment_with_topic(self, mock_generate_content):
         feedback_classifier = FeedbackClassifier(GeminiModel())
-        result = feedback_classifier(
-            "The food was amazing, and the service was excellent."
-        )
+        mock_generate_content.return_value = "Compliment, Yes"
+        result = feedback_classifier(Mock())
+
+        mock_generate_content.assert_called_once()
         self.assertEqual(result.text_type, "compliment")
         self.assertTrue(result.has_topic)
 
-    def test_service_connection_compliment_without_topic(self):
+    @patch.object(GeminiModel, "generate_content")
+    def test_compliment_without_topic(self, mock_generate_content):
         feedback_classifier = FeedbackClassifier(GeminiModel())
-        result = feedback_classifier("This is wonderful.")
+        mock_generate_content.return_value = "Compliment, No"
+        result = feedback_classifier(Mock())
+
+        mock_generate_content.assert_called_once()
         self.assertEqual(result.text_type, "compliment")
+        self.assertFalse(result.has_topic)
+
+    @patch.object(GeminiModel, "generate_content")
+    def test_neutral_without_topic(self, mock_generate_content):
+        feedback_classifier = FeedbackClassifier(GeminiModel())
+        mock_generate_content.return_value = "Neutral, No"
+        result = feedback_classifier(Mock())
+
+        mock_generate_content.assert_called_once()
+        self.assertEqual(result.text_type, "neutral")
+        self.assertFalse(result.has_topic)
+
+    @patch.object(GeminiModel, "generate_content")
+    def test_neutral_with_topic(self, mock_generate_content):
+        feedback_classifier = FeedbackClassifier(GeminiModel())
+        mock_generate_content.return_value = "Neutral, Yes"
+        result = feedback_classifier(Mock())
+
+        mock_generate_content.assert_called_once()
+        self.assertEqual(result.text_type, "neutral")
+        self.assertTrue(result.has_topic)
+
+    @patch.object(GeminiModel, "generate_content")
+    def test_empty_string(self, mock_generate_content):
+        feedback_classifier = FeedbackClassifier(GeminiModel())
+        mock_generate_content.return_value = ""
+        result = feedback_classifier(Mock())
+
+        mock_generate_content.assert_called_once()
+        self.assertEqual(result.text_type, "neutral")
         self.assertFalse(result.has_topic)
