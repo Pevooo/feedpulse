@@ -13,7 +13,7 @@ is_production = os.getenv("PROD")
 def check_production_env():
     # If this is running on production, don't show the testing functionality
     if is_production:
-        return jsonify("page dose not exist"), 404
+        return jsonify("endpoint does not exist"), 404
 
 
 @app.route("/", methods=["POST", "GET"])

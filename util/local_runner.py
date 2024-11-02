@@ -4,7 +4,7 @@ This script facilitates the automatic local setup and execution of the AI and We
 Functionality:
     - Installs necessary dependencies for the AI API.
     - Builds and runs both the AI API and the Web API in parallel threads.
-    - Opens default browser tabs for each API's local URL.
+    - Opens default browser tabs for each API local URL.
 
 Usage:
     - Run this script directly to initialize the AI and Web APIs locally:
@@ -63,16 +63,16 @@ def run_command(command: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def install_dependancies() -> None:
-    print_pending_process("AI-API: Installing Dependancies...")
+def install_dependencies() -> None:
+    print_pending_process("AI-API: Installing Dependencies...")
     run_command(
         f"pip install -r \"{os.path.join(AI_API_DIRECTORY, 'requirements.txt')}\""
     )
-    print_success("AI-API: Dependancies Installed Successfully!")
+    print_success("AI-API: Dependencies Installed Successfully!")
 
 
 def run_ai_api() -> None:
-    install_dependancies()
+    install_dependencies()
     webbrowser.open_new("http://127.0.0.1:5000")
     print("AI-API: Listen URL: http://127.0.0.1:5000")
     print_warning("AI-API: The api may be not working")
