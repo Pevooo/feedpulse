@@ -85,7 +85,7 @@ def run_app_api() -> None:
     print_pending_process("WEB-API: Building...")
     build_result = run_command(f'dotnet build "{WEB_API_DIRECTORY}"')
     if build_result.stderr:
-        print_error(build_result)
+        print_error(build_result.stderr)
     else:
         print_success("WEB-API: Build Successful!")
 
@@ -94,7 +94,7 @@ def run_app_api() -> None:
     print("WEB-API: Listen URL: http://127.0.0.1:5144")
     run_result = run_command(f'dotnet run --project "{WEB_API_DIRECTORY}"')
     if run_result.stderr:
-        print_error(run_result)
+        print_error(run_result.stderr)
 
 
 if __name__ == "__main__":
