@@ -4,7 +4,7 @@ namespace web_api.Models
 {
     public class Organization : IdentityUser
     {
-        public string OrgnaizationName { get; set; } = string.Empty;
+        public string OrganizationName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;

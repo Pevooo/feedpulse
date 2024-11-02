@@ -6,8 +6,6 @@ namespace web_api.Services.Interfaces
     public interface IAuth
     {
         Task<AuthResult> RegisterAsync(RegisterDto model);
-        // Task<AuthModel> LoginAsync(LoginRequestModel model);
-        //Task<string> AddRole(AddRoleRequestModel model);
         Task<AuthResult> RefreshToken(string token);
         Task<bool> RevokeTokenAsync(string token);
     }
