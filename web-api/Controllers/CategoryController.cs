@@ -16,9 +16,8 @@ namespace web_api.Controllers
         }
 
         [HttpGet]
-        public IActionResult getall()
+        public IActionResult GetAll()
         {
-
             return Ok(_context.Categories.ToList());
         }
     }
