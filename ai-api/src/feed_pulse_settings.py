@@ -1,12 +1,10 @@
 import os
 from typing import Type
 
-from pydantic_settings import BaseSettings
-
 from models.gemini_model import GeminiModel
 
 
-class FeedPulseSettings(BaseSettings):
+class FeedPulseSettings:
     """This class encapsulates all the AI Api configurations."""
 
     # Model-related config
