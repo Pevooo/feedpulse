@@ -1,4 +1,3 @@
-import os
 import google.generativeai as genai
 import models.model as model
 from src.feed_pulse_environment import FeedPulseEnvironment
