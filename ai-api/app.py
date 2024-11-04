@@ -1,14 +1,15 @@
-import os
 from functools import wraps
 
 from flask import Flask, render_template, request, jsonify
+
+from src.feed_pulse_environment import FeedPulseEnvironment
+from src.feed_pulse_settings import FeedPulseSettings
 from src.feedback_classifier import FeedbackClassifier
-from models.gemini_model import GeminiModel
 
 app = Flask(__name__)
-feedback_classifier = FeedbackClassifier(GeminiModel())
-
-is_production = os.getenv("PROD")
+feedback_classifier = FeedbackClassifier(
+    FeedPulseSettings.feedback_classification_model()
+)
 
 
 def internal(func):
@@ -16,7 +17,7 @@ def internal(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if is_production:
+        if FeedPulseEnvironment.is_production_environment:
             return jsonify({"error": "Endpoint does not exist"}), 404
         return func(*args, **kwargs)
 
