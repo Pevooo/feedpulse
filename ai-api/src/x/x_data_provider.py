@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import twikit
 import time
 from random import randint
