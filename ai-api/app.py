@@ -2,11 +2,14 @@ import os
 from functools import wraps
 
 from flask import Flask, render_template, request, jsonify
+
+from src.feed_pulse_settings import FeedPulseSettings
 from src.feedback_classifier import FeedbackClassifier
-from models.gemini_model import GeminiModel
 
 app = Flask(__name__)
-feedback_classifier = FeedbackClassifier(GeminiModel())
+feedback_classifier = FeedbackClassifier(
+    FeedPulseSettings.feedback_classification_model()
+)
 
 is_production = os.getenv("PROD")
 

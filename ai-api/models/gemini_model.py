@@ -1,11 +1,11 @@
-import os
 import google.generativeai as genai
 import models.model as model
+from src.feed_pulse_settings import FeedPulseSettings
 
 
 class GeminiModel(model.Model):
     def __init__(self) -> None:
-        genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+        genai.configure(api_key=FeedPulseSettings.gemini_api_key)
         self.__model = genai.GenerativeModel("gemini-1.5-flash")
 
     def generate_content(self, text: str) -> str:
