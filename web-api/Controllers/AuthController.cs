@@ -14,10 +14,12 @@ namespace web_api.Controllers
         {
             _authService = authservice;
         }
+
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
             if (!ModelState.IsValid) { return BadRequest("Check Inputs"); }
+
             var AuthResult = await _authService.RegisterAsync(model);
             if (!AuthResult.IsAuthenticated)
             {

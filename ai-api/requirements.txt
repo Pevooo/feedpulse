@@ -2,3 +2,4 @@ google-generativeai
 flask
 gunicorn
 twikit
+pydantic_settings

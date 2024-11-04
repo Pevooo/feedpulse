@@ -4,7 +4,7 @@ This script facilitates the automatic local setup and execution of the AI and We
 Functionality:
     - Installs necessary dependencies for the AI API.
     - Builds and runs both the AI API and the Web API in parallel threads.
-    - Opens default browser tabs for each API's local URL.
+    - Opens default browser tabs for each API local URL.
 
 Usage:
     - Run this script directly to initialize the AI and Web APIs locally:
@@ -45,6 +45,10 @@ def print_warning(text: str) -> None:
     print(Fore.YELLOW + text + Style.RESET_ALL)
 
 
+def print_important(text: str) -> None:
+    print(Fore.CYAN + text + Style.RESET_ALL)
+
+
 def main() -> None:
     print_pending_process("Running...")
     ai_api_thread = threading.Thread(target=run_ai_api)
@@ -63,39 +67,52 @@ def run_command(command: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def install_dependancies() -> None:
-    print_pending_process("AI-API: Installing Dependancies...")
-    run_command(
+def build_ai_api() -> None:
+    print_pending_process("AI-API: Installing Dependencies...")
+    result = run_command(
         f"pip install -r \"{os.path.join(AI_API_DIRECTORY, 'requirements.txt')}\""
     )
-    print_success("AI-API: Dependancies Installed Successfully!")
+
+    if result.returncode != 0:
+        print_error(result.stderr)
+    else:
+        print_success("AI-API: Dependencies Installed Successfully!")
 
 
 def run_ai_api() -> None:
-    install_dependancies()
+    build_ai_api()
+    print_pending_process("AI-API: Running...")
     webbrowser.open_new("http://127.0.0.1:5000")
-    print("AI-API: Listen URL: http://127.0.0.1:5000")
+    print_important("AI-API: Listen URL: http://127.0.0.1:5000")
     print_warning("AI-API: The api may be not working")
     result = run_command(f"python \"{os.path.join(AI_API_DIRECTORY, 'app.py')}\"")
-    if result.stderr:
+    if result.returncode != 0:
         print_error(result.stderr)
 
 
 def run_app_api() -> None:
+    build_web_api()
+    print_pending_process("WEB-API: Running...")
+    webbrowser.open_new("http://127.0.0.1:5144")
+    print_important("WEB-API: Listen URL: http://127.0.0.1:5144")
+    result = run_command(f'dotnet run --project "{WEB_API_DIRECTORY}"')
+    if result.returncode != 0:
+        print_error(result.stderr)
+
+
+def build_web_api() -> None:
     print_pending_process("WEB-API: Building...")
     build_result = run_command(f'dotnet build "{WEB_API_DIRECTORY}"')
-    if build_result.stderr:
+    if build_result.returncode != 0:
         print_error(build_result.stderr)
     else:
         print_success("WEB-API: Build Successful!")
 
-    print_pending_process("WEB-API: Running...")
-    webbrowser.open_new("http://127.0.0.1:5144")
-    print("WEB-API: Listen URL: http://127.0.0.1:5144")
-    run_result = run_command(f'dotnet run --project "{WEB_API_DIRECTORY}"')
-    if run_result.stderr:
-        print_error(run_result.stderr)
-
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print_warning("Keyboard Interrupt Detected: Terminating...")
+    except Exception as e:
+        print_error(str(e))

@@ -10,15 +10,14 @@ namespace web_api.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-
         public CategoryController(ApplicationDbContext context)
         {
             _context = context;
         }
-        [HttpGet]
-        public IActionResult getall()
-        {
 
+        [HttpGet]
+        public IActionResult GetAll()
+        {
             return Ok(_context.Categories.ToList());
         }
     }

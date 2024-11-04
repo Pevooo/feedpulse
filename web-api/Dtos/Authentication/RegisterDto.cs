@@ -5,7 +5,7 @@ namespace web_api.Dtos.Authentication
     public class RegisterDto
     {
         [Required, MaxLength(60)]
-        public string OrgnaizationName { get; set; } = string.Empty;
+        public string OrganizationName { get; set; } = string.Empty;
         [Required, MaxLength(50)]
         public string UserName { get; set; } = string.Empty;
         [EmailAddress]
@@ -19,6 +19,6 @@ namespace web_api.Dtos.Authentication
         [Required]
         public string City { get; set; } = string.Empty;
         [Required]
-        public string Describtion { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
     }
 }
