@@ -1,6 +1,6 @@
 import unittest
 
-from models.gemini_model import GeminiModel
+from src.loaded_models.gemini_model import GeminiModel
 
 
 class TestGeminiModel(unittest.TestCase):

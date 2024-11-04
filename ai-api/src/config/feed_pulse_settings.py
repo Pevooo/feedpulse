@@ -1,6 +1,6 @@
 from typing import Type
 
-from models.gemini_model import GeminiModel
+from src.loaded_models.gemini_model import GeminiModel
 
 
 class FeedPulseSettings:

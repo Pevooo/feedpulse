@@ -1,29 +1,11 @@
 import requests
 from datetime import datetime
 
+from src.facebook.comment import Comment
+from src.facebook.post import Post
+
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
-
-
-class Comment:
-    def __init__(self, text: str, time_created: datetime):
-        self.text = text
-        self.time_created = time_created
-
-    def __str__(self):
-        return f"\tFacebook Comment: {self.text}, Created: {self.time_created}"
-
-
-class Post:
-    def __init__(
-        self, text: str, time_created: datetime, comments: list[Comment]
-    ) -> None:
-        self.text = text
-        self.time_created = time_created
-        self.comments = comments
-
-    def __str__(self):
-        return f"Facebook Post: {self.text}, Created: {self.time_created}"
 
 
 class FacebookDataProvider:
