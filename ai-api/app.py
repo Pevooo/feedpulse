@@ -1,8 +1,8 @@
-import os
 from functools import wraps
 
 from flask import Flask, render_template, request, jsonify
 
+from src.feed_pulse_environment import FeedPulseEnvironment
 from src.feed_pulse_settings import FeedPulseSettings
 from src.feedback_classifier import FeedbackClassifier
 
@@ -11,15 +11,13 @@ feedback_classifier = FeedbackClassifier(
     FeedPulseSettings.feedback_classification_model()
 )
 
-is_production = os.getenv("PROD")
-
 
 def internal(func):
     """Mark this route as internal and hide it when the app is on production."""
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if is_production:
+        if FeedPulseEnvironment.is_production_environment:
             return jsonify({"error": "Endpoint does not exist"}), 404
         return func(*args, **kwargs)
 
