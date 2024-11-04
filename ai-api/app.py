@@ -1,4 +1,6 @@
 import os
+from functools import wraps
+
 from flask import Flask, render_template, request, jsonify
 from src.feedback_classifier import FeedbackClassifier
 from models.gemini_model import GeminiModel
@@ -9,14 +11,20 @@ feedback_classifier = FeedbackClassifier(GeminiModel())
 is_production = os.getenv("PROD")
 
 
-@app.before_request
-def check_production_env():
-    # If this is running on production, don't show the testing functionality
-    if is_production:
-        return jsonify("endpoint does not exist"), 404
+def internal(func):
+    """Mark this route as internal and hide it when the app is on production."""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if is_production:
+            return jsonify({"error": "Endpoint does not exist"}), 404
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 @app.route("/", methods=["POST", "GET"])
+@internal
 def index():
     if request.method == "GET":
         return render_template("index.html")
