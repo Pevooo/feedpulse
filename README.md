@@ -2,7 +2,7 @@
 ### Repository Guidelines
 1) Don't push to the main branch directly
 2) Create a branch for the task or the change you want to make (This is to reduce conflicts)
-3) Creste a pull request with every change you want to commit to the main branch
+3) Create a pull request with every change you want to commit to the main branch
 4) **Unit tests**: We won't be able to handle a lot of functionality without Unit tests
 5) Do **NOT** push secrets (ex. api keys)
 6) Use meaningful names for commits
@@ -14,7 +14,7 @@ You can run locally by executing the following command:
 
 `python util/local_runner.py`
 
-This script will automatically install the dependancies needed (if not installed already) and run both the web api and the ai api.
+This script will automatically install the dependencies needed (if not installed already) and run both the web api and the AI api.
 
 ### Getting Started
 
