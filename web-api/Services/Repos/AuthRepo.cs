@@ -11,125 +11,210 @@ using web_api.Dtos.Results;
 using web_api.Helpers;
 using web_api.Models;
 using web_api.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace web_api.Services.Repos
 {
-    public class AuthRepo : IAuth
-    {
-        private readonly UserManager<Organization> _organizationManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly JWT _jwt;
-        public AuthRepo(UserManager<Organization> organizationManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
-        {
-            _organizationManager = organizationManager;
-            _roleManager = roleManager;
-            _jwt = jwt.Value;
-        }
+	public class AuthRepo : IAuth
+	{
+		private readonly UserManager<Organization> _organizationManager;
+		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly JWT _jwt;
+		public AuthRepo(UserManager<Organization> organizationManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
+		{
+			_organizationManager = organizationManager;
+			_roleManager = roleManager;
+			_jwt = jwt.Value;
 
-        public async Task<AuthResult> RegisterAsync(RegisterDto model)
-        {
-            if (await _organizationManager.FindByEmailAsync(model.Email) != null)
-            {
-                return new AuthResult { Message = "Email is Not Valid" };
-            }
+		}
 
-            if (await _organizationManager.FindByNameAsync(model.UserName) != null)
-            {
-                return new AuthResult { Message = "Username Is exist before" };
-            }
+		public async Task<AuthResult> RegisterAsync(RegisterDto model)
+		{
+			if (await _organizationManager.FindByEmailAsync(model.Email) != null)
+			{
+				return new AuthResult { Message = "Email is Not Valid" };
+			}
+			if (await _organizationManager.FindByNameAsync(model.UserName) != null)
+			{
+				return new AuthResult { Message = "Username Is exist before" };
+			}
+			var Organization = new Organization
+			{
+				UserName = model.UserName,
+				Email = model.Email,
+				PhoneNumber = model.PhoneNumber,
+				City = model.City,
+				Country = model.Country,
+				Description = model.Description,
+				OrganizationName = model.OrganizationName
+			};
+			var result = await _organizationManager.CreateAsync(Organization, model.Password);
+			if (!result.Succeeded)
+			{
+				var errors = string.Empty;
 
-            var Organization = new Organization
-            {
-                UserName = model.UserName,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                City = model.City,
-                Country = model.Country,
-                Description = model.Description,
-                OrganizationName = model.OrganizationName
-            };
+				foreach (var error in result.Errors)
+					errors += $"{error.Description},";
 
-            var result = await _organizationManager.CreateAsync(Organization, model.Password);
-            if (!result.Succeeded)
-            {
-                var errors = string.Empty;
+				return new AuthResult { Message = errors };
+			}
+			await _organizationManager.AddToRoleAsync(Organization, "Organization");
+			var jwtSecurityToken = await CreateJwtToken(Organization);
+			return new AuthResult
+			{
+				Email = Organization.Email,
+				ExpiresOn = jwtSecurityToken.ValidTo,
+				IsAuthenticated = true,
+				Roles = new List<string> { "Orgnaization" },
+				Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+				Username = Organization.UserName,
 
-                foreach (var error in result.Errors)
-                    errors += $"{error.Description},";
+			};
+		}
 
-                return new AuthResult { Message = errors };
-            }
+		public async Task<bool> RevokeTokenAsync(string token)
+		{
+			var user = await _organizationManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
 
-            await _organizationManager.AddToRoleAsync(Organization, "Organization");
-            var jwtSecurityToken = await CreateJwtToken(Organization);
+			if (user == null)
+				return false;
 
-            return new AuthResult
-            {
-                Email = Organization.Email,
-                ExpiresOn = jwtSecurityToken.ValidTo,
-                IsAuthenticated = true,
-                Roles = new List<string> { "Organization" },
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                Username = Organization.UserName,
-            };
-        }
+			var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
 
-        public Task<bool> RevokeTokenAsync(string token)
-        {
-            throw new NotImplementedException();
-        }
+			if (!refreshToken.IsActive)
+				return false;
 
-        public Task<AuthResult> RefreshToken(string token)
-        {
-            throw new NotImplementedException();
-        }
+			refreshToken.RevokedOn = DateTime.UtcNow;
 
-        private async Task<JwtSecurityToken> CreateJwtToken(Organization org)
-        {
-            var userClaims = await _organizationManager.GetClaimsAsync(org);
-            var roles = await _organizationManager.GetRolesAsync(org);
-            var roleClaims = new List<Claim>();
+			await _organizationManager.UpdateAsync(user);
 
-            foreach (var role in roles)
-                roleClaims.Add(new Claim("roles", role));
+			return true;
+		}
+		public async Task<AuthResult> RefreshTokenAsync(string token)
+		{
+			var AuthResult = new AuthResult();
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, org.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, org.Email),
-                new Claim("uid", org.Id)
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
+			var user = await _organizationManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
-            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+			if (user == null)
+			{
+				AuthResult.Message = "Invalid token";
+				return AuthResult;
+			}
 
-            var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwt.Issuer,
-                audience: _jwt.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwt.DurationInMinutes),
-                signingCredentials: signingCredentials);
+			var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
 
-            return jwtSecurityToken;
-        }
+			if (!refreshToken.IsActive)
+			{
+				AuthResult.Message = "Inactive token";
+				return AuthResult;
+			}
 
-        private RefreshToken GenerateRefreshToken()
-        {
-            var randomNumber = new byte[32];
+			refreshToken.RevokedOn = DateTime.UtcNow;
 
-            using var generator = new RNGCryptoServiceProvider();
+			var newRefreshToken = GenerateRefreshToken();
+			user.RefreshTokens.Add(newRefreshToken);
+			await _organizationManager.UpdateAsync(user);
 
-            generator.GetBytes(randomNumber);
+			var jwtToken = await CreateJwtToken(user);
+			AuthResult.IsAuthenticated = true;
+			AuthResult.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+			AuthResult.Email = user.Email;
+			AuthResult.Username = user.UserName;
+			var roles = await _organizationManager.GetRolesAsync(user);
+			AuthResult.Roles = roles.ToList();
+			AuthResult.RefreshToken = newRefreshToken.Token;
+			AuthResult.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
 
-            return new RefreshToken
-            {
-                Token = Convert.ToBase64String(randomNumber),
-                ExpiresOn = DateTime.UtcNow.AddDays(30),
-                CreatedOn = DateTime.UtcNow
-            };
-        }
-    }
+			return AuthResult;
+		}
+
+		private async Task<JwtSecurityToken> CreateJwtToken(Organization org)
+		{
+			var userClaims = await _organizationManager.GetClaimsAsync(org);
+			var roles = await _organizationManager.GetRolesAsync(org);
+			var roleClaims = new List<Claim>();
+
+			foreach (var role in roles)
+				roleClaims.Add(new Claim("roles", role));
+
+			var claims = new[]
+			{
+				new Claim(JwtRegisteredClaimNames.Sub, org.UserName),
+				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+				new Claim(JwtRegisteredClaimNames.Email, org.Email),
+				new Claim("uid", org.Id)
+			}
+			.Union(userClaims)
+			.Union(roleClaims);
+
+			var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+			var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+			var jwtSecurityToken = new JwtSecurityToken(
+				issuer: _jwt.Issuer,
+				audience: _jwt.Audience,
+				claims: claims,
+				expires: DateTime.UtcNow.AddMinutes(_jwt.DurationInMinutes),
+				signingCredentials: signingCredentials);
+
+			return jwtSecurityToken;
+		}
+		private RefreshToken GenerateRefreshToken()
+		{
+			var randomNumber = new byte[32];
+
+			using var generator = new RNGCryptoServiceProvider();
+
+			generator.GetBytes(randomNumber);
+
+			return new RefreshToken
+			{
+				Token = Convert.ToBase64String(randomNumber),
+				ExpiresOn = DateTime.UtcNow.AddDays(7),
+				CreatedOn = DateTime.UtcNow
+			};
+		}
+		public async Task<AuthResult> LoginAsync(LoginDto model)
+		{
+			var AuthResult = new AuthResult();
+
+			var user = await _organizationManager.FindByEmailAsync(model.Email);
+
+			if (user is null || !await _organizationManager.CheckPasswordAsync(user, model.Password))
+			{
+				AuthResult.Message = "Email or Password is incorrect!";
+				return AuthResult;
+			}
+
+			var jwtSecurityToken = await CreateJwtToken(user);
+			var rolesList = await _organizationManager.GetRolesAsync(user);
+
+			AuthResult.IsAuthenticated = true;
+			AuthResult.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+			AuthResult.Email = user.Email;
+			AuthResult.Username = user.UserName;
+			AuthResult.ExpiresOn = jwtSecurityToken.ValidTo;
+			AuthResult.Roles = rolesList.ToList();
+
+			if (user.RefreshTokens.Any(t => t.IsActive))
+			{
+				var activeRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
+				AuthResult.RefreshToken = activeRefreshToken.Token;
+				AuthResult.RefreshTokenExpiration = activeRefreshToken.ExpiresOn;
+			}
+			else
+			{
+				var refreshToken = GenerateRefreshToken();
+				AuthResult.RefreshToken = refreshToken.Token;
+				AuthResult.RefreshTokenExpiration = refreshToken.ExpiresOn;
+				user.RefreshTokens.Add(refreshToken);
+				await _organizationManager.UpdateAsync(user);
+			}
+
+			return AuthResult;
+		}
+
+	}
 }
