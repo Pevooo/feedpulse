@@ -2,9 +2,9 @@ from functools import wraps
 
 from flask import Flask, render_template, request, jsonify
 
-from src.feed_pulse_environment import FeedPulseEnvironment
-from src.feed_pulse_settings import FeedPulseSettings
-from src.feedback_classifier import FeedbackClassifier
+from src.config.feed_pulse_environment import FeedPulseEnvironment
+from src.config.feed_pulse_settings import FeedPulseSettings
+from src.feedback_classification.feedback_classifier import FeedbackClassifier
 
 app = Flask(__name__)
 feedback_classifier = FeedbackClassifier(

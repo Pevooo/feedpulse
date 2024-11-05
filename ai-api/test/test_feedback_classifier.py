@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, Mock
-from src.feedback_classifier import FeedbackClassifier
-from models.gemini_model import GeminiModel
+from src.feedback_classification.feedback_classifier import FeedbackClassifier
+from src.loaded_models.gemini_model import GeminiModel
 
 
 class TestFeedbackClassifier(unittest.TestCase):

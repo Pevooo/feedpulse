@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, Mock
-from src.facebook_data_provider import FacebookDataProvider
+from src.facebook.facebook_data_provider import FacebookDataProvider
 from datetime import datetime
 
 

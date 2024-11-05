@@ -1,6 +1,6 @@
 import google.generativeai as genai
-import models.model as model
-from src.feed_pulse_environment import FeedPulseEnvironment
+import src.loaded_models.model as model
+from src.config.feed_pulse_environment import FeedPulseEnvironment
 
 
 class GeminiModel(model.Model):
