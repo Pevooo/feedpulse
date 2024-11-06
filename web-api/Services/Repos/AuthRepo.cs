@@ -66,7 +66,7 @@ namespace web_api.Services.Repos
                 Email = Organization.Email,
                 ExpiresOn = jwtSecurityToken.ValidTo,
                 IsAuthenticated = true,
-                Roles = new List<string> { "Orgnaization" },
+                Roles = new List<string> { "Organization" },
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 Username = Organization.UserName,
 
