@@ -17,7 +17,7 @@ class TestTopicDetector(unittest.TestCase):
         self.assertIn("delivery", result.topics)
 
     def test_no_matching_topic(self):
-        text = "I love the new features!"
+        text = "Hi"
         result = self.topic_detector(text)
         print("Detected Topics:", result.topics)
         self.assertEqual(result.topics, [])

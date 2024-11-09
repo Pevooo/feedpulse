@@ -23,12 +23,14 @@ class TopicDetector:
         return TopicDetectorResult(topics)
 
     def extract_topics(self, response: str) -> list:
+        response = response.split("only respond with relevant topics")[-1].strip()
         detected_topics = [topic for topic in self.org_topics if topic in response]
         return detected_topics
 
     def wrap_text(self, text: str) -> str:
         return (
-            "Identify and list only the relevant topics from the provided list that directly relate to the content in the text. "
-            f"The available topics are: {', '.join(self.org_topics)}.\n"
-            f'Here is the text:\n"{text}".'
+            "Identify and list only the relevant topics from the provided list that directly relate to the content in the text.\n"
+            f"The list contains: {', '.join(self.org_topics)}.\n"
+            f"And here is the text: '{text}.'"
+            "Only respond with relevant topics. If no topics are relevant, respond with 'No relevant topics found.'"
         )
