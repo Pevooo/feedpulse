@@ -19,5 +19,4 @@ class TestTopicDetector(unittest.TestCase):
     def test_no_matching_topic(self):
         text = "Hi"
         result = self.topic_detector(text)
-        print("Detected Topics:", result.topics)
         self.assertEqual(result.topics, [])
