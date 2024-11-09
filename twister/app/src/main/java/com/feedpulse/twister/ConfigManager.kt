@@ -6,8 +6,6 @@ import java.net.URL
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class ConfigManager(private val url: URL) {
 
@@ -37,16 +35,6 @@ class ConfigManager(private val url: URL) {
             return cachedConfig!!
         }
 
-        cachedConfig = Config(
-            mutableListOf(
-                Setting("Setting 1", "true"),
-                Setting("Setting 3", "false"),
-                Setting("Setting 4", "one"),
-            )
-        )
-
-        return cachedConfig!!
-
         return try {
             val connection = (url.openConnection() as HttpURLConnection)
                 .apply {
@@ -60,8 +48,8 @@ class ConfigManager(private val url: URL) {
                 val text = connection.inputStream.bufferedReader().use { it.readText() }
                 val listType = object : TypeToken<MutableList<Setting>>() {}.type
                 val settings: MutableList<Setting> = Gson().fromJson(text, listType)
-
-                Config(settings)
+                cachedConfig = Config(settings)
+                cachedConfig!!
             } else {
                 Config(mutableListOf())
             }
@@ -75,7 +63,7 @@ class Setting(
     val settingName: String,
     var settingValue: String,
 ) {
-    val settingType = if (settingValue == "true" || settingValue == "false") "bool" else "selective"
+    val settingType = if (settingValue == "true" || settingValue == "false") "bool" else "text"
 }
 
 class Config(
