@@ -14,4 +14,4 @@ class TestGeminiModel(unittest.TestCase):
         model = GeminiModel()
 
         result = model.generate_content("hi")
-        self.assertEqual(type(result), str)
+        self.assertNotEqual(len(result), 0)
