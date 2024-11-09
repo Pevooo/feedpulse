@@ -3,3 +3,6 @@ flask
 gunicorn
 twikit
 pydantic_settings
+torch
+transformers
+accelerate
