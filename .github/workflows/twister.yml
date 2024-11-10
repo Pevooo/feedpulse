@@ -3,7 +3,8 @@ name: Twister
 on: [push]
 
 jobs:
-    name: Build and Testt
+  test:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -14,6 +15,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
+
+      - name: Make gradlew executable
+        run: chmod +x ./twister/gradlew
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
