@@ -22,7 +22,7 @@ jobs:
           pip install flake8  # Ensure Flake8 is installed
 
       - name: Run Flake8
-        run: flake8 --max-line-length=180 .   
+        run: flake8 --max-line-length=180 .
   csharp:
     name: C#
     runs-on: ubuntu-latest
@@ -41,3 +41,32 @@ jobs:
       - name: Run linting
         run: |
           dotnet format web-api/web-api.csproj --verify-no-changes
+  kotlin:
+    name: Kotlin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run Linting
+        run: ./gradlew ktlintCheck
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Compile project
+        run: ./gradlew build
