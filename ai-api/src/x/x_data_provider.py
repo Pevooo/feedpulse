@@ -36,6 +36,9 @@ class XDataProvider:
             counts += 1
             all_tweets.append(Tweet(tweet))
 
+            if counts >= num_tweets:
+                break
+
         # Search more tweets
         while counts < num_tweets:
             wait_time = randint(5, 12)
