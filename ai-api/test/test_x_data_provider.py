@@ -119,7 +119,3 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(2, len(tweets[0].replies))
         self.assertEqual(0, len(tweets[1].replies))
-
-
-if __name__ == "__main__":
-    unittest.main()
