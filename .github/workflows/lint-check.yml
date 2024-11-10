@@ -66,4 +66,5 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run Linting
-        run: ./twister/gradlew ktlintCheck
+        run: ./gradlew ktlintCheck
+        working-directory: ./twister
