@@ -24,7 +24,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run tests
-        run: ./gradlew test
+        run: ./twister/gradlew test
 
       - name: Compile project
-        run: ./gradlew build
+        run: ./twister/gradlew build

@@ -63,10 +63,4 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run Linting
-        run: ./gradlew ktlintCheck
-
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Compile project
-        run: ./gradlew build
+        run: ./twister/gradlew ktlintCheck
