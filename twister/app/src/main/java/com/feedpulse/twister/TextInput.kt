@@ -25,11 +25,12 @@ fun TextInput(setting: Setting) {
                 text = newText
                 setting.settingValue = newText
             },
-            label = { Text(
-                "Enter class name precisely",
-            ) },
+            label = {
+                Text(
+                    "Enter class name precisely",
+                )
+            },
             modifier = Modifier.fillMaxWidth()
         )
     }
-
 }

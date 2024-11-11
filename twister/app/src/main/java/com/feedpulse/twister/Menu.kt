@@ -47,7 +47,6 @@ fun Menu(configManager: ConfigManager) {
             modifier = Modifier.align(Alignment.Start),
         )
 
-
         configList.forEachIndexed { i, value ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -81,10 +80,8 @@ fun Menu(configManager: ConfigManager) {
                 } else {
                     TextInput(configList[i])
                 }
-
             }
         }
-
 
         Row(
             modifier = Modifier.fillMaxWidth(),

@@ -1,15 +1,13 @@
 package com.feedpulse.twister
-
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-
 class ConfigManager(private val url: URL) {
 
-    private var cachedConfig: Config? = null;
+    private var cachedConfig: Config? = null
 
     fun applyChanges(data: Config) {
 
@@ -27,7 +25,6 @@ class ConfigManager(private val url: URL) {
             it.flush()
             it.close()
         }
-
     }
 
     fun getCurrentConfig(): Config {
@@ -42,7 +39,6 @@ class ConfigManager(private val url: URL) {
                 }.also {
                     it.connect()
                 }
-
 
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 val text = connection.inputStream.bufferedReader().use { it.readText() }
