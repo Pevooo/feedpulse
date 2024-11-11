@@ -6,25 +6,8 @@ import twikit
 
 from src.x.tweet import Tweet
 from src.x.x_data_provider import XDataProvider
-
-
-class FakeTwikitTweets:
-    def __init__(self, tweets):
-        self.tweets = tweets
-
-    def __iter__(self):
-        return self.tweets.__iter__()
-
-    async def next(self):
-        return []
-
-
-class FakeTwikitTweet:
-    def __init__(self, text, id, created_at_datetime, replies):
-        self.text = text
-        self.id = id
-        self.created_at_datetime = created_at_datetime
-        self.replies = replies
+from fake_twikit_tweet import FakeTwikitTweet
+from fake_twikit_tweets import FakeTwikitTweets
 
 
 class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
