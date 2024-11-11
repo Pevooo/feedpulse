@@ -9,5 +9,5 @@ class Tweet:
         self.id: str = tweet.id
         self.date: datetime = tweet.created_at_datetime
         self.replies: tuple[Tweet, ...] = (
-            list(map(Tweet, tweet.replies)) if tweet.replies else []
+            tuple(map(Tweet, tweet.replies)) if tweet.replies else tuple()
         )
