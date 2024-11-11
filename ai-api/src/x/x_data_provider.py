@@ -16,7 +16,7 @@ class XDataProvider:
             password=password,
         )
 
-    async def get_tweets(self, num_tweets: int, query: str) -> list[Tweet]:
+    async def get_tweets(self, num_tweets: int, query: str) -> tuple[Tweet, ...]:
         """
         Gets the tweets from X using a given query
 
