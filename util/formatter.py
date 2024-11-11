@@ -26,7 +26,7 @@ def main():
 
 def format_kotlin():
     Printer.pending_process("Kotlin Format Pending")
-    format_result = run_command(f".\gradlew ktlintFormat", cwd=TWISTER_DIRECTORY)
+    format_result = run_command(".\\gradlew ktlintFormat", cwd=TWISTER_DIRECTORY)
     if format_result.returncode != 0:
         Printer.error("Kotlin Format Failed")
     else:
@@ -44,7 +44,7 @@ def format_python():
 
 def format_csharp():
     Printer.pending_process("CSharp Format Pending")
-    format_result = run_command(f'dotnet format "{WEB_API_DIRECTORY}\\web-api.csproj"')
+    format_result = run_command('dotnet format "{WEB_API_DIRECTORY}\\web-api.csproj"')
     if format_result.returncode != 0:
         Printer.error("CSharp Format Failed")
     else:
