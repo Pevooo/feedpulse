@@ -12,7 +12,7 @@ class FacebookDataProvider:
     def __init__(self, access_token: str) -> None:
         self.access_token = access_token
 
-    def get_posts(self, page_id: str) -> list[Post]:
+    def get_posts(self, page_id: str) -> tuple[Post]:
         """
         Gets the posts from Facebook page using a page id
 

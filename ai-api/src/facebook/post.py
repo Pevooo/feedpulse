@@ -1,15 +1,12 @@
 from datetime import datetime
-
+from dataclasses import dataclass
 from src.facebook.comment import Comment
 
-
+@dataclass
 class Post:
-    def __init__(
-        self, text: str, time_created: datetime, comments: list[Comment]
-    ) -> None:
-        self.text = text
-        self.time_created = time_created
-        self.comments = comments
+    text: str
+    time_created: datetime
+    comments: tuple[Comment]
 
     def __str__(self):
         return f"Facebook Post: {self.text}, Created: {self.time_created}"
