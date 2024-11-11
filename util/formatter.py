@@ -2,7 +2,7 @@ import subprocess
 
 
 from printer import Printer
-from constants import WEB_API_DIRECTORY, TWISTER_DIRECTORY, PROJECT_DIRECTORY
+from constants import TWISTER_DIRECTORY, PROJECT_DIRECTORY
 
 
 def run_command(command: str, cwd=None) -> subprocess.CompletedProcess[str]:
@@ -35,7 +35,7 @@ def format_kotlin():
 
 def format_python():
     Printer.pending_process("Python Format Pending")
-    format_result = run_command(f"black .", cwd=PROJECT_DIRECTORY)
+    format_result = run_command("black .", cwd=PROJECT_DIRECTORY)
     if format_result.returncode != 0:
         Printer.error("Python Format Failed")
     else:
