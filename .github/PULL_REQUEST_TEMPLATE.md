@@ -7,14 +7,7 @@ Please include a summary of the change and which issue is fixed or what feature 
 - [ ] Bugfix
 - [ ] Feature
 - [ ] Documentation
-- [ ] Other (please specify)
-
-## What is this change related to?
-
-- [ ] AI
-- [ ] Backend
-- [ ] CI/CD
-- [ ] Other (please specify)
+- [ ] Other
 
 ## How to Test
 
