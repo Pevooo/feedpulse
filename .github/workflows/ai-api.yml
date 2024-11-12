@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: '3.10.6'
 
-      - name: Cache pip dependencies
+      - name: Cache Pip Dependencies
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
