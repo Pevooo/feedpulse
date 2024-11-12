@@ -25,6 +25,7 @@ publish/
 .idea/
 
 # Others
+web-api/appsettings.json
 *.log
 *.tmp
 *.cache
