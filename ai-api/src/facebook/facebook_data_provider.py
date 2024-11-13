@@ -2,7 +2,6 @@ import requests
 from datetime import datetime
 
 from src.data.context_data_unit import ContextDataUnit
-from src.data.data_unit import DataUnit
 from src.data.main_data_unit import MainDataUnit
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
