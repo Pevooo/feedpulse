@@ -9,6 +9,7 @@ namespace web_api.Services.Interfaces
         Task<AuthResult> RefreshTokenAsync(string token);
         Task<bool> RevokeTokenAsync(string token);
         Task<AuthResult> LoginAsync(LoginDto model);
+        Task<bool> AddRole(AddRoleRequestDto model);
 
     }
 }

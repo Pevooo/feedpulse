@@ -12,5 +12,6 @@ namespace web_api.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<OrganizationSocial> ORGSocials { get; set; }
+        public DbSet<KeyWord> KeyWords { get; set; }
     }
 }

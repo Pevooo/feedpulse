@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,16 +11,18 @@ using web_api.Dtos.Results;
 using web_api.Helpers;
 using web_api.Models;
 using web_api.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace web_api.Services.Repos
 {
     public class AuthRepo : IAuth
     {
+        #region Fields
         private readonly UserManager<Organization> _organizationManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JWT _jwt;
+        #endregion
+        #region constructor
         public AuthRepo(UserManager<Organization> organizationManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
         {
             _organizationManager = organizationManager;
@@ -28,7 +30,9 @@ namespace web_api.Services.Repos
             _jwt = jwt.Value;
 
         }
+        #endregion
 
+        #region HandleFunctions
         public async Task<AuthResult> RegisterAsync(RegisterDto model)
         {
             if (await _organizationManager.FindByEmailAsync(model.Email) != null)
@@ -59,7 +63,7 @@ namespace web_api.Services.Repos
 
                 return new AuthResult { Message = errors };
             }
-            await _organizationManager.AddToRoleAsync(Organization, "Organization");
+            _ = await _organizationManager.AddToRoleAsync(Organization, "Organization");
             var jwtSecurityToken = await CreateJwtToken(Organization);
             return new AuthResult
             {
@@ -87,7 +91,7 @@ namespace web_api.Services.Repos
 
             refreshToken.RevokedOn = DateTime.UtcNow;
 
-            await _organizationManager.UpdateAsync(user);
+            _ = await _organizationManager.UpdateAsync(user);
 
             return true;
         }
@@ -115,7 +119,7 @@ namespace web_api.Services.Repos
 
             var newRefreshToken = GenerateRefreshToken();
             user.RefreshTokens.Add(newRefreshToken);
-            await _organizationManager.UpdateAsync(user);
+            _ = await _organizationManager.UpdateAsync(user);
 
             var jwtToken = await CreateJwtToken(user);
             AuthResult.IsAuthenticated = true;
@@ -210,11 +214,24 @@ namespace web_api.Services.Repos
                 AuthResult.RefreshToken = refreshToken.Token;
                 AuthResult.RefreshTokenExpiration = refreshToken.ExpiresOn;
                 user.RefreshTokens.Add(refreshToken);
-                await _organizationManager.UpdateAsync(user);
+                _ = await _organizationManager.UpdateAsync(user);
             }
 
             return AuthResult;
         }
+
+        public async Task<bool> AddRole(AddRoleRequestDto model)
+        {
+            var user = await _organizationManager.FindByEmailAsync(model.Email);
+            if (user == null || !await _roleManager.RoleExistsAsync(model.RoleName)) { return false; }
+            if (await _organizationManager.IsInRoleAsync(user, model.RoleName)) { return false; }
+
+            var result = await _organizationManager.AddToRoleAsync(user, model.RoleName);
+            if (!result.Succeeded) return false;
+            return true;
+
+        }
+        #endregion
 
     }
 }

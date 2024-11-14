@@ -1,24 +1,22 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using web_api.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using web_api.Helpers;
+using web_api.UnitOfWork;
 
 namespace web_api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
-
-        [HttpGet]
+        [HttpGet(Routes.CategoryRouting.List)]
         public IActionResult GetAll()
         {
-            return Ok(_context.Categories.ToList());
+            return Ok(_unitOfWork.CategoryService.GetAll());
         }
     }
 }
