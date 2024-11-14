@@ -15,17 +15,17 @@ class TopicDetector:
             text (str): The text to detect.
 
         Returns:
-            TopicDectorResult: Contains the list of detected topics.
+            TopicDetectorResult: Contains the list of detected topics.
         """
 
         response: str = self.model.generate_content(self.wrap_text(text)).lower()
         topics = self.extract_topics(response)
         return TopicDetectorResult(topics)
 
-    def extract_topics(self, response: str) -> list:
+    def extract_topics(self, response: str) -> tuple[str, ...]:
         response = response.split("only respond with relevant topics")[-1].strip()
         detected_topics = [topic for topic in self.org_topics if topic in response]
-        return detected_topics
+        return tuple(detected_topics)
 
     def wrap_text(self, text: str) -> str:
         return (

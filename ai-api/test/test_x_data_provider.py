@@ -4,7 +4,6 @@ from unittest.mock import patch, Mock
 
 import twikit
 
-from src.x.tweet import Tweet
 from src.x.x_data_provider import XDataProvider
 from fake_twikit_tweet import FakeTwikitTweet
 from fake_twikit_tweets import FakeTwikitTweets
@@ -22,7 +21,7 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
         )
 
         data_provider = XDataProvider()
-        tweets: list[Tweet] = await data_provider.get_tweets(2, Mock())
+        tweets = await data_provider.get_tweets(2, Mock())
 
         self.assertEqual(tweets[0].text, "hello")
         self.assertEqual(tweets[1].text, "helloo")
@@ -37,7 +36,7 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
         )
 
         data_provider = XDataProvider()
-        tweets: list[Tweet] = await data_provider.get_tweets(1, Mock())
+        tweets = await data_provider.get_tweets(1, Mock())
 
         self.assertEqual(1, len(tweets))
 
@@ -56,7 +55,7 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
         )
 
         data_provider = XDataProvider()
-        tweets: list[Tweet] = await data_provider.get_tweets(2, Mock())
+        tweets = await data_provider.get_tweets(2, Mock())
 
         self.assertEqual(2, len(tweets))
 
@@ -75,10 +74,10 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
         )
 
         data_provider = XDataProvider()
-        tweets: list[Tweet] = await data_provider.get_tweets(2, Mock())
+        tweets = await data_provider.get_tweets(2, Mock())
 
         self.assertEqual("hello", tweets[0].text)
-        self.assertEqual("reply", tweets[0].replies[0].text)
+        self.assertEqual("reply", tweets[0].children[0].text)
 
     @patch.object(twikit.Client, "search_tweet")
     async def test_get_tweets_replies_size(self, mock_search_tweet):
@@ -98,7 +97,7 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
         )
 
         data_provider = XDataProvider()
-        tweets: list[Tweet] = await data_provider.get_tweets(2, Mock())
+        tweets = await data_provider.get_tweets(2, Mock())
 
-        self.assertEqual(2, len(tweets[0].replies))
-        self.assertEqual(0, len(tweets[1].replies))
+        self.assertEqual(2, len(tweets[0].children))
+        self.assertEqual(0, len(tweets[1].children))

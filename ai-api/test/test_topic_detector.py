@@ -22,4 +22,4 @@ class TestTopicDetector(unittest.TestCase):
     def test_no_matching_topic(self, mock_generate_content):
         mock_generate_content.return_value = ""
         result = self.topic_detector(Mock())
-        self.assertEqual(result.topics, [])
+        self.assertEqual(result.topics, tuple())
