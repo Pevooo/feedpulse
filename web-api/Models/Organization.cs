@@ -10,6 +10,7 @@ namespace web_api.Models
         public string City { get; set; } = string.Empty;
         public IEnumerable<Report> Reports { get; set; }
         public IEnumerable<OrganizationSocial> ORGSocials { get; set; }
+        public IEnumerable<KeyWord> KeyWords { get; set; }
         public List<RefreshToken>? RefreshTokens { get; set; }
     }
 }

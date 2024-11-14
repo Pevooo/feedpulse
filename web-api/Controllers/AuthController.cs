@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using web_api.Dtos.Authentication;
+using web_api.Helpers;
 using web_api.Services.Interfaces;
 
 namespace web_api.Controllers
 {
-    [Route("api/[controller]")]
+
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -14,7 +14,7 @@ namespace web_api.Controllers
         {
             _authService = authservice;
         }
-        [HttpPost("register")]
+        [HttpPost(Routes.AuthRouting.Register)]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
             if (!ModelState.IsValid) { return BadRequest("Check Inputs"); }
@@ -25,7 +25,7 @@ namespace web_api.Controllers
             }
             return Ok(AuthResult);
         }
-        [HttpPost("login")]
+        [HttpPost(Routes.AuthRouting.Login)]
         public async Task<IActionResult> LoginAsync([FromBody] LoginDto model)
         {
             var result = await _authService.LoginAsync(model);
@@ -39,7 +39,7 @@ namespace web_api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("refreshToken")]
+        [HttpGet(Routes.AuthRouting.RefershToken)]
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
@@ -53,7 +53,7 @@ namespace web_api.Controllers
 
             return Ok(result);
         }
-        [HttpPost("revokeToken")]
+        [HttpPost(Routes.AuthRouting.RevokeToken)]
         public async Task<IActionResult> RevokeToken([FromBody] string token)
         {
             if (string.IsNullOrEmpty(token))

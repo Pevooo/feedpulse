@@ -8,17 +8,21 @@ using web_api.Helpers;
 using web_api.Models;
 using web_api.Services.Interfaces;
 using web_api.Services.Repos;
+using web_api.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<IAuth, AuthRepo>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 builder.Services.AddIdentity<Organization, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -51,8 +55,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    _ = app.UseSwagger();
+    _ = app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
