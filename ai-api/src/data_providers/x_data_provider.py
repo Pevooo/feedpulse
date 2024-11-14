@@ -3,9 +3,10 @@ import time
 from random import randint
 
 from src.data.main_data_unit import MainDataUnit
+from src.data_providers.data_provider import DataProvider
 
 
-class XDataProvider:
+class XDataProvider(DataProvider):
     def __init__(self) -> None:
         self.client = twikit.Client("en-US")
 

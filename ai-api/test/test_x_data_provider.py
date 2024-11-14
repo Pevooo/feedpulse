@@ -4,7 +4,7 @@ from unittest.mock import patch, Mock
 
 import twikit
 
-from src.x.x_data_provider import XDataProvider
+from src.data_providers.x_data_provider import XDataProvider
 from fake_twikit_tweet import FakeTwikitTweet
 from fake_twikit_tweets import FakeTwikitTweets
 
