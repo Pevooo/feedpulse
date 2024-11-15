@@ -1,6 +1,9 @@
 name: WEB API
 
-on: [push]
+on:
+  push:
+    paths:
+      - web-api/**
 
 jobs:  
   test:
@@ -21,6 +24,10 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore web-api/web-api.csproj
+
+      - name: Run linting
+        run: |
+          dotnet format web-api/web-api.csproj --verify-no-changes
 
       - name: Test
         run: dotnet test web-api/web-api.csproj --no-build --verbosity normal
