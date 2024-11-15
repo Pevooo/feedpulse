@@ -1,6 +1,9 @@
 name: Twister
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'twister/**'
 
 jobs:
   test:
@@ -26,6 +29,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      - name: Run Linting
+        run: ./gradlew ktlintCheck
+        working-directory: ./twister
 
       - name: Run tests
         run: ./gradlew test
