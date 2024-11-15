@@ -1,9 +1,13 @@
-name: Count Lines of Code on Push to Main
+name: Code Analysis
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   count-lines:
+    name: Code
     runs-on: ubuntu-latest
 
     steps:
@@ -33,13 +37,3 @@ jobs:
       # Step 5: Print the result or use it in further steps
       - name: Display total lines
         run: echo "The repository has ${{ steps.parse-total.outputs.total_lines }} lines of code!"
-
-      # Step 6: Comment on the commit
-      - name: Post lines of code as a commit comment
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          issue-number: ${{ github.run_id }}
-          body: |
-            The repository has **${{ steps.parse-total.outputs.total_lines }}** lines of code after this push.
