@@ -7,7 +7,7 @@ on:
 
 jobs:
   count-lines:
-    name: Code
+    name: Count Lines of Code
     runs-on: ubuntu-latest
 
     steps:
