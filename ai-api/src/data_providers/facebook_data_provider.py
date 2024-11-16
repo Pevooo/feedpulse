@@ -3,12 +3,13 @@ from datetime import datetime
 
 from src.data.context_data_unit import ContextDataUnit
 from src.data.main_data_unit import MainDataUnit
+from src.data_providers.data_provider import DataProvider
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 
 
-class FacebookDataProvider:
+class FacebookDataProvider(DataProvider):
     def __init__(self, access_token: str) -> None:
         self.access_token = access_token
 
