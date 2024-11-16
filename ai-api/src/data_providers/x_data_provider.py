@@ -2,6 +2,7 @@ import twikit
 import time
 from random import randint
 
+from src.config.feed_pulse_environment import FeedPulseEnvironment
 from src.data.main_data_unit import MainDataUnit
 from src.data_providers.data_provider import DataProvider
 
@@ -9,13 +10,16 @@ from src.data_providers.data_provider import DataProvider
 class XDataProvider(DataProvider):
     def __init__(self) -> None:
         self.client = twikit.Client("en-US")
+        self.logged_in = False
 
-    async def login(self, username: str, email: str, password: str):
+    async def login(self):
         await self.client.login(
-            auth_info_1=username,
-            auth_info_2=email,
-            password=password,
+            auth_info_1=FeedPulseEnvironment.x_username,
+            auth_info_2=FeedPulseEnvironment.x_email,
+            password=FeedPulseEnvironment.x_password,
         )
+
+        self.logged_in = True
 
     async def get_tweets(self, num_tweets: int, query: str) -> tuple[MainDataUnit, ...]:
         """
@@ -28,6 +32,11 @@ class XDataProvider(DataProvider):
         Returns:
             all_tweets (tuple[MainDataUnit, ...]): A tuple containing all the collected tweets as MainDataUnit objects.
         """
+
+        # If we're not logged in we'll automatically log in
+        if not self.logged_in:
+            await self.login()
+
         tweets = await self.client.search_tweet(query, "Latest")
         counts = 0
 

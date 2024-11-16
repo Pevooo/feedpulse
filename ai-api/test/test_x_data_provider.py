@@ -10,6 +10,34 @@ from fake_twikit_tweets import FakeTwikitTweets
 
 
 class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.data_provider = XDataProvider()
+
+    @patch.object(twikit.Client, "search_tweet")
+    async def test_auto_login(self, mock_search_tweet):
+        mock_search_tweet.return_value = FakeTwikitTweets([])
+
+        self.data_provider.logged_in = False
+
+        with patch.object(
+            self.data_provider.client, "login", return_value=None
+        ) as mock_login:
+            await self.data_provider.get_tweets(2, Mock())
+
+        mock_login.assert_called_once()
+        self.assertTrue(self.data_provider.logged_in)
+        mock_search_tweet.assert_called_once()
+
+    @patch.object(twikit.Client, "login")
+    async def test_login(self, mock_login):
+        mock_login.return_value = None
+
+        self.data_provider.logged_in = False
+
+        await self.data_provider.login()
+
+        self.assertEqual(self.data_provider.logged_in, True)
+        mock_login.assert_called_once()
 
     @patch.object(twikit.Client, "search_tweet")
     async def test_get_tweets_content_no_replies(self, mock_search_tweet):
@@ -20,8 +48,8 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
             ]
         )
 
-        data_provider = XDataProvider()
-        tweets = await data_provider.get_tweets(2, Mock())
+        self.data_provider.logged_in = True
+        tweets = await self.data_provider.get_tweets(2, Mock())
 
         self.assertEqual(tweets[0].text, "hello")
         self.assertEqual(tweets[1].text, "helloo")
@@ -35,8 +63,9 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
             ]
         )
 
-        data_provider = XDataProvider()
-        tweets = await data_provider.get_tweets(1, Mock())
+        self.data_provider.logged_in = True
+
+        tweets = await self.data_provider.get_tweets(1, Mock())
 
         self.assertEqual(1, len(tweets))
 
@@ -54,8 +83,8 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
             ]
         )
 
-        data_provider = XDataProvider()
-        tweets = await data_provider.get_tweets(2, Mock())
+        self.data_provider.logged_in = True
+        tweets = await self.data_provider.get_tweets(2, Mock())
 
         self.assertEqual(2, len(tweets))
 
@@ -73,8 +102,8 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
             ]
         )
 
-        data_provider = XDataProvider()
-        tweets = await data_provider.get_tweets(2, Mock())
+        self.data_provider.logged_in = True
+        tweets = await self.data_provider.get_tweets(2, Mock())
 
         self.assertEqual("hello", tweets[0].text)
         self.assertEqual("reply", tweets[0].children[0].text)
@@ -96,8 +125,8 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
             ]
         )
 
-        data_provider = XDataProvider()
-        tweets = await data_provider.get_tweets(2, Mock())
+        self.data_provider.logged_in = True
+        tweets = await self.data_provider.get_tweets(2, Mock())
 
         self.assertEqual(2, len(tweets[0].children))
         self.assertEqual(0, len(tweets[1].children))

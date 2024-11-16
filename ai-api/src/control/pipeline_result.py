@@ -16,3 +16,12 @@ class PipelineResult:
         self.items.append(data_result)
         for topic in data_result.topics:
             self.__topic_counts[topic] += 1
+
+    def extend(self, data_results: "PipelineResult") -> None:
+        if data_results.__topics != self.__topics:
+            raise ValueError("Both results should have the same topics")
+
+        self.items.extend(data_results.items)
+        for data_result in data_results.items:
+            for topic in data_result.topics:
+                self.__topic_counts[topic] += 1
