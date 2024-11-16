@@ -43,6 +43,7 @@ namespace web_api.Services.Repos
             {
                 return new AuthResult { Message = "Username Is exist before" };
             }
+            var refershtoken = GenerateRefreshToken();
             var Organization = new Organization
             {
                 UserName = model.UserName,
@@ -51,7 +52,8 @@ namespace web_api.Services.Repos
                 City = model.City,
                 Country = model.Country,
                 Description = model.Description,
-                OrganizationName = model.OrganizationName
+                OrganizationName = model.OrganizationName,
+                RefreshTokens = new List<RefreshToken> { refershtoken }
             };
             var result = await _organizationManager.CreateAsync(Organization, model.Password);
             if (!result.Succeeded)
@@ -63,18 +65,18 @@ namespace web_api.Services.Repos
 
                 return new AuthResult { Message = errors };
             }
+            var authmodel = new AuthResult();
             _ = await _organizationManager.AddToRoleAsync(Organization, "Organization");
             var jwtSecurityToken = await CreateJwtToken(Organization);
-            return new AuthResult
-            {
-                Email = Organization.Email,
-                ExpiresOn = jwtSecurityToken.ValidTo,
-                IsAuthenticated = true,
-                Roles = new List<string> { "Organization" },
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                Username = Organization.UserName,
-
-            };
+            authmodel.Email = Organization.Email;
+            authmodel.ExpiresOn = jwtSecurityToken.ValidTo;
+            authmodel.IsAuthenticated = true;
+            authmodel.Roles = new List<string> { "Organization" };
+            authmodel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            authmodel.Username = Organization.UserName;
+            authmodel.RefreshToken = refershtoken.Token;
+            authmodel.RefreshTokenExpiration = refershtoken.ExpiresOn;
+            return authmodel;
         }
 
         public async Task<bool> RevokeTokenAsync(string token)
