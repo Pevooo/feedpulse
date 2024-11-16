@@ -11,5 +11,8 @@ class FakeTwikitTweets:
     def __iter__(self):
         return self.tweets.__iter__()
 
+    def __len__(self):
+        return len(self.tweets)
+
     async def next(self):
         return []

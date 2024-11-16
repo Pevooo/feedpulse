@@ -65,7 +65,9 @@ namespace web_api.Services.Repos
 
                 return new AuthResult { Message = errors };
             }
+
             var authmodel = new AuthResult();
+
             _ = await _organizationManager.AddToRoleAsync(Organization, "Organization");
             var jwtSecurityToken = await CreateJwtToken(Organization);
             authmodel.Email = Organization.Email;

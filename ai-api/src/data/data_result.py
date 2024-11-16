@@ -2,5 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class TopicDetectorResult:
+class DataResult:
+    impression: bool
     topics: tuple[str, ...]

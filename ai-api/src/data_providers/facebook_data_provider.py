@@ -1,18 +1,19 @@
 import requests
 from datetime import datetime
 
-from src.facebook.comment import Comment
-from src.facebook.post import Post
+from src.data.context_data_unit import ContextDataUnit
+from src.data.main_data_unit import MainDataUnit
+from src.data_providers.data_provider import DataProvider
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 
 
-class FacebookDataProvider:
+class FacebookDataProvider(DataProvider):
     def __init__(self, access_token: str) -> None:
         self.access_token = access_token
 
-    def get_posts(self, page_id: str) -> tuple[Post, ...]:
+    def get_posts(self, page_id: str) -> tuple[ContextDataUnit, ...]:
         """
         Gets the posts from Facebook page using a page id
 
@@ -20,7 +21,7 @@ class FacebookDataProvider:
             page_id (str): The id of the intended page.
 
         Returns:
-            posts (list[Post]): A list containing all the collected posts.
+            posts (tuple[ContextDataUnit, ...]): A tuple containing all the collected posts as ContextDataUnit objects.
         """
         url = f"{FACEBOOK_GRAPH_URL}{page_id}"
         params = {
@@ -30,7 +31,7 @@ class FacebookDataProvider:
 
         data = requests.get(url, params).json()
 
-        posts: list[Post] = []
+        posts: list[ContextDataUnit] = []
         for post_data in data["posts"]["data"]:
             message: str = post_data["message"]
 
@@ -38,19 +39,20 @@ class FacebookDataProvider:
                 post_data["created_time"], DATETIME_FORMAT
             )
 
-            comments: list[Comment] = (
+            comments: list[MainDataUnit] = (
                 [
-                    Comment(
+                    MainDataUnit(
                         comment_data["message"],
                         datetime.strptime(
                             comment_data["created_time"], DATETIME_FORMAT
                         ),
+                        tuple(),
                     )
                     for comment_data in post_data["comments"]["data"]
                 ]
                 if post_data.get("comments")
-                else []
+                else tuple()
             )
 
-            posts.append(Post(message, time_created, comments))
-        return posts
+            posts.append(ContextDataUnit(message, time_created, tuple(comments)))
+        return tuple(posts)

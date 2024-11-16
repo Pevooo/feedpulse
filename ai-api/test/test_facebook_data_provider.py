@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, Mock
-from src.facebook.facebook_data_provider import FacebookDataProvider
+from src.data_providers.facebook_data_provider import FacebookDataProvider
 from datetime import datetime
 
 
@@ -54,12 +54,12 @@ class TestFacebookDataProvider(unittest.TestCase):
         posts = data_provider.get_posts(Mock())
 
         self.assertEqual(
-            len(posts[0].comments),
+            len(posts[0].children),
             0,
         )
 
         self.assertEqual(
-            len(posts[1].comments),
+            len(posts[1].children),
             1,
         )
 
@@ -70,7 +70,7 @@ class TestFacebookDataProvider(unittest.TestCase):
         posts = data_provider.get_posts(Mock())
 
         self.assertEqual(
-            posts[1].comments[0].text,
+            posts[1].children[0].text,
             "test",
         )
 
@@ -82,6 +82,6 @@ class TestFacebookDataProvider(unittest.TestCase):
 
         expected_time = datetime.fromisoformat("2024-10-28T10:53:26+00:00")
         self.assertEqual(
-            posts[1].comments[0].time_created,
+            posts[1].children[0].time_created,
             expected_time,
         )
