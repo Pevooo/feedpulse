@@ -13,19 +13,32 @@ class TestXDataProvider(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.data_provider = XDataProvider()
 
+    @patch.object(twikit.Client, "login")
     @patch.object(twikit.Client, "search_tweet")
-    async def test_auto_login(self, mock_search_tweet):
+    async def test_auto_login(self, mock_search_tweet, mock_login):
+        mock_search_tweet.return_value = FakeTwikitTweets(
+            [
+                FakeTwikitTweet("hello", "1", datetime.now(), []),
+                FakeTwikitTweet("helloo", "2", datetime.now(), []),
+            ]
+        )
+
+        mock_login.return_value = None
+        self.data_provider.logged_in = False
+        await self.data_provider.get_tweets(2, Mock())
+
+        self.assertTrue(self.data_provider.logged_in)
+        mock_login.assert_called_once()
+        mock_search_tweet.assert_called_once()
+
+    @patch.object(twikit.Client, "search_tweet")
+    async def test_get_tweets_empty(self, mock_search_tweet):
         mock_search_tweet.return_value = FakeTwikitTweets([])
 
-        self.data_provider.logged_in = False
+        self.data_provider.logged_in = True
+        tweets = await self.data_provider.get_tweets(1, Mock())
 
-        with patch.object(
-            self.data_provider.client, "login", return_value=None
-        ) as mock_login:
-            await self.data_provider.get_tweets(2, Mock())
-
-        mock_login.assert_called_once()
-        self.assertTrue(self.data_provider.logged_in)
+        self.assertEqual(tweets, tuple())
         mock_search_tweet.assert_called_once()
 
     @patch.object(twikit.Client, "login")

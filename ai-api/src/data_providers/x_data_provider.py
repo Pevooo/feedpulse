@@ -42,6 +42,9 @@ class XDataProvider(DataProvider):
 
         all_tweets = []
 
+        if len(tweets) == 0:
+            return tuple(all_tweets)
+
         for tweet in tweets:
             counts += 1
             all_tweets.append(self.tweet_to_data_unit(tweet))
@@ -54,8 +57,14 @@ class XDataProvider(DataProvider):
             wait_time = randint(5, 12)
             time.sleep(wait_time)
             more_tweets = await tweets.next()
+
+            # break if there's no more tweets (this will prevent infinite loops)
+            if len(more_tweets) == 0:
+                return tuple(all_tweets)
+
             for tweet in more_tweets:
                 all_tweets.append(self.tweet_to_data_unit(tweet))
+
         return tuple(all_tweets)
 
     def tweet_to_data_unit(self, tweet: twikit.Tweet) -> MainDataUnit:
