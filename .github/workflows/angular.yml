@@ -1,9 +1,6 @@
 name: TypeScript Lint and Angular App
 
-on:
-  push:
-    paths:
-      - 'Interface/**'
+on: [push]
     
 
 jobs:
