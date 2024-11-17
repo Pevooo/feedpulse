@@ -3,7 +3,7 @@ name: TypeScript Lint and Angular App
 on:
   push:
     paths:
-      -'Interface/**'
+      - Interface/** 
     
 
 jobs:
