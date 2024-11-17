@@ -38,12 +38,10 @@ class TopicDetector:
     def wrap_text(
         self, text: str, org_topics: Iterable[str], context: Optional[str] = None
     ) -> str:
-        if context:
-            pass  # TODO: Use context text to generate better results
-        else:
-            return (
-                "Identify and list only the relevant topics from the provided list that directly relate to the content in the text.\n"
-                f"The list contains: {', '.join(org_topics)}.\n"
-                f"And here is the text: '{text}.'"
-                "Only respond with relevant topics. If no topics are relevant, respond with 'No relevant topics found.'"
-            )
+        # TODO: Use context tp generate better results
+        return (
+            "Identify and list only the relevant topics from the provided list that directly relate to the content in the text.\n"
+            f"The list contains: {', '.join(org_topics)}.\n"
+            f"And here is the text: '{text}.'"
+            "Only respond with relevant topics. If no topics are relevant, respond with 'No relevant topics found.'"
+        )

@@ -47,7 +47,9 @@ class FeedPulseController:
                     self.run_pipeline(data_unit.children, all_topics, data_unit.text)
                 )
             elif isinstance(data_unit, MainDataUnit):  # Is a feed
-                results.append(self.process(data_unit, all_topics, context))
+                possible_data_unit = self.process(data_unit, all_topics, context)
+                if possible_data_unit:
+                    results.append(possible_data_unit)
         return results
 
     def process(
@@ -70,6 +72,9 @@ class FeedPulseController:
             return None
 
         topics = self.detect(data_unit, org_topics, context)
+        if topics is None:
+            return None
+
         return DataResult(impression, topics)
 
     def classify(self, data_unit: DataUnit) -> Optional[bool]:
