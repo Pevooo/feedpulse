@@ -6,7 +6,7 @@ from src.data.data_result import DataResult
 
 class TestPipelineResult(unittest.TestCase):
     def test_append(self):
-        pipeline_result = PipelineResult({"topic1, topic2"})
+        pipeline_result = PipelineResult({"topic1", "topic2"})
 
         pipeline_result.append(DataResult(True, ("topic1",)))
         pipeline_result.append(DataResult(False, ("topic2",)))
@@ -15,9 +15,9 @@ class TestPipelineResult(unittest.TestCase):
         self.assertEqual(len(pipeline_result.items), 2)
 
     def test_extend_same_topics(self):
-        pipeline_result1 = PipelineResult({"topic1, topic2"})
+        pipeline_result1 = PipelineResult({"topic1", "topic2"})
 
-        pipeline_result2 = PipelineResult({"topic1, topic2"})
+        pipeline_result2 = PipelineResult({"topic1", "topic2"})
 
         pipeline_result1.append(DataResult(True, ("topic1",)))
         pipeline_result2.append(DataResult(False, ("topic2",)))
@@ -37,3 +37,27 @@ class TestPipelineResult(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             pipeline_result1.extend(pipeline_result2)
+
+    def test_topic_counts_append(self):
+        pipeline_result = PipelineResult({"topic1", "topic2"})
+
+        pipeline_result.append(DataResult(True, ("topic1",)))
+        pipeline_result.append(DataResult(False, ("topic2",)))
+
+        self.assertEqual(pipeline_result.topic_counts["topic1"][True], 1)
+        self.assertEqual(pipeline_result.topic_counts["topic1"][False], 0)
+        self.assertEqual(pipeline_result.topic_counts["topic2"][True], 0)
+        self.assertEqual(pipeline_result.topic_counts["topic2"][False], 1)
+
+    def test_topic_counts_extend(self):
+        pipeline_result1 = PipelineResult({"topic1", "topic2"})
+
+        pipeline_result2 = PipelineResult({"topic1", "topic2"})
+
+        pipeline_result1.append(DataResult(True, ("topic1",)))
+        pipeline_result2.append(DataResult(False, ("topic2",)))
+        pipeline_result1.extend(pipeline_result2)
+
+        self.assertEqual(pipeline_result1.topic_counts["topic1"][True], 1)
+        self.assertEqual(pipeline_result1.topic_counts["topic1"][False], 0)
+        self.assertEqual(pipeline_result2.topic_counts["topic2"][False], 1)

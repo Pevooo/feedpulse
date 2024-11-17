@@ -10,20 +10,21 @@ class ReportCreator:
         self.model = model
 
     def create(self, result: PipelineResult) -> str:
-        topic_counts = json.dumps(result.topic_counts)
         """
-        This Method is for creating reborts.
+        Creates a report from the given result.
 
         Args:
-            topic_counts (str): The counts of positive and negative feedbacks on each topic
-        
+            result (PipelineResult): The result of the pipeline.
+
         Returns:
-            str : contains a report that represent each topic and the number of positive feedbacks and number of negative feedbacks.
+            str : contains a report that represent each topic and the number of positive feedbacks and number
+            of negative feedbacks.
         """
 
-        response: str = self.model.generate_content(self.wrap_text(result)).lower()
+        topic_counts = json.dumps(result.topic_counts)
+        return self.model.generate_content(self.wrap_text(topic_counts))
 
-    def wrap_text(topic_counts) -> str:
+    def wrap_text(self, topic_counts: str) -> str:
         return f"""
             Please generate a well-structured report summarizing the positive and negative feedback counts
             for multiple topics based on the provided data.

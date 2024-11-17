@@ -8,17 +8,17 @@ class PipelineResult:
     def __init__(self, topics: set[str]) -> None:
         self.items: list[DataResult] = []
         self.topics: set[str] = topics
-        self.topic_counts = defaultdict(int)
-        for topic in self.topics:
-            self.topic_counts[topic] = {"False": 0, "True": 0}
+        self.topic_counts = {}
+        for topic in topics:
+            self.topic_counts[topic] = {False: 0, True: 0}
 
     def append(self, data_result: DataResult) -> None:
         self.items.append(data_result)
         for topic in data_result.topics:
-            if data_result.impression == False:
-                self.topic_counts[topic][False] += 1
-            else:
+            if data_result.impression:
                 self.topic_counts[topic][True] += 1
+            else:
+                self.topic_counts[topic][False] += 1
 
     def extend(self, data_results: "PipelineResult") -> None:
         if data_results.topics != self.topics:
@@ -27,4 +27,7 @@ class PipelineResult:
         self.items.extend(data_results.items)
         for data_result in data_results.items:
             for topic in data_result.topics:
-                self.topic_counts[topic] += 1
+                if data_result.impression:
+                    self.topic_counts[topic][True] += 1
+                else:
+                    self.topic_counts[topic][False] += 1
