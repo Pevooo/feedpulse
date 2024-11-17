@@ -1,0 +1,35 @@
+name: TypeScript Lint and Angular App
+
+on:
+  push:
+    paths:
+      -'Interface/**'
+    
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    timeout-minutes: 6
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # or any version that is compatible with your project
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Lint TypeScript code
+      - name: Run linting
+        run: npm run lint
+          
+      # Build the Angular app
+      - name: Build Angular app
+        run: npm run build --if-present
