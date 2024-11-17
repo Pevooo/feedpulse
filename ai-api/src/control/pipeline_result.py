@@ -1,27 +1,30 @@
-from collections import defaultdict
-from typing import Optional
-
 from src.data.data_result import DataResult
 
 
 class PipelineResult:
-    def __init__(
-        self, topics: set[str], results: Optional[list[DataResult]] = None
-    ) -> None:
-        self.items: list[DataResult] = results if results else []
-        self.__topics: set[str] = topics
-        self.__topic_counts = defaultdict(int)
+    def __init__(self, topics: set[str]) -> None:
+        self.items: list[DataResult] = []
+        self.topics: set[str] = topics
+        self.topic_counts = {}
+        for topic in topics:
+            self.topic_counts[topic] = {False: 0, True: 0}
 
     def append(self, data_result: DataResult) -> None:
         self.items.append(data_result)
         for topic in data_result.topics:
-            self.__topic_counts[topic] += 1
+            if data_result.impression:
+                self.topic_counts[topic][True] += 1
+            else:
+                self.topic_counts[topic][False] += 1
 
     def extend(self, data_results: "PipelineResult") -> None:
-        if data_results.__topics != self.__topics:
+        if data_results.topics != self.topics:
             raise ValueError("Both results should have the same topics")
 
         self.items.extend(data_results.items)
         for data_result in data_results.items:
             for topic in data_result.topics:
-                self.__topic_counts[topic] += 1
+                if data_result.impression:
+                    self.topic_counts[topic][True] += 1
+                else:
+                    self.topic_counts[topic][False] += 1
