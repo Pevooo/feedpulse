@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="step active">
+        <span>01</span> Organization Info
+      </div>
+      <div class="step">
+        <span>02</span> Other
+      </div>
+      <div class="signin">
+        <a routerLink="/login" routerLinkActive="active">Already have an account<br><span>SIGN IN</span></a>
+      </div>
+    </div>
+    <div class="form-container">
+      <h1>Organization Information</h1>
+      <p>Please enter your organization information and proceed to next steps so we can build your account</p>
+      <form>
+        <div class="form-group">
+          <input type="text" placeholder="Organization Name" />
+          <input type="text" placeholder="User Name" />
+        </div>
+        <div class="form-group">
+          <input type="email" placeholder="Email" style="width: 100%;"/>
+        </div>
+        <div class="form-group">
+          <input type="tel" placeholder="Phone Number" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <select>
+            <option disabled selected>Country</option>
+            <option value="egp">Egypt</option>
+            <option value="canada">Canada</option>
+            <option value="uk">United Kingdom</option>
+            <option value="australia">Australia</option>
+            <option value="germany">Germany</option>
+            <option value="france">France</option>
+            <option value="india">India</option>
+            <option value="china">China</option>
+            <option value="japan">Japan</option>
+            <option value="brazil">Brazil</option>
+            <option value="south-africa">South Africa</option>
+          </select>
+          <select>
+            <option disabled selected>City</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <input type="password" placeholder="Password" style="width: 100%;" />
+        </div>
+        <div class="form-group">
+          <input type="description" placeholder="Description" style="width: 100%; height: 100px;" />
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span>&#8594;</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

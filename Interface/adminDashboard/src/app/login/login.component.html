@@ -1,0 +1,50 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <h1>Login</h1>
+      <form [formGroup]="loginform" (ngSubmit)="login()">
+        <div class="form-group">
+          <input type="email" placeholder="Email" required formControlName="email"/>
+        </div>
+        <div class="form-group">
+          <input type="password" placeholder="Password" required formControlName="password" />
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+        <div class="extra-links">
+          <a href="#">Forgot Password?</a>
+          <a href="#">Create an Account</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+    <div class="container">
+        <h2>Account Sign In</h2>
+        <form [formGroup]="loginform" (ngSubmit)="login()">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required formControlName="email">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required formControlName="password">
+
+            <button type="submit">SIGN IN</button>
+        </form>
+        <p>Don't have an account? <a routerLink="/signup" routerLinkActive="active" >SIGN UP</a></p>
+    </div>
+</body>
+</html>
