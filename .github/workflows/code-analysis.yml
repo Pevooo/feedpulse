@@ -9,7 +9,7 @@ jobs:
   count-lines:
     name: Count Lines of Code
     runs-on: ubuntu-latest
-
+    timeout-minutes: 4
     steps:
       # Step 1: Checkout the code
       - name: Checkout code
