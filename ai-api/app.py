@@ -9,6 +9,7 @@ from src.config.router import Router
 from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
+from src.reports.report_creator import ReportCreator
 from src.topic_detection.topic_detector import TopicDetector
 
 
@@ -16,6 +17,7 @@ class FeedPulseAPI:
     def __init__(self):
         self.__app = Flask(__name__)
         self.__setup_routes()
+        self.report_creator = ReportCreator(FeedPulseSettings.report_creation_model())
         self.topic_detector = TopicDetector(
             FeedPulseSettings.topic_segmentation_model()
         )
@@ -27,21 +29,31 @@ class FeedPulseAPI:
         self.__app.run()
 
     def __setup_routes(self):
-        @self.__app.route(Router.TESTING_ROUTE, methods=["POST", "GET"])
+
+        @self.__app.route(Router.MAIN_TESTING_ROUTE, methods=["POST", "GET"])
         @self.internal
         def index():
             if request.method == "GET":
                 return render_template("index.html")
             else:
-                text = request.form["text"]
+                access_token = request.form["access_token"]
+                page_id = request.form["page_id"]
+                topics = {"cleanliness", "staff", "food", "activities"}
 
-                result = self.feedback_classifier(text)
-                has_topic = result.has_topic
-                text_type = result.text_type
-
-                return render_template(
-                    "index.html", has_topic=has_topic, text_type=text_type
+                controller = FeedPulseController(
+                    self.feedback_classifier,
+                    self.topic_detector,
+                    FacebookDataProvider(access_token),
                 )
+
+                result = controller.get_facebook_data_and_run_pipeline(
+                    page_id,
+                    topics,
+                )
+
+                report = self.report_creator.create(result)
+
+                return render_template("index.html", report=report)
 
         @self.__app.route(Router.FACEBOOK_DATA_PROCESSING_ROUTE, methods=["GET"])
         @self.inject

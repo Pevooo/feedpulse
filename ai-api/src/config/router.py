@@ -1,7 +1,10 @@
 class Router:
 
     # Testing routes
-    TESTING_ROUTE = "/"
+    FEEDBACK_CLASSIFIER_TESTING_ROUTE = "/FC"
+    TOPIC_DETECTOR_TESTING_ROUTE = "/TD"
+    REPORT_CREATOR_TESTING_ROUTE = "/RC"
+    MAIN_TESTING_ROUTE = "/"
 
     # Data processing routes
     FACEBOOK_DATA_PROCESSING_ROUTE = "/process_facebook_data"
