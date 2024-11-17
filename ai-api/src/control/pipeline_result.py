@@ -1,6 +1,3 @@
-from collections import defaultdict
-from typing import Optional
-
 from src.data.data_result import DataResult
 
 
