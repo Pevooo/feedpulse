@@ -74,6 +74,8 @@ class ConfigManager(private val url: URL) {
 data class Setting(
     val settingName: String,
     var settingValue: String,
+    val prettyName: String,
+    val choices: List<String>,
 )
 
 data class Config(

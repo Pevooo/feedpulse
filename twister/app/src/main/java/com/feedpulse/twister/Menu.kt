@@ -1,5 +1,6 @@
 package com.feedpulse.twister
 
+import DropdownInput
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -60,7 +61,7 @@ fun Menu(configManager: ConfigManager) {
                 horizontalArrangement = Arrangement.Start // Aligns items on both ends
             ) {
                 Text(
-                    setting.settingName,
+                    setting.prettyName,
                     modifier = Modifier.align(Alignment.CenterVertically),
                 )
             }
@@ -71,7 +72,7 @@ fun Menu(configManager: ConfigManager) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                TextInput(setting)
+                DropdownInput(setting)
             }
         }
 

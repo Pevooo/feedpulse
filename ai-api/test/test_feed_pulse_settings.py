@@ -45,7 +45,12 @@ class TestFeedPulseSettings(unittest.TestCase):
         FeedPulseSettings.report_creation_model = PhiModel
         settings = FeedPulseSettings.get_settings()
         self.assertIn(
-            {"settingName": "report_creation_model", "settingValue": "PhiModel"},
+            {
+                "settingName": "report_creation_model",
+                "settingValue": "PhiModel",
+                "prettyName": "Report Creation Model",
+                "choices": ["GeminiModel", "PhiModel"],
+            },
             settings,
         )
 
@@ -53,7 +58,13 @@ class TestFeedPulseSettings(unittest.TestCase):
         FeedPulseSettings.enable_x_data_collection = True
         settings = FeedPulseSettings.get_settings()
         self.assertIn(
-            {"settingName": "enable_x_data_collection", "settingValue": True}, settings
+            {
+                "settingName": "enable_x_data_collection",
+                "settingValue": True,
+                "prettyName": "Enable X Data Collection",
+                "choices": ["true", "false"],
+            },
+            settings,
         )
 
     def test_update_bool_setting(self):

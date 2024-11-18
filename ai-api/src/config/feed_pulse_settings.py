@@ -31,7 +31,12 @@ class FeedPulseSettings:
         settings = []
         for setting in cls.__BOOLEAN_SETTINGS:
             settings.append(
-                {"settingName": setting, "settingValue": getattr(cls, setting)},
+                {
+                    "settingName": setting,
+                    "settingValue": getattr(cls, setting),
+                    "prettyName": " ".join(setting.split("_")).title(),
+                    "choices": ["true", "false"],
+                },
             )
 
         for setting in cls.__MODEL_SETTINGS:
@@ -39,6 +44,8 @@ class FeedPulseSettings:
                 {
                     "settingName": setting,
                     "settingValue": getattr(cls, setting).__name__,
+                    "prettyName": " ".join(setting.split("_")).title(),
+                    "choices": ["GeminiModel", "PhiModel"],
                 }
             )
 
