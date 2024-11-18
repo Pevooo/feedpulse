@@ -32,13 +32,13 @@ class TopicDetector:
         self, response: str, org_topics: Iterable[str]
     ) -> tuple[str, ...]:
         response = response.split("only respond with relevant topics")[-1].strip()
-        detected_topics = [topic for topic in org_topics if topic in response]
+        detected_topics = [topic for topic in org_topics if topic.lower() in response]
         return tuple(detected_topics)
 
     def wrap_text(
         self, text: str, org_topics: Iterable[str], context: Optional[str] = None
     ) -> str:
-        # TODO: Use context tp generate better results
+        # TODO: Use context to generate better results
         return (
             "Identify and list only the relevant topics from the provided list that directly relate to the content in the text.\n"
             f"The list contains: {', '.join(org_topics)}.\n"

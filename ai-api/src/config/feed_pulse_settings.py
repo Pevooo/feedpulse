@@ -1,6 +1,9 @@
 from typing import Type
 
-from src.loaded_models.gemini_model import GeminiModel
+# Suppressing unused import error as we need all the model to be imported to work properly
+
+from src.loaded_models.gemini_model import GeminiModel  # noqa: F401
+from src.loaded_models.phi_model import PhiModel  # noqa: F401
 
 
 class FeedPulseSettings:
@@ -8,7 +11,6 @@ class FeedPulseSettings:
 
     __BOOLEAN_SETTINGS = {"enable_x_data_collection", "enable_facebook_data_collection"}
     __MODEL_SETTINGS = {
-        "topic_filtration_model",
         "topic_segmentation_model",
         "report_creation_model",
         "feedback_classification_model",
@@ -16,7 +18,6 @@ class FeedPulseSettings:
 
     # Model-related config
     feedback_classification_model: Type = GeminiModel
-    topic_filtration_model: Type = GeminiModel
     topic_segmentation_model: Type = GeminiModel
     report_creation_model: Type = GeminiModel
 
@@ -24,6 +25,34 @@ class FeedPulseSettings:
     # TODO: Bind this settings to the actual product
     enable_x_data_collection: bool = True
     enable_facebook_data_collection: bool = True
+
+    @classmethod
+    def get_settings(cls) -> list[dict[str, str]]:
+        settings = []
+        for setting in cls.__BOOLEAN_SETTINGS:
+            settings.append(
+                {"settingName": setting, "settingValue": getattr(cls, setting)},
+            )
+
+        for setting in cls.__MODEL_SETTINGS:
+            settings.append(
+                {
+                    "settingName": setting,
+                    "settingValue": getattr(cls, setting).__name__,
+                }
+            )
+
+        return settings
+
+    @classmethod
+    def update_settings(cls, settings: dict[str, list[dict[str, str]]]) -> bool:
+        updated = True
+        for setting in settings["settingsList"]:
+
+            # Set updated to false if there's one or more setting(s) failed to update
+            updated &= cls.set_setting(setting["settingName"], setting["settingValue"])
+
+        return updated
 
     @classmethod
     def set_setting(cls, setting_name: str, value: str) -> bool:
@@ -43,7 +72,6 @@ class FeedPulseSettings:
 
     @classmethod
     def __set_bool_setting(cls, setting_name: str, boolean: str) -> bool:
-
         if boolean.lower() != "false" and boolean.lower() != "true":
             return False
 

@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TwisterTheme {
-                Menu(ConfigManager(URL("https://graduation-project-chi.vercel.app/settings")))
+                Menu(ConfigManager(URL("http://10.0.2.2:5000/config")))
             }
         }
     }

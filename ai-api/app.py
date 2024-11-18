@@ -28,6 +28,18 @@ class FeedPulseAPI:
     def run(self):
         self.__app.run()
 
+    def update_config(self):
+        """
+        Updates the config from `FeedPulseSettings`
+        """
+        self.report_creator = ReportCreator(FeedPulseSettings.report_creation_model())
+        self.topic_detector = TopicDetector(
+            FeedPulseSettings.topic_segmentation_model()
+        )
+        self.feedback_classifier = FeedbackClassifier(
+            FeedPulseSettings.feedback_classification_model()
+        )
+
     def __setup_routes(self):
 
         @self.__app.route(Router.MAIN_TESTING_ROUTE, methods=["POST", "GET"])
@@ -71,6 +83,20 @@ class FeedPulseAPI:
             )
             process_thread.start()
             return jsonify('{"Successfully Started Processing"}'), 200
+
+        @self.__app.route(Router.REMOTE_CONFIG_ROUTE, methods=["GET", "POST"])
+        def remote_config():
+            if request.method == "GET":
+                return jsonify(FeedPulseSettings.get_settings())
+            elif request.method == "POST":
+                try:
+                    updated = FeedPulseSettings.update_settings(request.get_json())
+                    if updated:
+                        return "Success"
+
+                    return "Failure"
+                except Exception as e:
+                    return "Failure"
 
     def internal(self, func):
         """Mark this route as internal and hide it when the app is on production."""
