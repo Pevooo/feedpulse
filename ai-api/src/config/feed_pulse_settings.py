@@ -4,7 +4,9 @@ from src.loaded_models.gemini_model import GeminiModel
 
 
 class FeedPulseSettings:
-    """This class encapsulates all the AI Api configurations."""
+    """
+    This class encapsulates all the AI Api configurations.
+    """
 
     __BOOLEAN_SETTINGS = {"enable_x_data_collection", "enable_facebook_data_collection"}
     __MODEL_SETTINGS = {

@@ -3,6 +3,11 @@ from typing import Optional
 
 
 class NLPClassifier:
+    """
+    a classifier based on sentiment analysis that classifies the feedback by predicting how many stars would this
+    feedback gain (1 - 5 starts)
+    """
+
     def __init__(self):
         self.classifier = pipeline(
             "sentiment-analysis",
