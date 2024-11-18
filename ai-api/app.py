@@ -96,6 +96,7 @@ class FeedPulseAPI:
 
                     return "Failure"
                 except Exception as e:
+                    print(e)
                     return "Failure"
 
     def internal(self, func):
