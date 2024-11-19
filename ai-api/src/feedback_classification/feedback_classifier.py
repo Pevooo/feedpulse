@@ -5,6 +5,11 @@ from src.loaded_models.model import Model
 
 
 class FeedbackClassifier:
+    """
+    The class responsible for performing feedback classification. (e.g. determining if a feedback is
+    positive, negative or neutral)
+    """
+
     def __init__(self, model: Model) -> None:
         self.model = model
 
@@ -17,7 +22,7 @@ class FeedbackClassifier:
 
         Returns:
             FeedbackClassifierResult: An instance of FeedbackClassifierResult with the classification
-                results if the classification.
+            results if the classification.
         """
 
         response: str = self.model.generate_content(self.wrap_text(text)).lower()

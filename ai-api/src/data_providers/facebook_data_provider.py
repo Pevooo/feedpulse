@@ -10,6 +10,10 @@ DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 
 
 class FacebookDataProvider(DataProvider):
+    """
+    represents a data provider for the Facebook Graph API
+    """
+
     def __init__(self, access_token: str) -> None:
         self.access_token = access_token
 

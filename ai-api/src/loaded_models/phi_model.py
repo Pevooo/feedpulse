@@ -4,6 +4,10 @@ import src.loaded_models.model as model
 
 
 class PhiModel(model.Model):
+    """
+    The Phi Model
+    """
+
     def __init__(self) -> None:
         self.__model = AutoModelForCausalLM.from_pretrained(
             "microsoft/Phi-3-mini-128k-instruct",

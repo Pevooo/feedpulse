@@ -4,6 +4,10 @@ from src.config.feed_pulse_environment import FeedPulseEnvironment
 
 
 class GeminiModel(model.Model):
+    """
+    The Google Gemini model
+    """
+
     def __init__(self) -> None:
         genai.configure(api_key=FeedPulseEnvironment.gemini_api_key)
         self.__model = genai.GenerativeModel("gemini-1.5-flash")

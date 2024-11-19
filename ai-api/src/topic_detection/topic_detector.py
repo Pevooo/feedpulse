@@ -5,6 +5,10 @@ from src.loaded_models.model import Model
 
 
 class TopicDetector:
+    """
+    The class responsible for detecting topics of the feedbacks.
+    """
+
     def __init__(self, model: Model) -> None:
         self.model = model
 

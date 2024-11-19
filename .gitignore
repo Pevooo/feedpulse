@@ -33,4 +33,5 @@ web-api/appsettings.json
 *.seed
 *.sublime-workspace
 
-
+# Security Test
+bandit_report.html
