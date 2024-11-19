@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 fun Menu(configManager: ConfigManager) {
 
     var configList by remember { mutableStateOf<List<Setting>>(emptyList()) }
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Make the network call and update the state
@@ -36,6 +37,19 @@ fun Menu(configManager: ConfigManager) {
     }
 
     val context = LocalContext.current
+
+    if (showDialog) {
+        ConfirmationDialog(
+            onConfirm = {
+                configManager.applyChanges(Config(configList), context)
+                showDialog = false
+            },
+            onDismiss = {
+                showDialog = false
+            },
+        )
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +59,6 @@ fun Menu(configManager: ConfigManager) {
         // Header section
         item {
             Row {
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Twister",
                     style = MaterialTheme.typography.headlineMedium,
@@ -80,7 +93,7 @@ fun Menu(configManager: ConfigManager) {
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    configManager.applyChanges(Config(configList), context)
+                    showDialog = true
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
