@@ -1,4 +1,4 @@
-from transformers import pipeline
+from transformers import Pipeline
 from typing import Optional
 
 
@@ -8,16 +8,16 @@ class NLPClassifier:
     feedback gain (1 - 5 starts)
     """
 
-    def __init__(self):
-        self.classifier = pipeline(
-            "sentiment-analysis",
-            model="nlptown/bert-base-multilingual-uncased-sentiment",
-        )
+    def __init__(self, classifier: Pipeline):
+        self.classifier = classifier
 
     def __call__(self, text: str) -> Optional[bool]:
-        result = int(self.classifier(text)[0]["label"[0]])
-        if result < 3:
+        stars = self.extract_stars(self.classifier(text))
+        if stars < 3:
             return False
-        elif result > 3:
+        elif stars > 3:
             return True
         return None
+
+    def extract_stars(self, result: list[dict[str, str]]) -> int:
+        return int(result[0]["label"][0])

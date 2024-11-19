@@ -12,3 +12,6 @@ class Router:
     # Data processing routes
     FACEBOOK_DATA_PROCESSING_ROUTE = "/process_facebook_data"
     X_DATA_PROCESSING_ROUTE = "/process_x_data"
+
+    # Remote Configuration
+    REMOTE_CONFIG_ROUTE = "/config"
