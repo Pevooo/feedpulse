@@ -7,7 +7,9 @@ from src.loaded_models.phi_model import PhiModel  # noqa: F401
 
 
 class FeedPulseSettings:
-    """This class encapsulates all the AI Api configurations."""
+    """
+    This class encapsulates all the AI Api configurations.
+    """
 
     __BOOLEAN_SETTINGS = {"enable_x_data_collection", "enable_facebook_data_collection"}
     __MODEL_SETTINGS = {

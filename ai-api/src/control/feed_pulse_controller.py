@@ -14,6 +14,10 @@ from src.topic_detection.topic_detector import TopicDetector
 
 
 class FeedPulseController:
+    """
+    This controller controls the flow of the AI API and acts as a link between the Flask app and the rest of project
+    """
+
     def __init__(
         self,
         feedback_classifier: FeedbackClassifier,

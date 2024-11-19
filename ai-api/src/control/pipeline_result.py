@@ -2,6 +2,10 @@ from src.data.data_result import DataResult
 
 
 class PipelineResult:
+    """
+    Represents the result of a pipeline. (determining the impression and detecting the topics of data)
+    """
+
     def __init__(self, topics: set[str]) -> None:
         self.items: list[DataResult] = []
         self.topics: set[str] = topics

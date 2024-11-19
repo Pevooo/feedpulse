@@ -8,6 +8,10 @@ from src.data_providers.data_provider import DataProvider
 
 
 class XDataProvider(DataProvider):
+    """
+    represents a data provider for X
+    """
+
     def __init__(self) -> None:
         self.client = twikit.Client("en-US")
         self.logged_in = False

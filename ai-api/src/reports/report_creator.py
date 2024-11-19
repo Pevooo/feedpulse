@@ -5,6 +5,10 @@ from src.loaded_models.model import Model
 
 
 class ReportCreator:
+    """
+    The class responsible for creating reports.
+    """
+
     def __init__(self, model: Model) -> None:
         self.model = model
 

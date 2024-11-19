@@ -1,4 +1,7 @@
 class Router:
+    """
+    This class includes all the routes for the AI API
+    """
 
     # Testing routes
     FEEDBACK_CLASSIFIER_TESTING_ROUTE = "/FC"
