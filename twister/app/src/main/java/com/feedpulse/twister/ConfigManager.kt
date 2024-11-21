@@ -14,9 +14,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class ConfigManager(private val url: URL) {
-
-    private var cachedConfig: Config? = null
-
     fun applyChanges(data: Config, context: Context) {
         val postData = Gson().toJson(data)
 
@@ -41,12 +38,6 @@ class ConfigManager(private val url: URL) {
     }
 
     suspend fun getCurrentConfig(): Config {
-        // Return cached config if available
-        if (cachedConfig != null) {
-            return cachedConfig!!
-        }
-
-        // Make the network request in a coroutine
         return withContext(Dispatchers.IO) {
             try {
                 val connection = (url.openConnection() as HttpURLConnection).apply {
@@ -59,8 +50,7 @@ class ConfigManager(private val url: URL) {
                     val text = connection.inputStream.bufferedReader().use { it.readText() }
                     val listType = object : TypeToken<MutableList<Setting>>() {}.type
                     val settings: MutableList<Setting> = Gson().fromJson(text, listType)
-                    cachedConfig = Config(settings)
-                    return@withContext cachedConfig!!
+                    return@withContext Config(settings)
                 } else {
                     return@withContext Config(mutableListOf())
                 }
