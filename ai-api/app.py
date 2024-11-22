@@ -3,14 +3,14 @@ from functools import wraps
 
 from flask import Flask, render_template, request, jsonify
 
-from src.config.feed_pulse_environment import FeedPulseEnvironment
-from src.config.feed_pulse_settings import FeedPulseSettings
+from src.config.environment import Environment
+from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
 from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
-from src.reports.report_creator import ReportCreator
+from src.reports.report_handler import ReportHandler
 from src.topic_detection.topic_detector import TopicDetector
 
 
@@ -19,11 +19,11 @@ class FeedPulseAPI:
         self,
         feedback_classifier: FeedbackClassifier,
         topic_detector: TopicDetector,
-        report_creator: ReportCreator,
+        report_handler: ReportHandler,
     ):
         self.flask_app = Flask(__name__)
         self.__setup_routes()
-        self.report_creator = report_creator
+        self.report_handler = report_handler
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
 
@@ -34,12 +34,10 @@ class FeedPulseAPI:
         """
         Updates the config from `FeedPulseSettings`
         """
-        self.report_creator = ReportCreator(FeedPulseSettings.report_creation_model())
-        self.topic_detector = TopicDetector(
-            FeedPulseSettings.topic_segmentation_model()
-        )
+        self.report_handler = ReportHandler(Settings.report_creation_model())
+        self.topic_detector = TopicDetector(Settings.topic_segmentation_model())
         self.feedback_classifier = FeedbackClassifier(
-            FeedPulseSettings.feedback_classification_model()
+            Settings.feedback_classification_model()
         )
 
     def __setup_routes(self):
@@ -65,7 +63,7 @@ class FeedPulseAPI:
                     topics,
                 )
 
-                report = self.report_creator.create(result)
+                report = self.report_handler.create(result)
 
                 return render_template("index.html", report=report)
 
@@ -90,10 +88,10 @@ class FeedPulseAPI:
         @self.flask_app.route(Router.REMOTE_CONFIG_ROUTE, methods=["GET", "POST"])
         def remote_config():
             if request.method == "GET":
-                return jsonify(FeedPulseSettings.get_settings())
+                return jsonify(Settings.get_settings())
             elif request.method == "POST":
                 try:
-                    updated = FeedPulseSettings.update_settings(request.get_json())
+                    updated = Settings.update_settings(request.get_json())
                     if updated:
                         return "Success", 200
 
@@ -108,7 +106,7 @@ class FeedPulseAPI:
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if FeedPulseEnvironment.is_production_environment:
+            if Environment.is_production_environment:
                 return jsonify({"error": "Endpoint does not exist"}), 404
             return func(*args, **kwargs)
 
@@ -129,8 +127,8 @@ class FeedPulseAPI:
 
 if __name__ == "__main__":
     app = FeedPulseAPI(
-        FeedbackClassifier(FeedPulseSettings.feedback_classification_model()),
-        TopicDetector(FeedPulseSettings.topic_segmentation_model()),
-        ReportCreator(FeedPulseSettings.report_creation_model()),
+        FeedbackClassifier(Settings.feedback_classification_model()),
+        TopicDetector(Settings.topic_segmentation_model()),
+        ReportHandler(Settings.report_creation_model()),
     )
     app.run()

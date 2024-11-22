@@ -1,10 +1,10 @@
 from typing import Iterable, Optional
 
-from src.control.pipeline_result import PipelineResult
+from src.data.pipeline_result import PipelineResult
 from src.data.context_data_unit import ContextDataUnit
-from src.data.data_result import DataResult
+from src.data.feedback_result import FeedbackResult
 from src.data.data_unit import DataUnit
-from src.data.main_data_unit import MainDataUnit
+from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.data_provider import DataProvider
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.data_providers.x_data_provider import XDataProvider
@@ -50,7 +50,7 @@ class FeedPulseController:
                 results.extend(
                     self.run_pipeline(data_unit.children, all_topics, data_unit.text)
                 )
-            elif isinstance(data_unit, MainDataUnit):  # Is a feed
+            elif isinstance(data_unit, FeedbackDataUnit):  # Is a feed
                 possible_data_unit = self.process(data_unit, all_topics, context)
                 if possible_data_unit:
                     results.append(possible_data_unit)
@@ -58,7 +58,7 @@ class FeedPulseController:
 
     def process(
         self, data_unit: DataUnit, org_topics: set[str], context: Optional[str] = None
-    ) -> Optional[DataResult]:
+    ) -> Optional[FeedbackResult]:
         """
         Processes the given data unit (classifies and detect topic of the data unit)
 
@@ -79,7 +79,7 @@ class FeedPulseController:
         if topics is None:
             return None
 
-        return DataResult(impression, topics)
+        return FeedbackResult(impression, topics)
 
     def classify(self, data_unit: DataUnit) -> Optional[bool]:
         """
@@ -92,10 +92,10 @@ class FeedPulseController:
         Returns:
             A boolean indication if the data unit is positive or not, will return None if it's filtered out
         """
-        result = self.feedback_classifier(data_unit.text)
-        if result.text_type == "neutral" or not result.has_topic:
+        result = self.feedback_classifier.classify(data_unit.text)
+        if result is None:
             return None
-        return result.text_type == "compliment"
+        return result
 
     def detect(
         self, data_unit: DataUnit, org_topics: set[str], context: Optional[str] = None
@@ -111,10 +111,10 @@ class FeedPulseController:
         Returns:
             A tuple of the detected topics as strings
         """
-        result = self.topic_detector(data_unit.text, org_topics, context)
-        if len(result.topics) == 0:
+        result_topics = self.topic_detector.detect(data_unit.text, org_topics, context)
+        if len(result_topics) == 0:
             return None
-        return result.topics
+        return result_topics
 
     def get_facebook_data_and_run_pipeline(
         self, page_id: str, org_topics: set[str]

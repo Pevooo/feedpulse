@@ -1,5 +1,5 @@
 """
-A fake tweet used to mock twickit.Tweet, used for simplicity
+A fake tweet used to mock twikit.Tweet, used for simplicity
 """
 
 

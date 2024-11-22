@@ -1,12 +1,12 @@
 from typing import Type
 
-# Suppressing unused import error as we need all the model to be imported to work properly
+# Suppressing unused import error as we need all the models to be imported to work properly
 
-from src.loaded_models.gemini_model import GeminiModel  # noqa: F401
-from src.loaded_models.phi_model import PhiModel  # noqa: F401
+from src.models.gemini_model import GeminiModel  # noqa: F401
+from src.models.phi_model import PhiModel  # noqa: F401
 
 
-class FeedPulseSettings:
+class Settings:
     """
     This class encapsulates all the AI Api configurations.
     """

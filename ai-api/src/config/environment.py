@@ -1,7 +1,7 @@
 import os
 
 
-class FeedPulseEnvironment:
+class Environment:
     """
     This class encapsulates all the AI Api environment.
     """

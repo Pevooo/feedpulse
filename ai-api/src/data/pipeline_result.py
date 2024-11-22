@@ -1,4 +1,4 @@
-from src.data.data_result import DataResult
+from src.data.feedback_result import FeedbackResult
 
 
 class PipelineResult:
@@ -7,13 +7,13 @@ class PipelineResult:
     """
 
     def __init__(self, topics: set[str]) -> None:
-        self.items: list[DataResult] = []
+        self.items: list[FeedbackResult] = []
         self.topics: set[str] = topics
         self.topic_counts = {}
         for topic in topics:
             self.topic_counts[topic] = {False: 0, True: 0}
 
-    def append(self, data_result: DataResult) -> None:
+    def append(self, data_result: FeedbackResult) -> None:
         self.items.append(data_result)
         for topic in data_result.topics:
             if data_result.impression:

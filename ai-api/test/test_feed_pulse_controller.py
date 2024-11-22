@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import Mock, patch, AsyncMock
-from src.control.pipeline_result import PipelineResult
-from src.data.data_result import DataResult
+from src.data.pipeline_result import PipelineResult
+from src.data.feedback_result import FeedbackResult
 from src.data.data_unit import DataUnit
-from src.data.main_data_unit import MainDataUnit
+from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.topic_detection.topic_detector import TopicDetector
@@ -25,12 +25,12 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
         )
 
     def test_run_pipeline(self):
-        data_unit = Mock(spec=MainDataUnit)
+        data_unit = Mock(spec=FeedbackDataUnit)
         all_topics = {"topic1", "topic2"}
 
         # Mock process method to return a DataResult for testing
         with patch.object(
-            self.controller, "process", return_value=DataResult(True, ("topic1",))
+            self.controller, "process", return_value=FeedbackResult(True, ("topic1",))
         ):
             result = self.controller.run_pipeline([data_unit], all_topics, None)
 
@@ -47,7 +47,7 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
         ):
             result = self.controller.process(data_unit, org_topics)
 
-        self.assertIsInstance(result, DataResult)
+        self.assertIsInstance(result, FeedbackResult)
         self.assertEqual(result.impression, True)
         self.assertEqual(result.topics, ("topic1",))
 
@@ -62,9 +62,7 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
 
     def test_classify_neutral_text(self):
         data_unit = Mock(spec=DataUnit)
-        self.feedback_classifier.return_value = Mock(
-            text_type="neutral", has_topic=False
-        )
+        self.feedback_classifier.classify = Mock(return_value=None)
 
         result = self.controller.classify(data_unit)
 
@@ -72,9 +70,7 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
 
     def test_classify_complaint_text(self):
         data_unit = Mock(spec=DataUnit)
-        self.feedback_classifier.return_value = Mock(
-            text_type="complaint", has_topic=True
-        )
+        self.feedback_classifier.classify = Mock(return_value=False)
 
         result = self.controller.classify(data_unit)
 
@@ -83,7 +79,7 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
     def test_detect_with_topics(self):
         data_unit = Mock(spec=DataUnit)
         org_topics = {"topic1", "topic2"}
-        self.topic_detector.return_value = Mock(topics=("topic1",))
+        self.topic_detector.detect = Mock(return_value=("topic1",))
 
         result = self.controller.detect(data_unit, org_topics)
 
@@ -92,7 +88,7 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
     def test_detect_no_topics(self):
         data_unit = Mock(spec=DataUnit)
         org_topics = {"topic1", "topic2"}
-        self.topic_detector.return_value = Mock(topics=())
+        self.topic_detector.detect = Mock(return_value=tuple())
 
         result = self.controller.detect(data_unit, org_topics)
 
@@ -122,7 +118,7 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
         org_topics = {"topic1", "topic2"}
         num_tweets = 20
 
-        data_unit = Mock(spec=MainDataUnit)
+        data_unit = Mock(spec=FeedbackDataUnit)
         self.controller.data_provider.get_tweets.return_value = [data_unit]
 
         with patch.object(
