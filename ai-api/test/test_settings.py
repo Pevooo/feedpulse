@@ -1,49 +1,49 @@
 import unittest
 
-from src.config.feed_pulse_settings import FeedPulseSettings
-from src.loaded_models.gemini_model import GeminiModel
-from src.loaded_models.phi_model import PhiModel
+from src.config.settings import Settings
+from src.models.gemini_model import GeminiModel
+from src.models.phi_model import PhiModel
 
 
 class TestFeedPulseSettings(unittest.TestCase):
     def test_change_model(self):
-        FeedPulseSettings.feedback_classification_model = (
+        Settings.feedback_classification_model = (
             None  # Setting it to null to test returning it back to Gemini
         )
-        FeedPulseSettings.set_setting("feedback_classification_model", "GeminiModel")
-        self.assertEqual(FeedPulseSettings.feedback_classification_model, GeminiModel)
+        Settings._set_setting("feedback_classification_model", "GeminiModel")
+        self.assertEqual(Settings.feedback_classification_model, GeminiModel)
 
     def test_change_bool(self):
-        FeedPulseSettings.set_setting("enable_x_data_collection", "False")
-        self.assertEqual(FeedPulseSettings.enable_x_data_collection, False)
+        Settings._set_setting("enable_x_data_collection", "False")
+        self.assertEqual(Settings.enable_x_data_collection, False)
 
     def test_invalid_attribute(self):
         try:
-            FeedPulseSettings.set_setting("invalid_attr", "False")
+            Settings._set_setting("invalid_attr", "False")
         except Exception as e:
             self.fail(e)
 
     def test_invalid_model_type(self):
-        FeedPulseSettings.feedback_classification_model = GeminiModel
+        Settings.feedback_classification_model = GeminiModel
         try:
-            FeedPulseSettings.set_setting("feedback_classification_model", "int")
+            Settings._set_setting("feedback_classification_model", "int")
         except Exception as e:
             self.fail(e)
 
-        self.assertEqual(FeedPulseSettings.feedback_classification_model, GeminiModel)
+        self.assertEqual(Settings.feedback_classification_model, GeminiModel)
 
     def test_invalid_bool_value(self):
-        FeedPulseSettings.enable_x_data_collection = True
+        Settings.enable_x_data_collection = True
         try:
-            FeedPulseSettings.set_setting("enable_x_data_collection", "invalid_value")
+            Settings._set_setting("enable_x_data_collection", "invalid_value")
         except Exception as e:
             self.fail(e)
 
-        self.assertEqual(FeedPulseSettings.enable_x_data_collection, True)
+        self.assertEqual(Settings.enable_x_data_collection, True)
 
     def test_get_settings_model_setting(self):
-        FeedPulseSettings.report_creation_model = PhiModel
-        settings = FeedPulseSettings.get_settings()
+        Settings.report_creation_model = PhiModel
+        settings = Settings.get_settings()
         self.assertIn(
             {
                 "settingName": "report_creation_model",
@@ -55,8 +55,8 @@ class TestFeedPulseSettings(unittest.TestCase):
         )
 
     def test_get_settings_bool_setting(self):
-        FeedPulseSettings.enable_x_data_collection = True
-        settings = FeedPulseSettings.get_settings()
+        Settings.enable_x_data_collection = True
+        settings = Settings.get_settings()
         self.assertIn(
             {
                 "settingName": "enable_x_data_collection",
@@ -68,7 +68,7 @@ class TestFeedPulseSettings(unittest.TestCase):
         )
 
     def test_update_bool_setting(self):
-        FeedPulseSettings.enable_x_data_collection = True
+        Settings.enable_x_data_collection = True
 
         json = {
             "settingsList": [
@@ -76,13 +76,13 @@ class TestFeedPulseSettings(unittest.TestCase):
             ]
         }
 
-        updated = FeedPulseSettings.update_settings(json)
+        updated = Settings.update_settings(json)
 
-        self.assertEqual(FeedPulseSettings.enable_x_data_collection, False)
+        self.assertEqual(Settings.enable_x_data_collection, False)
         self.assertTrue(updated)
 
     def test_update_model_setting(self):
-        FeedPulseSettings.report_creation_model = GeminiModel
+        Settings.report_creation_model = GeminiModel
 
         json = {
             "settingsList": [
@@ -90,13 +90,13 @@ class TestFeedPulseSettings(unittest.TestCase):
             ]
         }
 
-        updated = FeedPulseSettings.update_settings(json)
+        updated = Settings.update_settings(json)
 
-        self.assertEqual(FeedPulseSettings.report_creation_model, PhiModel)
+        self.assertEqual(Settings.report_creation_model, PhiModel)
         self.assertTrue(updated)
 
     def test_update_model_invalid_bool_setting(self):
-        FeedPulseSettings.enable_x_data_collection = False
+        Settings.enable_x_data_collection = False
 
         json = {
             "settingsList": [
@@ -107,13 +107,13 @@ class TestFeedPulseSettings(unittest.TestCase):
             ]
         }
 
-        updated = FeedPulseSettings.update_settings(json)
+        updated = Settings.update_settings(json)
 
-        self.assertEqual(FeedPulseSettings.enable_x_data_collection, False)
+        self.assertEqual(Settings.enable_x_data_collection, False)
         self.assertFalse(updated)
 
     def test_update_model_invalid_model_setting(self):
-        FeedPulseSettings.report_creation_model = GeminiModel
+        Settings.report_creation_model = GeminiModel
 
         json = {
             "settingsList": [
@@ -124,7 +124,7 @@ class TestFeedPulseSettings(unittest.TestCase):
             ]
         }
 
-        updated = FeedPulseSettings.update_settings(json)
+        updated = Settings.update_settings(json)
 
-        self.assertEqual(FeedPulseSettings.report_creation_model, GeminiModel)
+        self.assertEqual(Settings.report_creation_model, GeminiModel)
         self.assertFalse(updated)

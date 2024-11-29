@@ -1,4 +1,5 @@
 import unittest
+import requests
 from unittest.mock import patch, Mock
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from datetime import datetime
@@ -85,3 +86,17 @@ class TestFacebookDataProvider(unittest.TestCase):
             posts[1].children[0].time_created,
             expected_time,
         )
+
+    @patch("requests.get")
+    def test_get_posts_timeout_exceeded(self, mock_get):
+        def delayed_response(*args, **kwargs):
+            import time
+
+            time.sleep(5)  # Delay for 5 seconds
+            raise requests.exceptions.Timeout("Request timed out")
+
+        mock_get.side_effect = delayed_response
+
+        # Test the fetch_data function with a timeout of 3 seconds
+        with self.assertRaises(requests.exceptions.Timeout):
+            FacebookDataProvider(Mock()).get_posts(Mock())

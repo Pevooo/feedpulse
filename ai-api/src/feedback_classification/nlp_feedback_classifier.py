@@ -2,10 +2,10 @@ from transformers import Pipeline
 from typing import Optional
 
 
-class NLPClassifier:
+class NLPFeedbackClassifier:
     """
     a classifier based on sentiment analysis that classifies the feedback by predicting how many stars would this
-    feedback gain (1 - 5 starts)
+    feedback gain (1 - 5 stars)
     """
 
     def __init__(self, classifier: Pipeline):

@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 
 from src.data.context_data_unit import ContextDataUnit
-from src.data.main_data_unit import MainDataUnit
+from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.data_provider import DataProvider
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
@@ -33,7 +33,7 @@ class FacebookDataProvider(DataProvider):
             "fields": "posts{comments,message,created_time}",
         }
 
-        data = requests.get(url, params).json()
+        data = requests.get(url, params, timeout=3).json()
 
         posts: list[ContextDataUnit] = []
         for post_data in data["posts"]["data"]:
@@ -43,9 +43,9 @@ class FacebookDataProvider(DataProvider):
                 post_data["created_time"], DATETIME_FORMAT
             )
 
-            comments: list[MainDataUnit] = (
+            comments: list[FeedbackDataUnit] = (
                 [
-                    MainDataUnit(
+                    FeedbackDataUnit(
                         comment_data["message"],
                         datetime.strptime(
                             comment_data["created_time"], DATETIME_FORMAT

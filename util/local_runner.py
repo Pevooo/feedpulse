@@ -62,7 +62,7 @@ def run_ai_api() -> None:
     webbrowser.open_new("http://127.0.0.1:5000")
     Printer.important("AI-API: Listen URL: http://127.0.0.1:5000")
     Printer.warning("AI-API: The api may be not working")
-    result = run_command(f"python \"{os.path.join(AI_API_DIRECTORY, 'app.py')}\"")
+    result = run_command(f"python \"{os.path.join(AI_API_DIRECTORY, 'api.py')}\"")
     if result.returncode != 0:
         Printer.error(result.stderr)
 

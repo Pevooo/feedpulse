@@ -1,6 +1,6 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-import src.loaded_models.model as model
+import src.models.model as model
 
 
 class PhiModel(model.Model):

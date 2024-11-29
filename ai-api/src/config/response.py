@@ -19,3 +19,11 @@ class Response:
             "body": details,
         }
         return make_response(jsonify(response), status)
+
+    @staticmethod
+    def not_found():
+        response = {
+            "status": "Failure",
+            "body": "Endpoint does not exist",
+        }
+        return make_response(jsonify(response), 404)
