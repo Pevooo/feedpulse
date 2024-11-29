@@ -1,7 +1,6 @@
-from typing import Iterable, Optional, Union
+from typing import Iterable, Optional
 
 from src.data.pipeline_result import PipelineResult
-from src.data.context_data_unit import ContextDataUnit
 from src.data.feedback_result import FeedbackResult
 from src.data.data_unit import DataUnit
 from src.data.feedback_data_unit import FeedbackDataUnit

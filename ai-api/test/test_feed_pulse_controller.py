@@ -1,8 +1,7 @@
 import unittest
-from unittest.mock import Mock, patch, AsyncMock, MagicMock
+from unittest.mock import Mock, patch, MagicMock
 from src.data.pipeline_result import PipelineResult
 from src.data.feedback_result import FeedbackResult
-from src.data.data_unit import DataUnit
 from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
