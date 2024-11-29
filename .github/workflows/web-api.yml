@@ -3,7 +3,8 @@ name: WEB API
 on:
   push:
     paths:
-      - web-api/**
+      - 'web-api/**'
+      - '.github/workflows/web-api.yml'
 
 jobs:  
   test:
