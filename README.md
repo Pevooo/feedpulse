@@ -44,11 +44,12 @@ This script will automatically install the dependencies needed (if not installed
 
 #### Step 3: Wait for review
 at least one review is needed
+
 #### Step 4: Merge :)
 
 ## Project Architecture
 
-image here
+![Project Archeticture](https://github.com/user-attachments/assets/467a8027-c5ad-44ed-8ec6-92e63ceeccdc)
 
 ## Working Manual
 
