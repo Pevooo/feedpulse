@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'twister/**'
+      - '.github/workflows/twister.yml'
 
 jobs:
   test:
