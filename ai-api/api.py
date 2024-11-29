@@ -9,6 +9,7 @@ from src.config.response import Response
 from src.config.router import Router
 from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
+from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topic_detection.topic_detector import TopicDetector
@@ -56,31 +57,50 @@ class FeedPulseAPI:
                     self.feedback_classifier,
                     self.topic_detector,
                     FacebookDataProvider(access_token),
+                    self.report_handler,
                 )
 
-                result = controller.get_facebook_data_and_run_pipeline(
-                    page_id,
-                    topics,
-                )
-
-                report = self.report_handler.create(result)
+                data_units = controller.fetch_facebook_data(page_id)
+                result = controller.run_pipeline(data_units, topics)
+                report = controller.report_handler.create(result)
 
                 return render_template("index.html", report=report)
 
         @self.flask_app.route(Router.FACEBOOK_DATA_PROCESSING_ROUTE, methods=["GET"])
         @self.inject
-        def process_facebook_data(page_id, access_token, topics):
+        def process_facebook_data(
+            page_id: str, access_token: str, topics: str, url: str
+        ):
             topics = set(topics.split(","))
             controller = FeedPulseController(
                 self.feedback_classifier,
                 self.topic_detector,
                 FacebookDataProvider(access_token),
+                self.report_handler,
             )
 
             process_thread = threading.Thread(
-                target=controller.get_facebook_data_and_run_pipeline,
-                args=(page_id, topics),
+                target=controller.run_all_steps_facebook,
+                args=(page_id, topics, url),
                 daemon=True,
+            )
+            process_thread.start()
+            return Response.success("Successfully Started Processing")
+
+        @self.flask_app.route(Router.X_DATA_PROCESSING_ROUTE, methods=["GET"])
+        @self.inject
+        def process_x_data(search_key: str, num_tweets: int, topics: str, url: str):
+            topics = set(topics.split(","))
+            controller = FeedPulseController(
+                self.feedback_classifier,
+                self.topic_detector,
+                XDataProvider(),
+                self.report_handler,
+            )
+
+            process_thread = threading.Thread(
+                target=controller.run_all_steps_x,
+                args=(search_key, num_tweets, topics, url),
             )
             process_thread.start()
             return Response.success("Successfully Started Processing")
@@ -107,7 +127,7 @@ class FeedPulseAPI:
         @wraps(func)
         def wrapper(*args, **kwargs):
             if Environment.is_production_environment:
-                return jsonify({"error": "Endpoint does not exist"}), 404
+                return Response.not_found()
             return func(*args, **kwargs)
 
         return wrapper

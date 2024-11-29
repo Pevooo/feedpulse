@@ -29,7 +29,7 @@ class TestReportHandler(unittest.TestCase):
 
     def test_wrap_text(self):
         self.assertEqual(
-            self.report_handler.wrap_text(FAKE_TOPIC_COUNTS),
+            self.report_handler._generate_prompt(FAKE_TOPIC_COUNTS),
             f"""
             Please generate a well-structured report summarizing the positive and negative feedback counts
             for multiple topics based on the provided data.

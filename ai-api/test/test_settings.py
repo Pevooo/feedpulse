@@ -10,23 +10,23 @@ class TestFeedPulseSettings(unittest.TestCase):
         Settings.feedback_classification_model = (
             None  # Setting it to null to test returning it back to Gemini
         )
-        Settings.set_setting("feedback_classification_model", "GeminiModel")
+        Settings._set_setting("feedback_classification_model", "GeminiModel")
         self.assertEqual(Settings.feedback_classification_model, GeminiModel)
 
     def test_change_bool(self):
-        Settings.set_setting("enable_x_data_collection", "False")
+        Settings._set_setting("enable_x_data_collection", "False")
         self.assertEqual(Settings.enable_x_data_collection, False)
 
     def test_invalid_attribute(self):
         try:
-            Settings.set_setting("invalid_attr", "False")
+            Settings._set_setting("invalid_attr", "False")
         except Exception as e:
             self.fail(e)
 
     def test_invalid_model_type(self):
         Settings.feedback_classification_model = GeminiModel
         try:
-            Settings.set_setting("feedback_classification_model", "int")
+            Settings._set_setting("feedback_classification_model", "int")
         except Exception as e:
             self.fail(e)
 
@@ -35,7 +35,7 @@ class TestFeedPulseSettings(unittest.TestCase):
     def test_invalid_bool_value(self):
         Settings.enable_x_data_collection = True
         try:
-            Settings.set_setting("enable_x_data_collection", "invalid_value")
+            Settings._set_setting("enable_x_data_collection", "invalid_value")
         except Exception as e:
             self.fail(e)
 

@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from app import FeedPulseAPI
+from api import FeedPulseAPI
 from src.config.settings import Settings
 from src.config.router import Router
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
@@ -31,7 +31,7 @@ FAKE_API_RESPONSE = {
 }
 
 
-class TestEndToEnd(unittest.TestCase):
+class TestEndToEnd(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self):
         """Set up the Flask app and test client."""
@@ -49,7 +49,6 @@ class TestEndToEnd(unittest.TestCase):
     def test_full_pipeline(self, mock_create_report, mock_get):
         """
         End-to-End test for the full pipeline.
-        Mock the Facebook API.
         """
         mock_get.return_value.json.return_value = FAKE_API_RESPONSE
         mock_create_report.return_value = "Mock Report Content"

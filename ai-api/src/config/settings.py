@@ -6,13 +6,22 @@ from src.models.gemini_model import GeminiModel  # noqa: F401
 from src.models.phi_model import PhiModel  # noqa: F401
 
 
+# This class is responsible for managing the setting of the whole app. You can add a setting by adding it in the class
+# alongside with its default value and also add it in `BOOLEAN_SETTINGS` if it's a boolean or in `MODEL_SETTINGS` if
+# it's a model setting (This is for remote config purposes)
+
+
 class Settings:
     """
     This class encapsulates all the AI Api configurations.
     """
 
-    __BOOLEAN_SETTINGS = {"enable_x_data_collection", "enable_facebook_data_collection"}
-    __MODEL_SETTINGS = {
+    BOOLEAN_SETTINGS = {
+        "enable_x_data_collection",
+        "enable_facebook_data_collection",
+    }
+
+    MODEL_SETTINGS = {
         "topic_segmentation_model",
         "report_creation_model",
         "feedback_classification_model",
@@ -31,7 +40,7 @@ class Settings:
     @classmethod
     def get_settings(cls) -> list[dict[str, str]]:
         settings = []
-        for setting in cls.__BOOLEAN_SETTINGS:
+        for setting in cls.BOOLEAN_SETTINGS:
             settings.append(
                 {
                     "settingName": setting,
@@ -41,7 +50,7 @@ class Settings:
                 },
             )
 
-        for setting in cls.__MODEL_SETTINGS:
+        for setting in cls.MODEL_SETTINGS:
             settings.append(
                 {
                     "settingName": setting,
@@ -59,18 +68,18 @@ class Settings:
         for setting in settings["settingsList"]:
 
             # Set updated to false if there's one or more setting(s) failed to update
-            updated &= cls.set_setting(setting["settingName"], setting["settingValue"])
+            updated &= cls._set_setting(setting["settingName"], setting["settingValue"])
 
         return updated
 
     @classmethod
-    def set_setting(cls, setting_name: str, value: str) -> bool:
-        if setting_name in cls.__BOOLEAN_SETTINGS:
-            changed = cls.__set_bool_setting(setting_name, value)
+    def _set_setting(cls, setting_name: str, value: str) -> bool:
+        if setting_name in cls.BOOLEAN_SETTINGS:
+            changed = cls._set_bool_setting(setting_name, value)
             if not changed:
                 return False
 
-        elif setting_name in cls.__MODEL_SETTINGS:
+        elif setting_name in cls.MODEL_SETTINGS:
             model_class = globals().get(value)
             if model_class is None:
                 return False  # Model not found
@@ -80,7 +89,7 @@ class Settings:
         return True
 
     @classmethod
-    def __set_bool_setting(cls, setting_name: str, boolean: str) -> bool:
+    def _set_bool_setting(cls, setting_name: str, boolean: str) -> bool:
         if boolean.lower() != "false" and boolean.lower() != "true":
             return False
 

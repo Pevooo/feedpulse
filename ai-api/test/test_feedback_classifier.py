@@ -8,7 +8,7 @@ class TestFeedbackClassifier(unittest.TestCase):
     def test_wrap_text(self):
         feedback_classifier = FeedbackClassifier(GeminiModel())
         self.assertEqual(
-            feedback_classifier.wrap_text("hello"),
+            feedback_classifier._generate_prompt("hello"),
             (
                 "You will be provided with a text. Respond as follows:\n"
                 "Is it a complaint, a compliment, or neutral? Answer only with 'complaint', 'compliment', or 'neutral'.\n\n"
@@ -59,6 +59,6 @@ class TestFeedbackClassifier(unittest.TestCase):
         result = feedback_classifier.classify("hello")
 
         mock_generate_content.assert_called_once_with(
-            feedback_classifier.wrap_text("hello")
+            feedback_classifier._generate_prompt("hello")
         )
         self.assertIsNone(result)

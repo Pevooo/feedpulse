@@ -29,9 +29,9 @@ class ReportHandler:
         """
 
         topic_counts = json.dumps(result.topic_counts)
-        return self.model.generate_content(self.wrap_text(topic_counts))
+        return self.model.generate_content(self._generate_prompt(topic_counts))
 
-    def wrap_text(self, topic_counts: str) -> str:
+    def _generate_prompt(self, topic_counts: str) -> str:
         return f"""
             Please generate a well-structured report summarizing the positive and negative feedback counts
             for multiple topics based on the provided data.

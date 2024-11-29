@@ -23,7 +23,7 @@ class FeedbackClassifier:
             True if the text is positive, False if negative, or None if the text is neutral.
         """
 
-        response: str = self.model.generate_content(self.wrap_text(text)).lower()
+        response: str = self.model.generate_content(self._generate_prompt(text)).lower()
         impression: Optional[bool] = None
         if "complaint" in response:
             impression = False
@@ -32,7 +32,7 @@ class FeedbackClassifier:
 
         return impression
 
-    def wrap_text(self, text: str) -> str:
+    def _generate_prompt(self, text: str) -> str:
         return (
             f"You will be provided with a text. Respond as follows:\n"
             f"Is it a complaint, a compliment, or neutral? Answer only with 'complaint', 'compliment', or 'neutral'.\n\n"
