@@ -1,5 +1,5 @@
 # Graduation Project
-### Repository Guidelines
+## Repository Guidelines
 1) Don't push to the main branch directly
 2) Create a branch for the task or the change you want to make (This is to reduce conflicts)
 3) Create a pull request with every change you want to commit to the main branch
@@ -8,7 +8,7 @@
 6) Use meaningful names for commits
 7) Struggling with GIT? Ask **Pavly**
 
-### How to run?
+## How to run?
 Ensure Python 3.10.6 and .NET 8 are installed
 You can run locally by executing the following command:
 
@@ -16,7 +16,7 @@ You can run locally by executing the following command:
 
 This script will automatically install the dependencies needed (if not installed already) and run both the web api and the AI api.
 
-### Getting Started
+## Getting Started
 
 #### Clone the Repository
 
@@ -44,4 +44,42 @@ This script will automatically install the dependencies needed (if not installed
 
 #### Step 3: Wait for review
 at least one review is needed
+
 #### Step 4: Merge :)
+
+## Project Architecture
+
+![Project Archeticture](https://github.com/user-attachments/assets/467a8027-c5ad-44ed-8ec6-92e63ceeccdc)
+
+## Working Manual
+
+### Flask Layer
+If working in the Flask Layer:
+
+create an instance of `FeedPulseController` to communicate with other components 
+(reports handler, feedback classifier, topic detector, etc...).
+Do not directly use the Data Manipulation Layer components
+### API Controller Layer
+This layer works as a link between the Data Manipulation Layer and the Flask Layer
+
+If working in the API Controller Layer:
+
+communicate with Data Manipulation Layer by using the provided instances of its components.
+Do not directly manipulate tha data units
+
+### Data Manipulation Layer
+If working in the Data Manipulation Layer:
+
+Components in this layer directly manipulate the data and work with LLMs
+
+This layer consists of 4 main components which are:
+- **Data Providers**: responsible for fetching the data from social media platforms, organizing them in `DataUnits`
+- **Feedback Classification:** responsible for categorizing the feedback into positive and negative feedbacks
+- **Topic Detection:** responsible for extracting the topic(s) that the feedback relates to (given a set of topics)
+- **Report Handler:** responsible for creating the reports and sending them to the organization
+
+### Angular App
+This layer represents the full functionality of the user interface
+
+### ASP.NET APP
+This layer represents the full backend functionality of storing data in database
