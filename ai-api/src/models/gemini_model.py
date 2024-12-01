@@ -1,9 +1,9 @@
 import google.generativeai as genai
-import src.models.model as model
+from src.models.model import Model
 from src.config.environment import Environment
 
 
-class GeminiModel(model.Model):
+class GeminiModel(Model):
     """
     The Google Gemini model
     """

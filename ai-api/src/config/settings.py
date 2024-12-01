@@ -4,6 +4,7 @@ from typing import Type
 
 from src.models.gemini_model import GeminiModel  # noqa: F401
 from src.models.phi_model import PhiModel  # noqa: F401
+from src.models.openai_model import OpenAiModel  # noqa: F401
 
 
 # This class is responsible for managing the setting of the whole app. You can add a setting by adding it in the class
@@ -56,7 +57,7 @@ class Settings:
                     "settingName": setting,
                     "settingValue": getattr(cls, setting).__name__,
                     "prettyName": " ".join(setting.split("_")).title(),
-                    "choices": ["GeminiModel", "PhiModel"],
+                    "choices": ["GeminiModel", "PhiModel", "OpenAiModel"],
                 }
             )
 
