@@ -1,4 +1,3 @@
-import google.generativeai as genai
 import openai
 from src.models.model import Model
 from src.config.environment import Environment
