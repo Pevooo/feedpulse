@@ -49,7 +49,7 @@ class TestFeedPulseSettings(unittest.TestCase):
                 "settingName": "report_creation_model",
                 "settingValue": "PhiModel",
                 "prettyName": "Report Creation Model",
-                "choices": ["GeminiModel", "PhiModel"],
+                "choices": ["GeminiModel", "PhiModel", "OpenAiModel"],
             },
             settings,
         )
