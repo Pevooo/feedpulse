@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -9,7 +10,7 @@ class Prompt:
     """
 
     instructions: str
-    context: Optiona[str]
+    context: Optional[str]
     examples: tuple[tuple[str, str], ...]
 
     def to_text(self) -> str: ...
