@@ -1,7 +1,6 @@
 name: TypeScript Lint and Angular App
 
 on: [push]
-    
 
 jobs:
   lint:
@@ -17,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # or any version that is compatible with your project
+          node-version: '18.13'  
 
       # Install dependencies
       - name: Install dependencies
@@ -28,7 +27,7 @@ jobs:
       - name: Run linting
         run: npm run lint
         working-directory: 'Interface/adminDashboard'
-          
+
       # Build the Angular app
       - name: Build Angular app
         working-directory: 'Interface/adminDashboard'
