@@ -8,7 +8,6 @@ import{FormGroup}from '@angular/forms';
 import{Validators} from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   standalone: true,
