@@ -1,6 +1,7 @@
 import google.generativeai as genai
 import src.models.model as model
 from src.config.environment import Environment
+from src.models.prompt import Prompt
 
 
 class GeminiModel(model.Model):
@@ -12,5 +13,5 @@ class GeminiModel(model.Model):
         genai.configure(api_key=Environment.gemini_api_key)
         self.__model = genai.GenerativeModel("gemini-1.5-flash")
 
-    def generate_content(self, text: str) -> str:
-        return self.__model.generate_content(text).text
+    def generate_content(self, prompt: Prompt) -> str:
+        return self.__model.generate_content(str(prompt)).text
