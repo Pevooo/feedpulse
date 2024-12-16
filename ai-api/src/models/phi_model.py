@@ -1,10 +1,11 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-import src.models.model as model
+
 from src.models.prompt import Prompt
+from src.models.model import Model
 
 
-class PhiModel(model.Model):
+class PhiModel(Model):
     """
     The Phi Model
     """

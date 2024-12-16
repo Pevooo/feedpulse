@@ -11,6 +11,10 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: twister-${{ github.ref }}
+      cancel-in-progress: true
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
