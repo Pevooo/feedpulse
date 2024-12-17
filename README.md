@@ -86,8 +86,9 @@ This layer represents the full backend functionality of storing data in database
 
 ## LLM Models
 
-|Model|Type|
-|GPT4o-mini|Online|
-|Phi3-mini|Offline|
-|Gemini-1.5-flash|Online|
-|Llama3|Coming Soon|
+|    Type     |      Model       |
+|:-----------:|:----------------:|
+|   Online    |    GPT4o-mini    |
+|   Offline   |    Phi3-mini     |
+|   Online    | Gemini-1.5-flash |
+| Coming Soon |      Llama3      |
