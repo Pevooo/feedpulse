@@ -49,7 +49,7 @@ at least one review is needed
 
 ## Project Architecture
 
-![Project Archeticture](https://github.com/user-attachments/assets/467a8027-c5ad-44ed-8ec6-92e63ceeccdc)
+![Project Architecture](https://github.com/user-attachments/assets/467a8027-c5ad-44ed-8ec6-92e63ceeccdc)
 
 ## Working Manual
 
@@ -83,3 +83,11 @@ This layer represents the full functionality of the user interface
 
 ### ASP.NET APP
 This layer represents the full backend functionality of storing data in database
+
+## LLM Models
+
+|Model|Type|
+|GPT4o-mini|Online|
+|Phi3-mini|Offline|
+|Gemini-1.5-flash|Online|
+|Llama3|Coming Soon|
