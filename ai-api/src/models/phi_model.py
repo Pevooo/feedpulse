@@ -1,6 +1,7 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
+from src.models.prompt import Prompt
 from src.models.model import Model
 
 
@@ -20,8 +21,10 @@ class PhiModel(Model):
             "microsoft/Phi-3-mini-128k-instruct"
         )
 
-    def generate_content(self, text: str, max_new_tokens: int = 15) -> str:
-        inputs = self.__tokenizer(text, return_tensors="pt").to(self.__model.device)
+    def generate_content(self, prompt: Prompt, max_new_tokens: int = 15) -> str:
+        inputs = self.__tokenizer(str(prompt), return_tensors="pt").to(
+            self.__model.device
+        )
         outputs = self.__model.generate(
             inputs["input_ids"],
             max_new_tokens=max_new_tokens,
