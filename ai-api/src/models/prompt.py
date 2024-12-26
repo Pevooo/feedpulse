@@ -20,7 +20,7 @@ class Prompt:
             f"Context: {self.context}\n"
             "Examples:\n"
             f"{self._get_examples_str()}\n"
-            f"Prompt: {self.input_text}"
+            f"Prompt: {self.input_text}\n"
         )
 
     def _get_examples_str(self) -> str:
