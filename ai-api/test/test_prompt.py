@@ -23,6 +23,7 @@ class TestPrompt(unittest.TestCase):
             "When provided with example1, expected output should be output1\n"
             "When provided with example2, expected output should be output2\n"
             "When provided with example3, expected output should be output3\n"
+            "\n"
             "Prompt: This is the prompt text\n"
             "\n"
         )
@@ -48,6 +49,7 @@ class TestPrompt(unittest.TestCase):
             "When provided with example1, expected output should be output1\n"
             "When provided with example2, expected output should be output2\n"
             "When provided with example3, expected output should be output3\n"
+            "\n"
             "Prompt: This is the prompt text\n"
             "\n"
         )
