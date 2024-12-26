@@ -36,10 +36,7 @@ class FeedbackClassifier:
 
     def _generate_prompt(self, text: str) -> str:
         return Prompt(
-            instructions=(
-                "Classify the given text as 'complaint', 'compliment', or 'neutral'. "
-                "Respond with the specific label only."
-            ),
+            instructions="Classify the given text as 'complaint', 'compliment', or 'neutral'. Respond with the specific label only. ",
             context=None,
             examples=(
                 ("The service was terrible, and I want my money back.", "complaint"),
