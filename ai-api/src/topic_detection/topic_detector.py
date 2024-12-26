@@ -1,6 +1,6 @@
 from typing import Iterable, Optional
 from src.models.model import Model
-
+from src.models.prompt import Prompt
 
 class TopicDetector:
     """
@@ -58,9 +58,17 @@ class TopicDetector:
         Returns:
             str: The formatted prompt string.
         """
-        return (
-            "Identify and list only the relevant topics from the provided list that "
-            f"relate to the content of the text. The topics are: {', '.join(org_topics)}.\n"
-            f"Text: '{text}'.\n"
-            "Only respond with relevant topics. If no topics are relevant, respond with 'No relevant topics found.'"
-        )
+        return Prompt(
+            instructions=(
+                "Identify and list only the relevant topics from the provided list that "
+                f"relate to the content of the text. The topics are: {', '.join(org_topics)}.\n"
+                "Only respond with relevant topics. If no topics are relevant, respond with 'No relevant topics found.'"
+            ),
+            context=None,
+            examples=( 
+                ("I didn't enjoy the food; it was bland and lacked variety.", "Relevant topics: food quality"),
+                ("The check-in process was very slow and we had to wait for over an hour.", "Relevant topics: customer service, wait time"),
+                ("The service was excellent; the staff were always polite, friendly, and eager to help.", "Relevant topics: service"),        
+            ),
+            input_text=text,
+        ).to_text()
