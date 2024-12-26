@@ -2,6 +2,8 @@ from typing import Optional
 
 from src.models.model import Model
 
+from src.models.prompt import Prompt
+
 
 class FeedbackClassifier:
     """
@@ -33,8 +35,16 @@ class FeedbackClassifier:
         return impression
 
     def _generate_prompt(self, text: str) -> str:
-        return (
-            f"You will be provided with a text. Respond as follows:\n"
-            f"Is it a complaint, a compliment, or neutral? Answer only with 'complaint', 'compliment', or 'neutral'.\n\n"
-            f'Here is the text: "{text}".'
-        )
+        return Prompt(
+            instructions=(
+                "Classify the given text as 'complaint', 'compliment', or 'neutral'. "
+                "Respond with the specific label only."
+            ),
+            context=None,
+            examples=(
+                ("The service was terrible, and I want my money back.", "complaint"),
+                ("I love the new app features.", "compliment"),
+                ("There is a park near my house.", "neutral"),
+            ),
+            input_text=text,
+        ).to_text()

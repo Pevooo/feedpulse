@@ -11,14 +11,16 @@ class Prompt:
 
     instructions: str
     context: Optional[str]
-    examples: tuple[tuple[str, str], ...]
+    examples: Optional[tuple[tuple[str, str], ...]]
+    input_text: str
 
     def to_text(self) -> str:
         return (
             f"Instructions: {self.instructions}\n"
             f"Context: {self.context}\n"
             "Examples:\n"
-            f"{self._get_examples_str()}\n"
+            f"{self._get_examples_str()}"
+            f"Prompt: {self.input_text}\n"
         )
 
     def _get_examples_str(self) -> str:
