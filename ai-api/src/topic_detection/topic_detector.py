@@ -2,6 +2,7 @@ from typing import Iterable, Optional
 from src.models.model import Model
 from src.models.prompt import Prompt
 
+
 class TopicDetector:
     """
     Detects relevant topics from a given text based on a predefined list of topics.
@@ -65,10 +66,19 @@ class TopicDetector:
                 "Only respond with relevant topics. If no topics are relevant, respond with 'No relevant topics found.'"
             ),
             context=None,
-            examples=( 
-                ("I didn't enjoy the food; it was bland and lacked variety.", "Relevant topics: food quality"),
-                ("The check-in process was very slow and we had to wait for over an hour.", "Relevant topics: customer service, wait time"),
-                ("The service was excellent; the staff were always polite, friendly, and eager to help.", "Relevant topics: service"),        
+            examples=(
+                (
+                    "I didn't enjoy the food; it was bland and lacked variety.",
+                    "Relevant topics: food quality",
+                ),
+                (
+                    "The check-in process was very slow and we had to wait for over an hour.",
+                    "Relevant topics: customer service, wait time",
+                ),
+                (
+                    "The service was excellent; the staff were always polite, friendly, and eager to help.",
+                    "Relevant topics: service",
+                ),
             ),
             input_text=text,
         ).to_text()

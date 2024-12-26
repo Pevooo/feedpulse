@@ -33,9 +33,9 @@ class ReportHandler:
         return self.model.generate_content(self._generate_prompt(topic_counts))
 
     def _generate_prompt(self, topic_counts: str) -> str:
-            return Prompt(
-                instructions=(
-                    f"""
+        return Prompt(
+            instructions=(
+                f"""
                     Please generate a well-structured report summarizing the positive and negative feedback counts
                     for multiple topics based on the provided data.
                     The data is in JSON format, where each key represents a topic name,
@@ -49,8 +49,8 @@ class ReportHandler:
                     3.	A summary line for each topic, like: 'The topic [TOPIC_NAME] received [X] positive and [Y] negative feedback entries.'
                     4.	Make the report organized, neat, and easy to read.
                     """
-                ),
-                context=None,
-                examples=None,
-                input_text=topic_counts,         
-            ).to_text()
+            ),
+            context=None,
+            examples=None,
+            input_text=topic_counts,
+        ).to_text()
