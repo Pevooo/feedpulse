@@ -9,7 +9,7 @@
   "version": "1.0.0",
   "main": "eslint.config.js",
   "scripts": {
-    
+    "build": "ng build --configuration production",
     "lint": "ng lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
