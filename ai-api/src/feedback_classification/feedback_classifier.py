@@ -4,6 +4,7 @@ from src.models.model import Model
 
 from src.models.prompt import Prompt
 
+
 class FeedbackClassifier:
     """
     The class responsible for performing feedback classification.

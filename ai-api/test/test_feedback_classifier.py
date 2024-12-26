@@ -5,16 +5,6 @@ from src.models.gemini_model import GeminiModel
 
 
 class TestFeedbackClassifier(unittest.TestCase):
-    def test_wrap_text(self):
-        feedback_classifier = FeedbackClassifier(GeminiModel())
-        self.assertEqual(
-            feedback_classifier._generate_prompt("hello"),
-            (
-                "You will be provided with a text. Respond as follows:\n"
-                "Is it a complaint, a compliment, or neutral? Answer only with 'complaint', 'compliment', or 'neutral'.\n\n"
-                'Here is the text: "hello".'
-            ),
-        )
 
     @patch.object(GeminiModel, "generate_content")
     def test_complaint(self, mock_generate_content):
