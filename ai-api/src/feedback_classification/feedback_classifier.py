@@ -4,7 +4,6 @@ from src.models.model import Model
 
 from src.models.prompt import Prompt
 
-
 class FeedbackClassifier:
     """
     The class responsible for performing feedback classification.
@@ -36,7 +35,10 @@ class FeedbackClassifier:
 
     def _generate_prompt(self, text: str) -> str:
         return Prompt(
-            instructions="Classify the given text as 'complaint', 'compliment', or 'neutral'. Respond with the specific label only. ",
+            instructions=(
+                "Classify the given text as 'complaint', 'compliment', or 'neutral'. "
+                "Respond with the specific label only."
+            ),
             context=None,
             examples=(
                 ("The service was terrible, and I want my money back.", "complaint"),
