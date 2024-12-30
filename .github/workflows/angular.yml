@@ -6,17 +6,26 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     name: Lint
-    timeout-minutes: 6
+    timeout-minutes: 10
     steps:
       # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Cache Node.js modules
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       # Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.13'  
+          node-version: '18.13'
 
       # Install dependencies
       - name: Install dependencies
@@ -36,4 +45,7 @@ jobs:
       # Test the Angular app
       - name: Test Angular app
         working-directory: 'Interface/adminDashboard'
-        run: npm run test --watch=false
+        env:
+          CI: true
+          DEBUG: karma*
+        run: npm run test -- --browsers=ChromeHeadless --watch=false
