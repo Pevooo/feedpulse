@@ -3,11 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>test</title>
+  <title>{{ title }}</title>
+
+
 </head>
 <body>
+  <h1>Hello, {{ title }}</h1>
   <nav>
     <ul>
+
+
       <li><a routerLink="/home" routerLinkActive="active"><img src="assets/home-icon.png" alt="Home" class="icon"> Home</a></li>
       <li><a routerLink="/about" routerLinkActive="active"><img src="assets/about-icon.png" alt="About" class="icon"> About</a></li>
       <li><a routerLink="/login" routerLinkActive="active"><img src="assets/login-icon.png" alt="Login" class="icon"> Login</a></li>
