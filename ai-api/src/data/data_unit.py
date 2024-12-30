@@ -5,6 +5,10 @@ from datetime import datetime
 
 @dataclass
 class DataUnit(ABC):
+    """
+    an interface for data unit
+    """
+
     @property
     @abstractmethod
     def text(self) -> str:

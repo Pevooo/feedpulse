@@ -3,12 +3,18 @@ name: WEB API
 on:
   push:
     paths:
-      - web-api/**
+      - 'web-api/**'
+      - '.github/workflows/web-api.yml'
 
 jobs:  
   test:
     name: Build and Test
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: web-${{ github.ref }}
+      cancel-in-progress: true
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

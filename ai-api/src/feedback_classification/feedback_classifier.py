@@ -1,14 +1,20 @@
-from src.feedback_classification.feedback_classifier_result import (
-    FeedbackClassifierResult,
-)
-from src.loaded_models.model import Model
+from typing import Optional
+
+from src.models.model import Model
+
+from src.models.prompt import Prompt
 
 
 class FeedbackClassifier:
+    """
+    The class responsible for performing feedback classification.
+    (e.g. determining if a feedback is positive, negative or neutral)
+    """
+
     def __init__(self, model: Model) -> None:
         self.model = model
 
-    def __call__(self, text: str) -> FeedbackClassifierResult:
+    def classify(self, text: str) -> Optional[bool]:
         """
         Classifies the provided text as a complaint, compliment, or neutral and detects if it has a specific topic.
 
@@ -16,29 +22,29 @@ class FeedbackClassifier:
             text (str): The text to classify.
 
         Returns:
-            FeedbackClassifierResult: An instance of FeedbackClassifierResult with the classification
-                results if the classification.
+            True if the text is positive, False if negative, or None if the text is neutral.
         """
 
-        response: str = self.model.generate_content(self.wrap_text(text)).lower()
-        text_type = "neutral"
+        response: str = self.model.generate_content(self._generate_prompt(text)).lower()
+        impression: Optional[bool] = None
         if "complaint" in response:
-            text_type = "complaint"
-
+            impression = False
         elif "compliment" in response:
-            text_type = "compliment"
+            impression = True
 
-        # default assumption if topic isn't clear or there is no topic
-        has_topic = False
-        if "yes" in response:
-            has_topic = True
+        return impression
 
-        return FeedbackClassifierResult(text_type, has_topic)
-
-    def wrap_text(self, text: str) -> str:
-        return (
-            f"You will be provided with a text. Respond in two parts as follows:\n"
-            f"1. Is it a complaint, a compliment, or neutral? Answer with 'complaint', 'compliment', or 'neutral'.\n"
-            f"2. Does the complaint or compliment have a specific topic? Answer with 'yes' or 'no'.\n\n"
-            f'Here is the text: "{text}".'
-        )
+    def _generate_prompt(self, text: str) -> str:
+        return Prompt(
+            instructions=(
+                "Classify the given text as 'complaint', 'compliment', or 'neutral'. "
+                "Respond with the specific label only."
+            ),
+            context=None,
+            examples=(
+                ("The service was terrible, and I want my money back.", "complaint"),
+                ("I love the new app features.", "compliment"),
+                ("There is a park near my house.", "neutral"),
+            ),
+            input_text=text,
+        ).to_text()

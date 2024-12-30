@@ -1,22 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>
-            Filtration Test
-        </title>
-    </head>
-    <body>
-        <h1>Test the Filtration Process</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Test the AI API System</h1>
 
         <form method="POST">
             <label>
-                <textarea name="text" rows="5" cols="50" placeholder="Enter your text here"></textarea>
-            </label><br>
-            <button type="submit">Test</button>
+                <input type="text" name="access_token" placeholder="Access Token" required>
+            </label>
+            <label>
+                <input type="text" name="page_id" placeholder="Page ID" required>
+            </label>
+            <button type="submit">Submit</button>
+            <div>
+                {% if report %}
+                    <br><br><br>
+                    <label id="content">Report: {{ report }} </label>
+                {% endif %}
+            </div>
         </form>
-        <h2>Topic: {{ has_topic }}</h2>
-        <h2>Type: {{ text_type }}</h2>
-    </body>
+
+
+    </div>
+
+
+    <script>
+        const content = document.getElementById('content');
+        if (content) {
+            content.innerHTML = content.textContent.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            content.innerHTML = content.textContent.replace(/\n/g, '<br>');
+        }
+    </script>
+</body>
 </html>

@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from src.models.prompt import Prompt
+
 
 class Model(ABC):
     """
@@ -10,12 +12,12 @@ class Model(ABC):
     """
 
     @abstractmethod
-    def generate_content(self, text: str):
+    def generate_content(self, prompt: Prompt):
         """
         Generate content based on the provided text input.
 
         Args:
-            text (str): The input text based on which content is to be generated.
+            prompt (Prompt): The input prompt based on which content is to be generated.
 
         Returns:
             str: The generated content as a str.

@@ -2,26 +2,32 @@ import twikit
 import time
 from random import randint
 
-from src.config.feed_pulse_environment import FeedPulseEnvironment
-from src.data.main_data_unit import MainDataUnit
+from src.config.environment import Environment
+from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.data_provider import DataProvider
 
 
 class XDataProvider(DataProvider):
+    """
+    represents a data provider for X
+    """
+
     def __init__(self) -> None:
         self.client = twikit.Client("en-US")
         self.logged_in = False
 
     async def login(self):
         await self.client.login(
-            auth_info_1=FeedPulseEnvironment.x_username,
-            auth_info_2=FeedPulseEnvironment.x_email,
-            password=FeedPulseEnvironment.x_password,
+            auth_info_1=Environment.x_username,
+            auth_info_2=Environment.x_email,
+            password=Environment.x_password,
         )
 
         self.logged_in = True
 
-    async def get_tweets(self, num_tweets: int, query: str) -> tuple[MainDataUnit, ...]:
+    async def get_tweets(
+        self, num_tweets: int, query: str
+    ) -> tuple[FeedbackDataUnit, ...]:
         """
         Gets the tweets from X using a given query
 
@@ -67,7 +73,7 @@ class XDataProvider(DataProvider):
 
         return tuple(all_tweets)
 
-    def tweet_to_data_unit(self, tweet: twikit.Tweet) -> MainDataUnit:
+    def tweet_to_data_unit(self, tweet: twikit.Tweet) -> FeedbackDataUnit:
         """
         Converts from a tweet to a MainDataUnit
 
@@ -77,7 +83,7 @@ class XDataProvider(DataProvider):
         Returns:
             The tweet converted to a MainDataUnit
         """
-        return MainDataUnit(
+        return FeedbackDataUnit(
             tweet.text,
             tweet.created_at_datetime,
             (

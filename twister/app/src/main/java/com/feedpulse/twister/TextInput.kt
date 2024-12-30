@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TextInput(setting: Setting) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(setting.settingValue) }
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,

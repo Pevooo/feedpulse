@@ -2,7 +2,7 @@
 A fake Phi model, it doesn't do anything (used for speeding up tests)
 """
 
-from src.loaded_models.model import Model
+from src.models.model import Model
 
 
 class FakePhiModel(Model):
