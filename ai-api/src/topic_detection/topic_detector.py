@@ -28,10 +28,10 @@ class TopicDetector:
         Returns:
             tuple[str, ...]: A tuple of detected topics.
         """
-        prompt = self._generate_prompt(text_batch, org_topics, context).replace(
-            "\n", ""
+        prompt = self._generate_prompt(text_batch, org_topics, context)
+        responses: list[str] = (
+            self.model.generate_content(prompt).lower().replace("\n", "").split("|")
         )
-        responses: list[str] = self.model.generate_content(prompt).lower().split("|")
         return self._extract_topics(responses, org_topics)
 
     def _extract_topics(
