@@ -8,12 +8,12 @@ from src.data_providers.data_provider import DataProvider
 from src.utlity.util import deprecated
 
 
-@deprecated
 class XDataProvider(DataProvider):
     """
     represents a data provider for X
     """
 
+    @deprecated
     def __init__(self) -> None:
         self.client = twikit.Client("en-US")
         self.logged_in = False
