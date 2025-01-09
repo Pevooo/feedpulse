@@ -10,6 +10,7 @@ from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topic_detection.topic_detector import TopicDetector
+from src.utlity.util import deprecated
 
 
 class FeedPulseController:
@@ -86,6 +87,7 @@ class FeedPulseController:
 
         return FeedbackResult(impression, topics)
 
+    @deprecated
     async def fetch_x_data(
         self, search_query: str, num_tweets: int = 20
     ) -> tuple[DataUnit, ...]:
@@ -157,6 +159,7 @@ class FeedPulseController:
         data_units = self.fetch_facebook_data(page_id)
         self._run_all_steps(data_units, org_topics, url)
 
+    @deprecated
     async def run_all_steps_x(
         self, search_query: str, num_tweets: int, org_topics: set[str], url: str
     ) -> None:
