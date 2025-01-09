@@ -5,6 +5,7 @@ from random import randint
 from src.config.environment import Environment
 from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.data_provider import DataProvider
+from src.utlity.util import deprecated
 
 
 class XDataProvider(DataProvider):
@@ -12,6 +13,7 @@ class XDataProvider(DataProvider):
     represents a data provider for X
     """
 
+    @deprecated
     def __init__(self) -> None:
         self.client = twikit.Client("en-US")
         self.logged_in = False

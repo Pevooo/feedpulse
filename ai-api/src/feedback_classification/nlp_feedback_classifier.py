@@ -11,8 +11,8 @@ class NLPFeedbackClassifier:
     def __init__(self, classifier: Pipeline):
         self.classifier = classifier
 
-    def __call__(self, text: str) -> Optional[bool]:
-        stars = self.extract_stars(self.classifier(text))
+    def __call__(self, texts: list[str]) -> Optional[bool]:
+        stars = self.extract_stars(self.classifier(texts))
         if stars < 3:
             return False
         elif stars > 3:
