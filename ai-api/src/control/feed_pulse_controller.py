@@ -76,15 +76,15 @@ class FeedPulseController:
         Returns:
             Optional[FeedbackResult]: Processed feedback result or None if filtered.
         """
-        impression = self.feedback_classifier.classify(data_unit.text)
-        if impression is None:  # Skip neutral feedback
+        impression = self.feedback_classifier.classify([data_unit.text])
+        if impression[0] is None:  # Skip neutral feedback
             return None
 
-        topics = self.topic_detector.detect(data_unit.text, org_topics, context)
-        if not topics:  # Skip if no topics detected
+        topics = self.topic_detector.detect([data_unit.text], org_topics, context)
+        if not topics[0]:  # Skip if no topics detected
             return None
 
-        return FeedbackResult(impression, topics)
+        return FeedbackResult(impression[0], topics[0])
 
     async def fetch_x_data(
         self, search_query: str, num_tweets: int = 20
