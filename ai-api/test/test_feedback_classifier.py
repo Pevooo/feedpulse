@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, Mock, MagicMock
+from unittest.mock import patch, MagicMock
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.gemini_model import GeminiModel
 

@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch, MagicMock
 from src.topic_detection.topic_detector import TopicDetector
 from src.models.gemini_model import GeminiModel
 
