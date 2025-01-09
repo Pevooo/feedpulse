@@ -14,12 +14,12 @@ class FeedbackClassifier:
     def __init__(self, model: Model) -> None:
         self.model = model
 
-    def classify(self, text_batch: list[str]) -> Optional[bool]:
+    def classify(self, text_batch: list[str]) -> list[Optional[bool]]:
         """
         Classifies the provided text as a complaint, compliment, or neutral and detects if it has a specific topic.
 
         Args:
-            text (str): The text to classify.
+            text_batch (list[str]): The text to classify.
 
         Returns:
             True if the text is positive, False if negative, or None if the text is neutral.

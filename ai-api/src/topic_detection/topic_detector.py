@@ -16,17 +16,17 @@ class TopicDetector:
         text_batch: list[str],
         org_topics: Iterable[str],
         context: Optional[str] = None,
-    ) -> tuple[str, ...]:
+    ) -> list[tuple[str, ...]]:
         """
         Detects topics in the text that match the organization's topics.
 
         Args:
-            text (str): The input text to analyze.
+            text_batch (list[str]): The input text to analyze.
             org_topics (Iterable[str]): The list of topics to map against.
             context (Optional[str]): Additional context for mapping (currently unused).
 
         Returns:
-            tuple[str, ...]: A tuple of detected topics.
+            list[tuple[str, ...]]: A tuple of detected topics.
         """
         prompt = self._generate_prompt(text_batch, org_topics, context)
         responses: list[str] = (
@@ -36,16 +36,16 @@ class TopicDetector:
 
     def _extract_topics(
         self, responses: list[str], org_topics: Iterable[str]
-    ) -> list[str]:
+    ) -> list[tuple[str, ...]]:
         """
         Extracts relevant topics from the model's response.
 
         Args:
-            response (str): The model-generated response text.
+            responses (list[str]): The model-generated response text.
             org_topics (Iterable[str]): The list of topics to map against.
 
         Returns:
-            list[str]: A list of detected topics.
+            list[tuple[str, ...]]: A list of detected topics.
         """
         results = []
         for response in responses:
@@ -65,7 +65,7 @@ class TopicDetector:
         Generates a prompt for the model to detect topics.
 
         Args:
-            text (str): The input text to analyze.
+            text_batch (list[str]): The input text to analyze.
             org_topics (Iterable[str]): The list of topics to map against.
             context (Optional[str]): Additional context for the prompt (currently unused).
 
