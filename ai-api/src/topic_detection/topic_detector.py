@@ -32,17 +32,15 @@ class TopicDetector:
         responses: list[str] = (
             self.model.generate_content(prompt).lower().replace("\n", "").split("|")
         )
-        return self._extract_topics(responses, org_topics)
+        return self._extract_topics(responses)
 
-    def _extract_topics(
-        self, responses: list[str], org_topics: Iterable[str]
-    ) -> list[tuple[str, ...]]:
+    @staticmethod
+    def _extract_topics(responses: list[str]) -> list[tuple[str, ...]]:
         """
         Extracts relevant topics from the model's response.
 
         Args:
             responses (list[str]): The model-generated response text.
-            org_topics (Iterable[str]): The list of topics to map against.
 
         Returns:
             list[tuple[str, ...]]: A list of detected topics.
@@ -55,12 +53,12 @@ class TopicDetector:
                 results.append(tuple(response.split(",")))
         return results
 
+    @staticmethod
     def _generate_prompt(
-        self,
         text_batch: list[str],
         org_topics: Iterable[str],
         context: Optional[str] = None,
-    ) -> str:
+    ) -> Prompt:
         """
         Generates a prompt for the model to detect topics.
 
@@ -80,7 +78,7 @@ class TopicDetector:
                 "Only respond with relevant topics. If no topics are relevant, respond with 'no relevant topics found.'"
                 "Don't add a space after or before each topic"
             ),
-            context=None,
+            context=context,
             examples=(
                 (
                     "I didn't enjoy the food; it was bland and lacked variety.",
@@ -102,4 +100,4 @@ class TopicDetector:
                 ),
             ),
             input_text=",".join(text_batch),
-        ).to_text()
+        )

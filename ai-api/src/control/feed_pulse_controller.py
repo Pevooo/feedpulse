@@ -106,12 +106,9 @@ class FeedPulseController:
 
         return await self.data_provider.get_tweets(num_tweets, search_query)
 
-    def fetch_facebook_data(self, page_id: str) -> tuple[DataUnit, ...]:
+    def fetch_facebook_data(self) -> tuple[DataUnit, ...]:
         """
         Fetches data from a Facebook page.
-
-        Args:
-            page_id (str): Facebook page ID.
 
         Returns:
             tuple[DataUnit, ...]: Fetched posts as data units.
@@ -119,7 +116,7 @@ class FeedPulseController:
         if not isinstance(self.data_provider, FacebookDataProvider):
             raise TypeError("Data provider must be an instance of FacebookDataProvider")
 
-        return self.data_provider.get_posts(page_id)
+        return self.data_provider.get_posts()
 
     def _run_all_steps(
         self,
@@ -145,18 +142,15 @@ class FeedPulseController:
         # Step 3: Sending the report to the given URL
         self.report_handler.send_report(report, url)
 
-    def run_all_steps_facebook(
-        self, page_id: str, org_topics: set[str], url: str
-    ) -> None:
+    def run_all_steps_facebook(self, org_topics: set[str], url: str) -> None:
         """
         Fetches Facebook data, processes it, and delivers a report.
 
         Args:
-            page_id (str): Facebook page ID.
             org_topics (set[str]): Organization-related topics.
             url (str): URL to send the generated report.
         """
-        data_units = self.fetch_facebook_data(page_id)
+        data_units = self.fetch_facebook_data()
         self._run_all_steps(data_units, org_topics, url)
 
     @deprecated

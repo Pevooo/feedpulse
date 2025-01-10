@@ -12,7 +12,7 @@ class Model(ABC):
     """
 
     @abstractmethod
-    def generate_content(self, prompt: Prompt):
+    def generate_content(self, prompt: Prompt) -> str:
         """
         Generate content based on the provided text input.
 

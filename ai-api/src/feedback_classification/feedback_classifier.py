@@ -41,7 +41,8 @@ class FeedbackClassifier:
                 impressions.append(None)
         return impressions
 
-    def _generate_prompt(self, text_batch: list[str]) -> str:
+    @staticmethod
+    def _generate_prompt(text_batch: list[str]) -> Prompt:
         return Prompt(
             instructions=(
                 "Classify the given feedbacks as '1' for positive feedback , '0' for negative feedback, or '2'for neutral one for each one"
@@ -60,4 +61,4 @@ class FeedbackClassifier:
                 ),
             ),
             input_text=",".join(text_batch),
-        ).to_text()
+        )

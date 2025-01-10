@@ -9,58 +9,62 @@ FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 
 
-class FacebookDataProvider(DataProvider):
+class InstagramDataProvider(DataProvider):
     """
-    represents a data provider for the Facebook Graph API to fetch facebook data.
+    represents a data provider for the Facebook Graph API to fetch instagram data.
     """
 
-    def get_page_id(self) -> str:
+    def get_instagram_account_id(self) -> str:
         """
-        Retrieves the page ID associated with the provided page access token.
+        Retrieves the Instagram Business Account ID linked to the Facebook page.
 
         Returns:
-            str: The ID of the page.
+            str: The Instagram Business Account ID.
         """
-        url = f"{FACEBOOK_GRAPH_URL}me"
+        url = f"{FACEBOOK_GRAPH_URL}me/accounts"
         params = {"access_token": self.access_token}
         response = requests.get(url, params, timeout=3)
         data = response.json()
 
         if "error" in data:
-            raise Exception(f"Error fetching page ID: {data['error']['message']}")
+            raise Exception(f"Error fetching page data: {data['error']['message']}")
 
-        return data.get("id")
+        # Look for the Instagram Business Account
+        for page in data.get("data", []):
+            if "instagram_business_account" in page:
+                return page["instagram_business_account"]["id"]
+
+        raise Exception("No Instagram Business Account linked to this page.")
 
     def get_posts(self) -> tuple[ContextDataUnit, ...]:
         """
-        Gets the posts from a Facebook page using the page access token.
+        Gets the Instagram posts from the linked Instagram Business Account.
 
         Returns:
             tuple[ContextDataUnit, ...]: A tuple containing all the collected posts as ContextDataUnit objects.
         """
-        page_id = self.get_page_id()
-        url = f"{FACEBOOK_GRAPH_URL}{page_id}"
+        instagram_account_id = self.get_instagram_account_id()
+        url = f"{FACEBOOK_GRAPH_URL}{instagram_account_id}/media"
         params = {
             "access_token": self.access_token,
-            "fields": "posts{comments,message,created_time}",
+            "fields": "caption,timestamp,comments{username,text,timestamp}",
         }
 
         data = requests.get(url, params, timeout=3).json()
+
         posts: list[ContextDataUnit] = []
-        for post_data in data.get("posts", {}).get("data", []):
-            message: str = post_data.get("message", "")
+        for post_data in data.get("data", []):
+            message: str = post_data.get("caption", "")
 
             time_created: datetime = datetime.strptime(
-                post_data["created_time"], DATETIME_FORMAT
+                post_data["timestamp"], DATETIME_FORMAT
             )
 
             comments: list[FeedbackDataUnit] = (
                 [
                     FeedbackDataUnit(
-                        comment_data["message"],
-                        datetime.strptime(
-                            comment_data["created_time"], DATETIME_FORMAT
-                        ),
+                        comment_data["text"],
+                        datetime.strptime(comment_data["timestamp"], DATETIME_FORMAT),
                         tuple(),
                     )
                     for comment_data in post_data.get("comments", {}).get("data", [])
