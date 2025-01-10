@@ -45,7 +45,7 @@ class TestNLPClassifier(unittest.TestCase):
             [True, None, False, False, True, False, False, False, True, False],
         )
 
-    def test_extract_neutral_label(self):
+    def test_result_format(self):
         classifier = NLPFeedbackClassifier()
         text = ["very good", "table", "bad"]
         result = classifier._get_sentiments(text)
