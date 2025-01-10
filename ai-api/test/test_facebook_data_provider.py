@@ -5,7 +5,7 @@ from src.data_providers.facebook_data_provider import FacebookDataProvider
 from datetime import datetime
 
 
-FAKE_API_RESPONSE = {
+FAKE_DATA_API_RESPONSE = {
     "posts": {
         "data": [
             {
@@ -25,18 +25,22 @@ FAKE_API_RESPONSE = {
     }
 }
 
+FAKE_PAGE_ID_API_RESPONSE = {"id": "fake_id"}
+
 
 class TestFacebookDataProvider(unittest.TestCase):
 
     @patch("requests.get")
-    def test_get_posts_post_message_value(self, mock_get):
+    @patch.object(FacebookDataProvider, "get_page_id")
+    def test_get_posts_post_message_value(self, mock_get_page_id, mock_requests_get):
         # Whenever `requests.get` is called: return FAKE_API_RESPONSE+
-        mock_get.return_value.json.return_value = FAKE_API_RESPONSE
+        mock_get_page_id.return_value.json.return_value = FAKE_PAGE_ID_API_RESPONSE
+        mock_requests_get.return_value.json.return_value = FAKE_DATA_API_RESPONSE
 
         # Pass anything as access token as we don't use it in the test
         data_provider = FacebookDataProvider(Mock())
 
-        posts = data_provider.get_posts(Mock())
+        posts = data_provider.get_posts()
 
         self.assertEqual(
             posts[0].text,
@@ -49,10 +53,14 @@ class TestFacebookDataProvider(unittest.TestCase):
         )
 
     @patch("requests.get")
-    def test_get_posts_post_comments_list_size(self, mock_get):
-        mock_get.return_value.json.return_value = FAKE_API_RESPONSE
+    @patch.object(FacebookDataProvider, "get_page_id")
+    def test_get_posts_post_comments_list_size(
+        self, mock_get_page_id, mock_requests_get
+    ):
+        mock_get_page_id.return_value.json.return_value = FAKE_PAGE_ID_API_RESPONSE
+        mock_requests_get.return_value.json.return_value = FAKE_DATA_API_RESPONSE
         data_provider = FacebookDataProvider(Mock())
-        posts = data_provider.get_posts(Mock())
+        posts = data_provider.get_posts()
 
         self.assertEqual(
             len(posts[0].children),
@@ -65,10 +73,12 @@ class TestFacebookDataProvider(unittest.TestCase):
         )
 
     @patch("requests.get")
-    def test_get_posts_post_comments_value(self, mock_get):
-        mock_get.return_value.json.return_value = FAKE_API_RESPONSE
+    @patch.object(FacebookDataProvider, "get_page_id")
+    def test_get_posts_post_comments_value(self, mock_get_page_id, mock_requests_get):
+        mock_get_page_id.return_value.json.return_value = FAKE_PAGE_ID_API_RESPONSE
+        mock_requests_get.return_value.json.return_value = FAKE_DATA_API_RESPONSE
         data_provider = FacebookDataProvider(Mock())
-        posts = data_provider.get_posts(Mock())
+        posts = data_provider.get_posts()
 
         self.assertEqual(
             posts[1].children[0].text,
@@ -76,10 +86,14 @@ class TestFacebookDataProvider(unittest.TestCase):
         )
 
     @patch("requests.get")
-    def test_get_posts_post_comments_created_time(self, mock_get):
-        mock_get.return_value.json.return_value = FAKE_API_RESPONSE
+    @patch.object(FacebookDataProvider, "get_page_id")
+    def test_get_posts_post_comments_created_time(
+        self, mock_get_page_id, mock_requests_get
+    ):
+        mock_get_page_id.return_value.json.return_value = FAKE_PAGE_ID_API_RESPONSE
+        mock_requests_get.return_value.json.return_value = FAKE_DATA_API_RESPONSE
         data_provider = FacebookDataProvider(Mock())
-        posts = data_provider.get_posts(Mock())
+        posts = data_provider.get_posts()
 
         expected_time = datetime.fromisoformat("2024-10-28T10:53:26+00:00")
         self.assertEqual(
@@ -99,4 +113,4 @@ class TestFacebookDataProvider(unittest.TestCase):
 
         # Test the fetch_data function with a timeout of 3 seconds
         with self.assertRaises(requests.exceptions.Timeout):
-            FacebookDataProvider(Mock()).get_posts(Mock())
+            FacebookDataProvider(Mock()).get_posts()

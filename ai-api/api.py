@@ -50,7 +50,6 @@ class FeedPulseAPI:
                 return render_template("index.html")
             else:
                 access_token = request.form["access_token"]
-                page_id = request.form["page_id"]
                 topics = {"cleanliness", "staff", "food", "activities"}
 
                 controller = FeedPulseController(
@@ -60,7 +59,7 @@ class FeedPulseAPI:
                     self.report_handler,
                 )
 
-                data_units = controller.fetch_facebook_data(page_id)
+                data_units = controller.fetch_facebook_data()
                 result = controller.run_pipeline(data_units, topics)
                 report = controller.report_handler.create(result)
 

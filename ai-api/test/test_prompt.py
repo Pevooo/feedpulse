@@ -51,3 +51,19 @@ class TestPrompt(unittest.TestCase):
         )
 
         self.assertEqual(str(prompt), expected_output)
+
+    def test_converting_to_string_no_examples(self):
+        prompt = Prompt(
+            instructions="This is the instructions",
+            context=None,
+            examples=None,
+            input_text="This is the prompt text",
+        )
+
+        expected_output = (
+            "Instructions: This is the instructions\n"
+            "Context: None\n"
+            "Prompt: This is the prompt text\n"
+        )
+
+        self.assertEqual(str(prompt), expected_output)
