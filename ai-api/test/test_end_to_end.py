@@ -1,3 +1,5 @@
+import os
+import logging
 import unittest
 from unittest.mock import patch
 from api import FeedPulseAPI
@@ -43,6 +45,9 @@ class TestEndToEnd(unittest.IsolatedAsyncioTestCase):
         self.app = self.feed_pulse_app.flask_app
         self.app.config["TESTING"] = True
         self.client = self.app.test_client()  # Flask's test client for HTTP requests
+        logging.getLogger("grpc").setLevel(logging.CRITICAL)
+        os.environ["GRPC_VERBOSITY"] = "NONE"
+        os.environ["GRPC_TRACE"] = "none"
 
     @patch("requests.get")
     @patch.object(ReportHandler, "create")
