@@ -50,4 +50,4 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
         self.data_provider = XDataProvider()
 
         with self.assertRaises(TypeError):
-            self.controller.fetch_facebook_data(Mock())
+            self.controller.fetch_facebook_data()
