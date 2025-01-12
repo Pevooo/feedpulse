@@ -88,6 +88,7 @@ class FeedPulseAPI:
 
         @self.flask_app.route(Router.X_DATA_PROCESSING_ROUTE, methods=["GET"])
         @self.inject
+        @Response.deprecated
         def process_x_data(search_key: str, num_tweets: int, topics: str, url: str):
             topics = set(topics.split(","))
             controller = FeedPulseController(
