@@ -1,6 +1,10 @@
 name: TypeScript Lint and Angular App
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'Interface/**'
+      - '.github/workflows/angular.yml'
 
 jobs:
   lint:
