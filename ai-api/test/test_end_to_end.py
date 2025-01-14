@@ -7,7 +7,7 @@ from src.config.settings import Settings
 from src.config.router import Router
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.topic_detection.topic_detector import TopicDetector
+from src.topics.topic_detector import TopicDetector
 
 FAKE_API_RESPONSE = {
     "posts": {

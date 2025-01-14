@@ -6,7 +6,8 @@ from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.topic_detection.topic_detector import TopicDetector
+from src.topics.feedback_topic import FeedbackTopic
+from src.topics.topic_detector import TopicDetector
 from src.control.feed_pulse_controller import FeedPulseController
 
 
@@ -28,11 +29,13 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
 
     def test_run_pipeline(self):
         data_unit = MagicMock(spec=FeedbackDataUnit)
-        all_topics = {"topic1", "topic2"}
+        all_topics = {"wifi", "cleanliness"}
 
         # Mock process method to return a DataResult for testing
         with patch.object(
-            self.controller, "process", return_value=FeedbackResult(True, ("topic1",))
+            self.controller,
+            "process",
+            return_value=FeedbackResult(True, (FeedbackTopic.WIFI,)),
         ):
             result = self.controller.run_pipeline([data_unit], all_topics, None)
 

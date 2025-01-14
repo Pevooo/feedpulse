@@ -1,4 +1,5 @@
 from src.data.feedback_result import FeedbackResult
+from src.topics.feedback_topic import FeedbackTopic
 
 
 class PipelineResult:
@@ -6,9 +7,9 @@ class PipelineResult:
     Represents the result of a pipeline. (determining the impression and detecting the topics of data)
     """
 
-    def __init__(self, topics: set[str]) -> None:
+    def __init__(self, topics: set[FeedbackTopic]) -> None:
         self.items: list[FeedbackResult] = []
-        self.topics: set[str] = topics
+        self.topics: set[FeedbackTopic] = topics
         self.topic_counts = {}
         for topic in topics:
             self.topic_counts[topic] = {False: 0, True: 0}
