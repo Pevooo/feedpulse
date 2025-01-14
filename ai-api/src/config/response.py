@@ -30,6 +30,14 @@ class Response:
         return make_response(jsonify(response), 404)
 
     @staticmethod
+    def server_error():
+        response = {
+            "status": "FAILURE",
+            "body": "Server error",
+        }
+        return make_response(jsonify(response), 500)
+
+    @staticmethod
     def deprecated(original_response: Callable[[Any], Any]) -> Any:
         def wrapped(*args, **kwargs):
             # Get the original response

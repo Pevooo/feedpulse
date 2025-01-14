@@ -9,6 +9,8 @@ from src.config.response import Response
 from src.config.router import Router
 from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
+from src.data_providers.x_data_provider import XDataProvider
+from src.exception_handling.ExceptionReporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topics.topic_detector import TopicDetector
@@ -20,12 +22,14 @@ class FeedPulseAPI:
         feedback_classifier: FeedbackClassifier,
         topic_detector: TopicDetector,
         report_handler: ReportHandler,
+        exception_reporter: ExceptionReporter,
     ):
         self.flask_app = Flask(__name__)
         self.__setup_routes()
         self.report_handler = report_handler
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
+        self.reporter = exception_reporter
 
     def run(self):
         self.flask_app.run()
@@ -39,6 +43,16 @@ class FeedPulseAPI:
         self.feedback_classifier = FeedbackClassifier(
             Settings.feedback_classification_model()
         )
+
+    def __setup_exception_reporter(self):
+        @self.flask_app.errorhandler(Exception)
+        def handle_exception(e):
+            """
+            Global exception handler for the Flask app.
+            """
+            self.reporter.log_exception(e)
+            self.reporter.save_to_hdfs()  # Optional: Save logs immediately
+            return Response.server_error()
 
     def __setup_routes(self):
 
@@ -81,6 +95,25 @@ class FeedPulseAPI:
                 target=controller.run_all_steps_facebook,
                 args=(page_id, topics, url),
                 daemon=True,
+            )
+            process_thread.start()
+            return Response.success("Successfully Started Processing")
+
+        @self.flask_app.route(Router.X_DATA_PROCESSING_ROUTE, methods=["GET"])
+        @self.inject
+        @Response.deprecated
+        def process_x_data(search_key: str, num_tweets: int, topics: str, url: str):
+            topics = set(topics.split(","))
+            controller = FeedPulseController(
+                self.feedback_classifier,
+                self.topic_detector,
+                XDataProvider(),
+                self.report_handler,
+            )
+
+            process_thread = threading.Thread(
+                target=controller.run_all_steps_x,
+                args=(search_key, num_tweets, topics, url),
             )
             process_thread.start()
             return Response.success("Successfully Started Processing")
