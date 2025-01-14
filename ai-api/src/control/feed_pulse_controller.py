@@ -6,11 +6,9 @@ from src.data.data_unit import DataUnit
 from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.data_provider import DataProvider
 from src.data_providers.facebook_data_provider import FacebookDataProvider
-from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topic_detection.topic_detector import TopicDetector
-from src.utlity.util import deprecated
 
 
 class FeedPulseController:
@@ -87,25 +85,6 @@ class FeedPulseController:
 
         return FeedbackResult(impression[0], topics[0])
 
-    @deprecated
-    async def fetch_x_data(
-        self, search_query: str, num_tweets: int = 20
-    ) -> tuple[DataUnit, ...]:
-        """
-        Fetches data from X (formerly Twitter).
-
-        Args:
-            search_query (str): Query string for searching tweets.
-            num_tweets (int): Number of tweets to fetch.
-
-        Returns:
-            tuple[DataUnit, ...]: Fetched tweets as data units.
-        """
-        if not isinstance(self.data_provider, XDataProvider):
-            raise TypeError("Data provider must be an instance of XDataProvider")
-
-        return await self.data_provider.get_tweets(num_tweets, search_query)
-
     def fetch_facebook_data(self) -> tuple[DataUnit, ...]:
         """
         Fetches data from a Facebook page.
@@ -151,20 +130,4 @@ class FeedPulseController:
             url (str): URL to send the generated report.
         """
         data_units = self.fetch_facebook_data()
-        self._run_all_steps(data_units, org_topics, url)
-
-    @deprecated
-    async def run_all_steps_x(
-        self, search_query: str, num_tweets: int, org_topics: set[str], url: str
-    ) -> None:
-        """
-        Fetches X (Twitter) data, processes it, and delivers a report.
-
-        Args:
-            search_query (str): Query string for searching tweets.
-            num_tweets (int): Number of tweets to fetch.
-            org_topics (set[str]): Organization-related topics.
-            url (str): URL to send the generated report.
-        """
-        data_units = await self.fetch_x_data(search_query, num_tweets)
         self._run_all_steps(data_units, org_topics, url)
