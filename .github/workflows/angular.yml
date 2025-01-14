@@ -34,21 +34,21 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: npm install
-        working-directory: 'Interface/adminDashboard'
+        working-directory: 'Interface'
 
       # Lint TypeScript code
       - name: Run linting
         run: npm run lint
-        working-directory: 'Interface/adminDashboard'
+        working-directory: 'Interface'
 
       # Build the Angular app
       - name: Build Angular app
-        working-directory: 'Interface/adminDashboard'
+        working-directory: 'Interface'
         run: npm run build --if-present
 
       # Test the Angular app
       - name: Test Angular app
-        working-directory: 'Interface/adminDashboard'
+        working-directory: 'Interface'
         env:
           CI: true
           DEBUG: karma*
