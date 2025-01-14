@@ -8,6 +8,7 @@ from src.utlity.util import deprecated
 
 # DEPRECATED
 
+
 class XDataProvider:
     """
     represents a data provider for X

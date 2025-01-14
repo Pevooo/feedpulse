@@ -9,7 +9,6 @@ from src.config.response import Response
 from src.config.router import Router
 from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
-from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topic_detection.topic_detector import TopicDetector
