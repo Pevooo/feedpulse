@@ -6,6 +6,8 @@ from src.config.environment import Environment
 from src.data.feedback_data_unit import FeedbackDataUnit
 from src.utlity.util import deprecated
 
+# DEPRECATED
+
 
 class XDataProvider:
     """
