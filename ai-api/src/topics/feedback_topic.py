@@ -34,5 +34,9 @@ class FeedbackTopic(Enum):
     BILLING = "billing"
 
     @classmethod
-    def get_all_topics(cls):
+    def get_all_topics(cls) -> list["FeedbackTopic"]:
         return list(cls)  # Return all enum members directly
+
+    @classmethod
+    def get_all_topics_as_string(cls) -> list[str]:
+        return [topic.value for topic in cls]
