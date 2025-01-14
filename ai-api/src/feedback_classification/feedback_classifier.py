@@ -16,7 +16,7 @@ class FeedbackClassifier:
 
     def classify(self, text_batch: list[str]) -> list[Optional[bool]]:
         """
-        Classifies the provided text as a complaint, compliment, or neutral and detects if it has a specific topics.
+        Classifies the provided text as a complaint, compliment, or neutral and detects if it has a specific topic.
 
         Args:
             text_batch (list[str]): The text to classify.

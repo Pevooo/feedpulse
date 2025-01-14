@@ -77,7 +77,7 @@ class TopicDetector:
                 "Identify and list only the relevant topics from the provided list that "
                 f"relate to the content of the text. The topics are: {', '.join(topic.value for topic in org_topics)}.\n"
                 "Only respond with relevant topics. If no topics are relevant, respond with 'no relevant topics found.'"
-                "Don't add a space after or before each topics"
+                "Don't add a space after or before each topic"
             ),
             context=context,
             examples=(
