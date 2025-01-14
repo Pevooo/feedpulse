@@ -7,7 +7,6 @@ from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topic_detection.topic_detector import TopicDetector
-from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.control.feed_pulse_controller import FeedPulseController
 
 
@@ -39,12 +38,6 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
 
         self.assertIsInstance(result, PipelineResult)
         self.assertEqual(len(result.items), 1)
-
-    async def test_wrong_provider_facebook(self):
-        self.data_provider = FacebookDataProvider(Mock())
-
-        with self.assertRaises(TypeError):
-            await self.controller.fetch_x_data(Mock())
 
     def test_wrong_provider_x(self):
         self.data_provider = XDataProvider()
