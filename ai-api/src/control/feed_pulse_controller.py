@@ -10,8 +10,6 @@ from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topics.feedback_topic import FeedbackTopic
 from src.topics.topic_detector import TopicDetector
-from src.utlity.util import deprecated
-
 
 
 class FeedPulseController:
