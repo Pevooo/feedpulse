@@ -8,7 +8,8 @@ from src.data_providers.data_provider import DataProvider
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.topic_detection.topic_detector import TopicDetector
+from src.topics.feedback_topic import FeedbackTopic
+from src.topics.topic_detector import TopicDetector
 
 
 class FeedPulseController:
@@ -41,16 +42,17 @@ class FeedPulseController:
         Args:
             data_units (Iterable[DataUnit]): Data units to process.
             all_topics (set[str]): Topics related to the organization.
-            context (Optional[str]): Context text for topic detection.
+            context (Optional[str]): Context text for topics detection.
 
         Returns:
             PipelineResult: Processed results with classified feedback and topics.
         """
-        results = PipelineResult(all_topics)
+        enum_topics = set(map(FeedbackTopic, all_topics))
+        results = PipelineResult(enum_topics)
 
         for data_unit in data_units:
             if isinstance(data_unit, FeedbackDataUnit):  # Process feedback data
-                processed_result = self.process(data_unit, all_topics, context)
+                processed_result = self.process(data_unit, enum_topics, context)
                 if processed_result:
                     results.append(processed_result)
 
@@ -62,15 +64,18 @@ class FeedPulseController:
         return results
 
     def process(
-        self, data_unit: DataUnit, org_topics: set[str], context: Optional[str] = None
+        self,
+        data_unit: DataUnit,
+        org_topics: set[FeedbackTopic],
+        context: Optional[str] = None,
     ) -> Optional[FeedbackResult]:
         """
         Processes a single data unit by classifying feedback and detecting topics.
 
         Args:
             data_unit (DataUnit): Data unit to process.
-            org_topics (set[str]): Organization-related topics.
-            context (Optional[str]): Context text for topic detection.
+            org_topics (set[FeedbackTopic]): Organization-related topics.
+            context (Optional[str]): Context text for topics detection.
 
         Returns:
             Optional[FeedbackResult]: Processed feedback result or None if filtered.

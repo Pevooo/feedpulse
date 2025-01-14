@@ -11,7 +11,7 @@ from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.topic_detection.topic_detector import TopicDetector
+from src.topics.topic_detector import TopicDetector
 
 
 class FeedPulseAPI:
@@ -49,7 +49,7 @@ class FeedPulseAPI:
                 return render_template("index.html")
             else:
                 access_token = request.form["access_token"]
-                topics = {"cleanliness", "staff", "food", "activities"}
+                topics = {"cleanliness", "staff", "food", "wifi"}
 
                 controller = FeedPulseController(
                     self.feedback_classifier,
