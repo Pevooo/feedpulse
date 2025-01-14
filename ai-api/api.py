@@ -9,7 +9,6 @@ from src.config.response import Response
 from src.config.router import Router
 from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
-from src.data_providers.x_data_provider import XDataProvider
 from src.exception_handling.ExceptionReporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
@@ -50,8 +49,7 @@ class FeedPulseAPI:
             """
             Global exception handler for the Flask app.
             """
-            self.reporter.log_exception(e)
-            self.reporter.save_to_hdfs()  # Optional: Save logs immediately
+            self.reporter.report(e)
             return Response.server_error()
 
     def __setup_routes(self):
@@ -95,25 +93,6 @@ class FeedPulseAPI:
                 target=controller.run_all_steps_facebook,
                 args=(page_id, topics, url),
                 daemon=True,
-            )
-            process_thread.start()
-            return Response.success("Successfully Started Processing")
-
-        @self.flask_app.route(Router.X_DATA_PROCESSING_ROUTE, methods=["GET"])
-        @self.inject
-        @Response.deprecated
-        def process_x_data(search_key: str, num_tweets: int, topics: str, url: str):
-            topics = set(topics.split(","))
-            controller = FeedPulseController(
-                self.feedback_classifier,
-                self.topic_detector,
-                XDataProvider(),
-                self.report_handler,
-            )
-
-            process_thread = threading.Thread(
-                target=controller.run_all_steps_x,
-                args=(search_key, num_tweets, topics, url),
             )
             process_thread.start()
             return Response.success("Successfully Started Processing")
@@ -163,5 +142,6 @@ if __name__ == "__main__":
         FeedbackClassifier(Settings.feedback_classification_model()),
         TopicDetector(Settings.topic_segmentation_model()),
         ReportHandler(Settings.report_creation_model()),
+        ExceptionReporter(),
     )
     app.run()
