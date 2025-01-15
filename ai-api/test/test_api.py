@@ -16,6 +16,7 @@ class TestAPI(unittest.TestCase):
             Mock(),
             Mock(),
             Mock(),
+            Mock(),
         )
 
         # Example route for testing
