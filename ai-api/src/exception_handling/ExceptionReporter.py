@@ -1,7 +1,6 @@
 import traceback
 from datetime import datetime
 from pyspark.sql import SparkSession
-import pandas as pd
 
 
 class ExceptionReporter:
