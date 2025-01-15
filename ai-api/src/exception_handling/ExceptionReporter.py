@@ -25,11 +25,8 @@ class ExceptionReporter:
         self.logs.append(log_entry)
 
     def _save_to_hdfs(self):
-        # Convert logs to a Pandas DataFrame
-        df = pd.DataFrame(self.logs)
-
-        # Convert Pandas DataFrame to PySpark DataFrame
-        spark_df = self.spark.createDataFrame(df)
+        # Convert logs to PySpark DataFrame
+        spark_df = self.spark.createDataFrame(self.logs)
 
         # Write the DataFrame to Parquet in HDFS
         spark_df.write.mode("append").parquet(self.hdfs_path)
