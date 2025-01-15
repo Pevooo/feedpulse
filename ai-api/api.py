@@ -9,6 +9,7 @@ from src.config.response import Response
 from src.config.router import Router
 from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
+from src.exception_handling.ExceptionReporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topics.topic_detector import TopicDetector
@@ -20,12 +21,14 @@ class FeedPulseAPI:
         feedback_classifier: FeedbackClassifier,
         topic_detector: TopicDetector,
         report_handler: ReportHandler,
+        exception_reporter: ExceptionReporter,
     ):
         self.flask_app = Flask(__name__)
         self.__setup_routes()
         self.report_handler = report_handler
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
+        self.reporter = exception_reporter
 
     def run(self):
         self.flask_app.run()
@@ -39,6 +42,15 @@ class FeedPulseAPI:
         self.feedback_classifier = FeedbackClassifier(
             Settings.feedback_classification_model()
         )
+
+    def __setup_exception_reporter(self):
+        @self.flask_app.errorhandler(Exception)
+        def handle_exception(e):
+            """
+            Global exception handler for the Flask app.
+            """
+            self.reporter.report(e)
+            return Response.server_error()
 
     def __setup_routes(self):
 
@@ -130,5 +142,6 @@ if __name__ == "__main__":
         FeedbackClassifier(Settings.feedback_classification_model()),
         TopicDetector(Settings.topic_segmentation_model()),
         ReportHandler(Settings.report_creation_model()),
+        ExceptionReporter(),
     )
     app.run()

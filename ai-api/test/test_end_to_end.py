@@ -1,7 +1,7 @@
 import os
 import logging
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from api import FeedPulseAPI
 from src.config.settings import Settings
 from src.config.router import Router
@@ -41,6 +41,7 @@ class TestEndToEnd(unittest.IsolatedAsyncioTestCase):
             FeedbackClassifier(Settings.feedback_classification_model()),
             TopicDetector(Settings.topic_segmentation_model()),
             ReportHandler(Settings.report_creation_model()),
+            Mock(),
         )
         self.app = self.feed_pulse_app.flask_app
         self.app.config["TESTING"] = True
