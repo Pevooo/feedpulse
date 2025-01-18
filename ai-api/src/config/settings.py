@@ -26,6 +26,7 @@ _ONLINE_MODELS = [
     "GeminiModel",
 ]
 
+
 class Settings:
     """
     This class encapsulates all the AI Api configurations.
@@ -65,18 +66,16 @@ class Settings:
         return cls._instance
 
     def __init__(
-            self,
-            # Model-related config
-            feedback_classification_model: Type = GeminiModel,
-            topic_segmentation_model: Type = GeminiModel,
-            report_creation_model: Type = GeminiModel,
-
-            # Features config
-            enable_facebook_data_collection: bool = True,
-            enable_instagram_data_collection: bool = True,
-
-            # Processing config
-            processing_batch_size: int = 1,
+        self,
+        # Model-related config
+        feedback_classification_model: Type = GeminiModel,
+        topic_segmentation_model: Type = GeminiModel,
+        report_creation_model: Type = GeminiModel,
+        # Features config
+        enable_facebook_data_collection: bool = True,
+        enable_instagram_data_collection: bool = True,
+        # Processing config
+        processing_batch_size: int = 1,
     ):
         if self.__class__._instance is None:
             self.feedback_classification_model = feedback_classification_model

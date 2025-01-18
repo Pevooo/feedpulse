@@ -86,7 +86,10 @@ class TestFeedPulseSettings(unittest.TestCase):
 
         json = {
             "settingsList": [
-                {"settingName": "enable_facebook_data_collection", "settingValue": "False"}
+                {
+                    "settingName": "enable_facebook_data_collection",
+                    "settingValue": "False",
+                }
             ]
         }
 
