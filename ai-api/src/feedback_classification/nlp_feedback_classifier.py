@@ -3,7 +3,7 @@ from transformers import pipeline
 
 class NLPFeedbackClassifier:
     """
-    a classifier based on sentiment analysis that classifies the feedback by predicting if it positive, negative or neutral
+    a classifier based on sentiment analysis that classifies the feedback by predicting if it's positive, negative or neutral
     """
 
     def __init__(self):

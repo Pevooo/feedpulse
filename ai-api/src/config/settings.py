@@ -11,6 +11,20 @@ from src.models.openai_model import OpenAiModel  # noqa: F401
 # alongside with its default value and also add it in `BOOLEAN_SETTINGS` if it's a boolean or in `MODEL_SETTINGS` if
 # it's a model setting (This is for remote config purposes)
 
+_ALL_MODELS = [
+    "GeminiModel",
+    "PhiModel",
+    "OpenAiModel",
+]
+
+_OFFLINE_MODELS = [
+    "PhiModel",
+]
+
+_ONLINE_MODELS = [
+    "OpenAiModel",
+    "GeminiModel",
+]
 
 class Settings:
     """
@@ -18,15 +32,14 @@ class Settings:
     """
 
     BOOLEAN_SETTINGS = {
-        "enable_x_data_collection",
         "enable_facebook_data_collection",
         "enable_instagram_data_collection",
     }
 
     MODEL_SETTINGS = {
-        "topic_segmentation_model",
-        "report_creation_model",
-        "feedback_classification_model",
+        "topic_segmentation_model": _ALL_MODELS,
+        "report_creation_model": _ALL_MODELS,
+        "feedback_classification_model": _ALL_MODELS,
     }
 
     NUMBER_SETTINGS = {
@@ -39,11 +52,39 @@ class Settings:
     report_creation_model: Type = GeminiModel
 
     # Features
-    enable_x_data_collection: bool = True
     enable_facebook_data_collection: bool = True
     enable_instagram_data_collection: bool = True
 
     processing_batch_size: int = 1
+
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            return super(Settings, cls).__new__(cls)
+        return cls._instance
+
+    def __init__(
+            self,
+            # Model-related config
+            feedback_classification_model: Type = GeminiModel,
+            topic_segmentation_model: Type = GeminiModel,
+            report_creation_model: Type = GeminiModel,
+
+            # Features config
+            enable_facebook_data_collection: bool = True,
+            enable_instagram_data_collection: bool = True,
+
+            # Processing config
+            processing_batch_size: int = 1,
+    ):
+        if self.__class__._instance is None:
+            self.feedback_classification_model = feedback_classification_model
+            self.topic_segmentation_model = topic_segmentation_model
+            self.report_creation_model = report_creation_model
+            self.enable_facebook_data_collection = enable_facebook_data_collection
+            self.enable_instagram_data_collection = enable_instagram_data_collection
+            self.processing_batch_size = processing_batch_size
 
     @classmethod
     def get_settings(cls) -> list[dict[str, str]]:
@@ -66,7 +107,7 @@ class Settings:
                     "settingValue": getattr(cls, setting).__name__,
                     "prettyName": " ".join(setting.split("_")).title(),
                     "type": "enum",
-                    "choices": ["GeminiModel", "PhiModel", "OpenAiModel"],
+                    "choices": cls.MODEL_SETTINGS[setting],
                 }
             )
 

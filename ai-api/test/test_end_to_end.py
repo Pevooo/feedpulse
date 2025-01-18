@@ -77,7 +77,7 @@ class TestEndToEnd(unittest.IsolatedAsyncioTestCase):
         payload = {
             "settingsList": [
                 {
-                    "settingName": "enable_x_data_collection",
+                    "settingName": "enable_facebook_data_collection",
                     "settingValue": "false",
                 }
             ]

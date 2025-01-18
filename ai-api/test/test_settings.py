@@ -7,15 +7,13 @@ from src.models.phi_model import PhiModel
 
 class TestFeedPulseSettings(unittest.TestCase):
     def test_change_model(self):
-        Settings.feedback_classification_model = (
-            None  # Setting it to null to test returning it back to Gemini
-        )
+        Settings.feedback_classification_model = PhiModel
         Settings._set_setting("feedback_classification_model", "GeminiModel")
         self.assertEqual(Settings.feedback_classification_model, GeminiModel)
 
     def test_change_bool(self):
-        Settings._set_setting("enable_x_data_collection", "False")
-        self.assertEqual(Settings.enable_x_data_collection, False)
+        Settings._set_setting("enable_facebook_data_collection", "False")
+        self.assertEqual(Settings.enable_facebook_data_collection, False)
 
     def test_invalid_attribute(self):
         try:
@@ -35,7 +33,7 @@ class TestFeedPulseSettings(unittest.TestCase):
     def test_invalid_bool_value(self):
         Settings.enable_x_data_collection = True
         try:
-            Settings._set_setting("enable_x_data_collection", "invalid_value")
+            Settings._set_setting("enable_facebook_data_collection", "invalid_value")
         except Exception as e:
             self.fail(e)
 
@@ -56,13 +54,13 @@ class TestFeedPulseSettings(unittest.TestCase):
         )
 
     def test_get_settings_bool_setting(self):
-        Settings.enable_x_data_collection = True
+        Settings.enable_facebook_data_collection = True
         settings = Settings.get_settings()
         self.assertIn(
             {
-                "settingName": "enable_x_data_collection",
+                "settingName": "enable_facebook_data_collection",
                 "settingValue": True,
-                "prettyName": "Enable X Data Collection",
+                "prettyName": "Enable Facebook Data Collection",
                 "type": "bool",
                 "choices": ["true", "false"],
             },
@@ -84,17 +82,17 @@ class TestFeedPulseSettings(unittest.TestCase):
         )
 
     def test_update_bool_setting(self):
-        Settings.enable_x_data_collection = True
+        Settings.enable_facebook_data_collection = True
 
         json = {
             "settingsList": [
-                {"settingName": "enable_x_data_collection", "settingValue": "False"}
+                {"settingName": "enable_facebook_data_collection", "settingValue": "False"}
             ]
         }
 
         updated = Settings.update_settings(json)
 
-        self.assertEqual(Settings.enable_x_data_collection, False)
+        self.assertEqual(Settings.enable_facebook_data_collection, False)
         self.assertTrue(updated)
 
     def test_update_model_setting(self):
@@ -125,12 +123,12 @@ class TestFeedPulseSettings(unittest.TestCase):
         self.assertTrue(updated)
 
     def test_update_model_invalid_bool_setting(self):
-        Settings.enable_x_data_collection = False
+        Settings.enable_facebook_data_collection = False
 
         json = {
             "settingsList": [
                 {
-                    "settingName": "enable_x_data_collection",
+                    "settingName": "enable_facebook_data_collection",
                     "settingValue": "invalid_value",
                 }
             ]
@@ -138,7 +136,7 @@ class TestFeedPulseSettings(unittest.TestCase):
 
         updated = Settings.update_settings(json)
 
-        self.assertEqual(Settings.enable_x_data_collection, False)
+        self.assertEqual(Settings.enable_facebook_data_collection, False)
         self.assertFalse(updated)
 
     def test_update_model_invalid_model_setting(self):
