@@ -9,46 +9,41 @@ class Response:
     def success(data: Any, status: int = 200):
         response = {
             "status": "SUCCESS",
-            "code": status,
             "body": data,
         }
-        return make_response(jsonify(response))
+        return make_response(jsonify(response), status)
 
     @staticmethod
     def failure(details: Any, status: int = 400):
         response = {
             "status": "FAILURE",
-            "code": status,
             "body": details,
         }
-        return make_response(jsonify(response))
+        return make_response(jsonify(response), status)
 
     @staticmethod
     def not_found():
         response = {
             "status": "FAILURE",
-            "code": 404,
             "body": "Endpoint does not exist",
         }
-        return make_response(jsonify(response))
+        return make_response(jsonify(response), 404)
 
     @staticmethod
     def pending():
         response = {
             "status": "PENDING",
-            "code": 102,
             "body": "Request in progress",
         }
-        return make_response(jsonify(response))
+        return make_response(jsonify(response), 102)
 
     @staticmethod
     def server_error():
         response = {
             "status": "FAILURE",
-            "code": 500,
             "body": "Server error",
         }
-        return make_response(jsonify(response))
+        return make_response(jsonify(response), 500)
 
     @staticmethod
     def deprecated(original_response: Callable[[Any], Any]) -> Any:
