@@ -30,6 +30,14 @@ class Response:
         return make_response(jsonify(response), 404)
 
     @staticmethod
+    def pending():
+        response = {
+            "status": "PENDING",
+            "body": "Request in progress",
+        }
+        return make_response(jsonify(response), 102)
+
+    @staticmethod
     def server_error():
         response = {
             "status": "FAILURE",
