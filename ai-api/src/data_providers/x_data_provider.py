@@ -4,18 +4,22 @@ from random import randint
 
 from src.config.environment import Environment
 from src.data.feedback_data_unit import FeedbackDataUnit
-from src.data_providers.data_provider import DataProvider
+from src.utlity.util import deprecated
+
+# DEPRECATED
 
 
-class XDataProvider(DataProvider):
+class XDataProvider:
     """
     represents a data provider for X
     """
 
+    @deprecated
     def __init__(self) -> None:
         self.client = twikit.Client("en-US")
         self.logged_in = False
 
+    @deprecated
     async def login(self):
         await self.client.login(
             auth_info_1=Environment.x_username,
@@ -25,6 +29,7 @@ class XDataProvider(DataProvider):
 
         self.logged_in = True
 
+    @deprecated
     async def get_tweets(
         self, num_tweets: int, query: str
     ) -> tuple[FeedbackDataUnit, ...]:
@@ -73,6 +78,7 @@ class XDataProvider(DataProvider):
 
         return tuple(all_tweets)
 
+    @deprecated
     def tweet_to_data_unit(self, tweet: twikit.Tweet) -> FeedbackDataUnit:
         """
         Converts from a tweet to a MainDataUnit

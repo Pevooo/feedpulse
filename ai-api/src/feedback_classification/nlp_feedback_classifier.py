@@ -1,23 +1,27 @@
-from transformers import Pipeline
-from typing import Optional
+from transformers import pipeline
 
 
 class NLPFeedbackClassifier:
     """
-    a classifier based on sentiment analysis that classifies the feedback by predicting how many stars would this
-    feedback gain (1 - 5 stars)
+    a classifier based on sentiment analysis that classifies the feedback by predicting if it positive, negative or neutral
     """
 
-    def __init__(self, classifier: Pipeline):
-        self.classifier = classifier
+    def __init__(self):
+        self.classifier = pipeline(
+            "sentiment-analysis", model="tabularisai/multilingual-sentiment-analysis"
+        )
 
-    def __call__(self, text: str) -> Optional[bool]:
-        stars = self.extract_stars(self.classifier(text))
-        if stars < 3:
-            return False
-        elif stars > 3:
-            return True
-        return None
+    def _get_sentiments(self, texts: list[str]):
+        return self.classifier(texts)
 
-    def extract_stars(self, result: list[dict[str, str]]) -> int:
-        return int(result[0]["label"][0])
+    def classify(self, texts: list[str]) -> list[bool | None]:
+        results = self._get_sentiments(texts)
+        bool_list: list[bool | None] = [
+            (
+                True
+                if result["label"] in ["Positive", "Very Positive"]
+                else False if result["label"] in ["Negative", "Very Negative"] else None
+            )
+            for result in results
+        ]
+        return bool_list

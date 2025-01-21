@@ -9,10 +9,10 @@ from src.config.response import Response
 from src.config.router import Router
 from src.control.feed_pulse_controller import FeedPulseController
 from src.data_providers.facebook_data_provider import FacebookDataProvider
-from src.data_providers.x_data_provider import XDataProvider
+from src.exception_handling.ExceptionReporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.topic_detection.topic_detector import TopicDetector
+from src.topics.topic_detector import TopicDetector
 
 
 class FeedPulseAPI:
@@ -21,12 +21,14 @@ class FeedPulseAPI:
         feedback_classifier: FeedbackClassifier,
         topic_detector: TopicDetector,
         report_handler: ReportHandler,
+        exception_reporter: ExceptionReporter,
     ):
         self.flask_app = Flask(__name__)
         self.__setup_routes()
         self.report_handler = report_handler
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
+        self.reporter = exception_reporter
 
     def run(self):
         self.flask_app.run()
@@ -41,6 +43,15 @@ class FeedPulseAPI:
             Settings.feedback_classification_model()
         )
 
+    def __setup_exception_reporter(self):
+        @self.flask_app.errorhandler(Exception)
+        def handle_exception(e):
+            """
+            Global exception handler for the Flask app.
+            """
+            self.reporter.report(e)
+            return Response.server_error()
+
     def __setup_routes(self):
 
         @self.flask_app.route(Router.MAIN_TESTING_ROUTE, methods=["POST", "GET"])
@@ -50,8 +61,7 @@ class FeedPulseAPI:
                 return render_template("index.html")
             else:
                 access_token = request.form["access_token"]
-                page_id = request.form["page_id"]
-                topics = {"cleanliness", "staff", "food", "activities"}
+                topics = {"cleanliness", "staff", "food", "wifi"}
 
                 controller = FeedPulseController(
                     self.feedback_classifier,
@@ -60,7 +70,7 @@ class FeedPulseAPI:
                     self.report_handler,
                 )
 
-                data_units = controller.fetch_facebook_data(page_id)
+                data_units = controller.fetch_facebook_data()
                 result = controller.run_pipeline(data_units, topics)
                 report = controller.report_handler.create(result)
 
@@ -83,24 +93,6 @@ class FeedPulseAPI:
                 target=controller.run_all_steps_facebook,
                 args=(page_id, topics, url),
                 daemon=True,
-            )
-            process_thread.start()
-            return Response.success("Successfully Started Processing")
-
-        @self.flask_app.route(Router.X_DATA_PROCESSING_ROUTE, methods=["GET"])
-        @self.inject
-        def process_x_data(search_key: str, num_tweets: int, topics: str, url: str):
-            topics = set(topics.split(","))
-            controller = FeedPulseController(
-                self.feedback_classifier,
-                self.topic_detector,
-                XDataProvider(),
-                self.report_handler,
-            )
-
-            process_thread = threading.Thread(
-                target=controller.run_all_steps_x,
-                args=(search_key, num_tweets, topics, url),
             )
             process_thread.start()
             return Response.success("Successfully Started Processing")
@@ -150,5 +142,6 @@ if __name__ == "__main__":
         FeedbackClassifier(Settings.feedback_classification_model()),
         TopicDetector(Settings.topic_segmentation_model()),
         ReportHandler(Settings.report_creation_model()),
+        ExceptionReporter(),
     )
     app.run()

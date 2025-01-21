@@ -8,3 +8,4 @@ export interface AuthResponse {
   "expiresOn": string;
   "refreshTokenExpiration": string;
 }
+

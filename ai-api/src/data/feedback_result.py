@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from src.topics.feedback_topic import FeedbackTopic
+
 
 @dataclass
 class FeedbackResult:
@@ -8,4 +10,4 @@ class FeedbackResult:
     """
 
     impression: bool
-    topics: tuple[str, ...]
+    topics: tuple[FeedbackTopic, ...]

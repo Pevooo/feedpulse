@@ -1,11 +1,13 @@
+import os
+import logging
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from api import FeedPulseAPI
 from src.config.settings import Settings
 from src.config.router import Router
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.topic_detection.topic_detector import TopicDetector
+from src.topics.topic_detector import TopicDetector
 
 FAKE_API_RESPONSE = {
     "posts": {
@@ -39,10 +41,14 @@ class TestEndToEnd(unittest.IsolatedAsyncioTestCase):
             FeedbackClassifier(Settings.feedback_classification_model()),
             TopicDetector(Settings.topic_segmentation_model()),
             ReportHandler(Settings.report_creation_model()),
+            Mock(),
         )
         self.app = self.feed_pulse_app.flask_app
         self.app.config["TESTING"] = True
         self.client = self.app.test_client()  # Flask's test client for HTTP requests
+        logging.getLogger("grpc").setLevel(logging.CRITICAL)
+        os.environ["GRPC_VERBOSITY"] = "NONE"
+        os.environ["GRPC_TRACE"] = "none"
 
     @patch("requests.get")
     @patch.object(ReportHandler, "create")

@@ -1,0 +1,102 @@
+import unittest
+from unittest.mock import Mock, patch
+
+from api import FeedPulseAPI
+from flask import Flask
+
+from src.config.response import Response
+
+
+class TestAPI(unittest.TestCase):
+    def setUp(self):
+        # Set up a Flask test app
+        self.app = Flask(__name__)
+        self.client = self.app.test_client()
+        self.feed_pulse_app = FeedPulseAPI(
+            Mock(),
+            Mock(),
+            Mock(),
+            Mock(),
+        )
+
+        # Example route for testing
+        @self.app.route("/deprecated-endpoint")
+        @Response.deprecated
+        def deprecated_endpoint():
+            return Response.success({"message": "This is a deprecated endpoint"})
+
+        @self.app.route("/internal-route")
+        @self.feed_pulse_app.internal
+        def internal_route():
+            return Response.success(
+                {"message": "Accessible only in non-production environments"}
+            )
+
+        @self.app.route("/inject-route", methods=["GET", "POST"])
+        @self.feed_pulse_app.inject
+        def inject_route(param1=None, param2=None):
+            return Response.success({"param1": param1, "param2": param2})
+
+    def test_deprecated_response(self):
+        # Simulate a request to the deprecated endpoint
+        with self.app.test_request_context():
+            response = self.client.get("/deprecated-endpoint")
+            self.assertEqual(response.status_code, 200)
+
+            # Parse the JSON response
+            json_data = response.get_json()
+            self.assertIn("deprecation_warning", json_data)
+            self.assertEqual(
+                json_data["deprecation_warning"],
+                "This endpoint is deprecated and will be removed in future versions.",
+            )
+            self.assertEqual(json_data["status"], "SUCCESS")
+            self.assertEqual(
+                json_data["body"]["message"], "This is a deprecated endpoint"
+            )
+
+    @patch("src.config.environment.Environment.is_production_environment", True)
+    def test_internal_route_in_production(self):
+        """Test that the route returns 404 in production."""
+        with self.app.test_request_context():
+            response = self.client.get("/internal-route")
+            self.assertEqual(response.status_code, 404)
+            json_data = response.get_json()
+            self.assertEqual(json_data["status"], "FAILURE")
+            self.assertEqual(json_data["body"], "Endpoint does not exist")
+
+    @patch("src.config.environment.Environment.is_production_environment", False)
+    def test_internal_route_in_non_production(self):
+        """Test that the route is accessible in non-production."""
+        with self.app.test_request_context():
+            response = self.client.get("/internal-route")
+            self.assertEqual(response.status_code, 200)
+            json_data = response.get_json()
+            self.assertEqual(json_data["status"], "SUCCESS")
+            self.assertEqual(
+                json_data["body"]["message"],
+                "Accessible only in non-production environments",
+            )
+
+    def test_inject_query_string(self):
+        """Test that query string parameters are injected into the function."""
+        with self.app.test_request_context():
+            response = self.client.get("/inject-route?param1=value1&param2=value2")
+            self.assertEqual(response.status_code, 200)
+            json_data = response.get_json()
+            self.assertEqual(json_data["status"], "SUCCESS")
+            self.assertEqual(json_data["body"]["param1"], "value1")
+            self.assertEqual(json_data["body"]["param2"], "value2")
+
+    def test_inject_form_data(self):
+        """Test that form parameters are injected into the function."""
+        with self.app.test_request_context():
+            response = self.client.post(
+                "/inject-route",
+                data={"param1": "form_value1", "param2": "form_value2"},
+            )
+            self.assertEqual(response.status_code, 200)
+            json_data = response.get_json()
+            self.assertEqual(json_data["status"], "SUCCESS")
+            self.assertEqual(json_data["body"]["param1"], "form_value1")
+            self.assertEqual(json_data["body"]["param2"], "form_value2")

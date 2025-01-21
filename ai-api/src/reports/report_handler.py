@@ -5,12 +5,14 @@ import requests
 from src.data.pipeline_result import PipelineResult
 from src.models.model import Model
 from src.models.prompt import Prompt
+from src.utlity.util import deprecated
 
 
 class ReportHandler:
     def __init__(self, model: Model):
         self.model = model
 
+    @deprecated
     def send_report(self, report: str, url: str):
         try:
             requests.post(url, json=report, timeout=0.1)
@@ -32,7 +34,8 @@ class ReportHandler:
         topic_counts = json.dumps(result.topic_counts)
         return self.model.generate_content(self._generate_prompt(topic_counts))
 
-    def _generate_prompt(self, topic_counts: str) -> str:
+    @staticmethod
+    def _generate_prompt(topic_counts: str) -> Prompt:
         return Prompt(
             instructions=(
                 """
@@ -53,4 +56,4 @@ class ReportHandler:
             context=None,
             examples=None,
             input_text=topic_counts,
-        ).to_text()
+        )

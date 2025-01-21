@@ -49,6 +49,7 @@ class TestFeedPulseSettings(unittest.TestCase):
                 "settingName": "report_creation_model",
                 "settingValue": "PhiModel",
                 "prettyName": "Report Creation Model",
+                "type": "enum",
                 "choices": ["GeminiModel", "PhiModel", "OpenAiModel"],
             },
             settings,
@@ -62,7 +63,22 @@ class TestFeedPulseSettings(unittest.TestCase):
                 "settingName": "enable_x_data_collection",
                 "settingValue": True,
                 "prettyName": "Enable X Data Collection",
+                "type": "bool",
                 "choices": ["true", "false"],
+            },
+            settings,
+        )
+
+    def test_get_settings_int_setting(self):
+        Settings.processing_batch_size = 1
+        settings = Settings.get_settings()
+        self.assertIn(
+            {
+                "settingName": "processing_batch_size",
+                "settingValue": 1,
+                "prettyName": "Processing Batch Size",
+                "type": "int",
+                "choices": [1, 2, 4, 8, 16],
             },
             settings,
         )
@@ -93,6 +109,19 @@ class TestFeedPulseSettings(unittest.TestCase):
         updated = Settings.update_settings(json)
 
         self.assertEqual(Settings.report_creation_model, PhiModel)
+        self.assertTrue(updated)
+
+    def test_update_int_setting(self):
+        Settings.processing_batch_size = 0
+        json = {
+            "settingsList": [
+                {"settingName": "processing_batch_size", "settingValue": "4"}
+            ]
+        }
+
+        updated = Settings.update_settings(json)
+
+        self.assertEqual(Settings.processing_batch_size, 4)
         self.assertTrue(updated)
 
     def test_update_model_invalid_bool_setting(self):
@@ -127,4 +156,21 @@ class TestFeedPulseSettings(unittest.TestCase):
         updated = Settings.update_settings(json)
 
         self.assertEqual(Settings.report_creation_model, GeminiModel)
+        self.assertFalse(updated)
+
+    def test_update_model_invalid_int_setting(self):
+        Settings.processing_batch_size = 2
+
+        json = {
+            "settingsList": [
+                {
+                    "settingName": "processing_batch_size",
+                    "settingValue": "100",
+                }
+            ]
+        }
+
+        updated = Settings.update_settings(json)
+
+        self.assertEqual(Settings.processing_batch_size, 2)
         self.assertFalse(updated)
