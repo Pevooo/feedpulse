@@ -30,7 +30,7 @@ class Response:
             "body": "Endpoint does not exist",
         }
         return make_response(jsonify(response))
-    
+
     @staticmethod
     def pending():
         response = {
