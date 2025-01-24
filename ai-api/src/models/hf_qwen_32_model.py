@@ -3,27 +3,22 @@ from src.models.model import Model
 from src.models.prompt import Prompt
 from huggingface_hub import InferenceClient
 
+
 class HFQwen32BModel(Model):
     def __init__(self):
         self.client = InferenceClient(api_key=Environment.hf_token)
 
     def generate_content(self, prompt: Prompt) -> str:
         messages = [
-            {
-                "role": "system",
-                "content": prompt.get_system_msg()
-            },
-            {
-                "role": "user",
-                "content": prompt.input_text
-            }
+            {"role": "system", "content": prompt.get_system_msg()},
+            {"role": "user", "content": prompt.input_text},
         ]
 
         response = self.client.chat.completions.create(
             model="Qwen/QwQ-32B-Preview",
             messages=messages,
             max_tokens=2048,
-            stream=True
+            stream=True,
         )
 
         response_text = ""

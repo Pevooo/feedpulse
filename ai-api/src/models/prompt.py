@@ -30,10 +30,7 @@ class Prompt:
         )
 
     def get_system_msg(self) -> str:
-        return (
-            f"Instructions: {self.instructions}\n"
-            f"{self._get_examples()}"
-        )
+        return f"Instructions: {self.instructions}\n" f"{self._get_examples()}"
 
     def _get_context(self):
         return f"Context: {self.context}\n" if self.context else ""

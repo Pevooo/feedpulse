@@ -23,7 +23,7 @@ class TestPrompt(unittest.TestCase):
             "When provided with example1, expected output should be output1\n"
             "When provided with example2, expected output should be output2\n"
             "When provided with example3, expected output should be output3\n"
-            "Prompt: This is the prompt text\n"
+            "Prompt:\nThis is the prompt text\n"
         )
 
         self.assertEqual(str(prompt), expected_output)
@@ -42,12 +42,11 @@ class TestPrompt(unittest.TestCase):
 
         expected_output = (
             "Instructions: This is the instructions\n"
-            "Context: None\n"
             "Examples:\n"
             "When provided with example1, expected output should be output1\n"
             "When provided with example2, expected output should be output2\n"
             "When provided with example3, expected output should be output3\n"
-            "Prompt: This is the prompt text\n"
+            "Prompt:\nThis is the prompt text\n"
         )
 
         self.assertEqual(str(prompt), expected_output)
@@ -62,8 +61,7 @@ class TestPrompt(unittest.TestCase):
 
         expected_output = (
             "Instructions: This is the instructions\n"
-            "Context: None\n"
-            "Prompt: This is the prompt text\n"
+            "Prompt:\nThis is the prompt text\n"
         )
 
         self.assertEqual(str(prompt), expected_output)
@@ -79,7 +77,7 @@ class TestPrompt(unittest.TestCase):
         expected_output = (
             "Instructions: This is the instructions\n"
             "Context: This is the Context\n"
-            "Prompt: This is the prompt text\n"
+            "Prompt:\nThis is the prompt text\n"
         )
 
         self.assertEqual(str(prompt), expected_output)
