@@ -3,7 +3,7 @@ from src.models.model import Model
 from src.models.prompt import Prompt
 from huggingface_hub import InferenceClient
 
-class HFQwenQwQ32BModel(Model):
+class HFQwen32BModel(Model):
     def __init__(self):
         self.client = InferenceClient(api_key=Environment.hf_token)
 
