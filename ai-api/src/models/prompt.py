@@ -23,12 +23,22 @@ class Prompt:
     def to_text(self) -> str:
         return (
             f"Instructions: {self.instructions}\n"
-            f"Context: {self.context}\n"
-            f"{self._get_examples_str()}"
-            f"Prompt: {self.input_text}\n"
+            f"{self._get_context()}"
+            f"{self._get_examples()}"
+            f"Prompt:\n"
+            f"{self.input_text}\n"
         )
 
-    def _get_examples_str(self) -> str:
+    def get_system_msg(self) -> str:
+        return (
+            f"Instructions: {self.instructions}\n"
+            f"{self._get_examples()}"
+        )
+
+    def _get_context(self):
+        return f"Context: {self.context}\n" if self.context else ""
+
+    def _get_examples(self) -> str:
         examples_text = ""
         if self.examples is not None and len(self.examples) > 0:
             examples_text += "Examples:\n"
