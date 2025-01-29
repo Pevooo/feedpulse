@@ -28,3 +28,4 @@ class Llama33_70BVersatileModel(Model):
                 response_text += chunk.choices[0].delta.content
 
         return response_text
+        
