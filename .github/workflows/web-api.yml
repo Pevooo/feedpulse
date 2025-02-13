@@ -26,14 +26,14 @@ jobs:
 
       - name: Build
         run: |
-          dotnet build web-api
+          dotnet build web-api/web-api
 
       - name: Restore dependencies
-        run: dotnet restore web-api/web-api.csproj
+        run: dotnet restore web-api/web-api/web-api.csproj
 
       - name: Run linting
         run: |
-          dotnet format web-api/web-api.csproj --verify-no-changes
+          dotnet format web-api/web-api/web-api.csproj --verify-no-changes
 
       - name: Test
-        run: dotnet test web-api/web-api.csproj --no-build --verbosity normal
+        run: dotnet test web-api/web-api/web-api.csproj --no-build --verbosity normal
