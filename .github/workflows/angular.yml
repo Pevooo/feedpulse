@@ -40,6 +40,10 @@ jobs:
       - name: Run linting
         run: npm run lint
         working-directory: 'Interface'
+       # install fontawesome code
+      - name: install fontawesome
+        run: npm install @fortawesome/fontawesome-free
+        working-directory: 'Interface'
 
       # Build the Angular app
       - name: Build Angular app
