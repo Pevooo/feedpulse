@@ -1,16 +1,15 @@
-import threading
 from functools import wraps
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify
 
 from src.config.environment import Environment
 from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
-from src.control.feed_pulse_controller import FeedPulseController
-from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.exception_handling.ExceptionReporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
+from src.models.global_model_provider import GlobalModelProvider
+from src.models.google_model_provider import GoogleModelProvider
 from src.reports.report_handler import ReportHandler
 from src.topics.topic_detector import TopicDetector
 
@@ -24,24 +23,16 @@ class FeedPulseAPI:
         exception_reporter: ExceptionReporter,
     ):
         self.flask_app = Flask(__name__)
-        self.__setup_routes()
         self.report_handler = report_handler
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
         self.reporter = exception_reporter
 
+        self.__setup_routes()
+        self.__setup_exception_reporter()
+
     def run(self):
         self.flask_app.run()
-
-    def update_config(self):
-        """
-        Updates the config from `FeedPulseSettings`
-        """
-        self.report_handler = ReportHandler(Settings.report_creation_model())
-        self.topic_detector = TopicDetector(Settings.topic_segmentation_model())
-        self.feedback_classifier = FeedbackClassifier(
-            Settings.feedback_classification_model()
-        )
 
     def __setup_exception_reporter(self):
         @self.flask_app.errorhandler(Exception)
@@ -53,49 +44,21 @@ class FeedPulseAPI:
             return Response.server_error()
 
     def __setup_routes(self):
+        @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["POST"])
+        def instagram_webhook():
+            # TODO: Implement Instagram Webhook
 
-        @self.flask_app.route(Router.MAIN_TESTING_ROUTE, methods=["POST", "GET"])
-        @self.internal
-        def index():
-            if request.method == "GET":
-                return render_template("index.html")
-            else:
-                access_token = request.form["access_token"]
-                topics = {"cleanliness", "staff", "food", "wifi"}
+            # 1) Get the data changes and process them into a unit format
+            # 2) Save the data in the streaming folder
+            pass
 
-                controller = FeedPulseController(
-                    self.feedback_classifier,
-                    self.topic_detector,
-                    FacebookDataProvider(access_token),
-                    self.report_handler,
-                )
+        @self.flask_app.route(Router.FACEBOOK_WEBHOOK, methods=["POST"])
+        def facebook_webhook():
+            # TODO: Implement Facebook Webhook
 
-                data_units = controller.fetch_facebook_data()
-                result = controller.run_pipeline(data_units, topics)
-                report = controller.report_handler.create(result)
-
-                return render_template("index.html", report=report)
-
-        @self.flask_app.route(Router.FACEBOOK_DATA_PROCESSING_ROUTE, methods=["GET"])
-        @self.inject
-        def process_facebook_data(
-            page_id: str, access_token: str, topics: str, url: str
-        ):
-            topics = set(topics.split(","))
-            controller = FeedPulseController(
-                self.feedback_classifier,
-                self.topic_detector,
-                FacebookDataProvider(access_token),
-                self.report_handler,
-            )
-
-            process_thread = threading.Thread(
-                target=controller.run_all_steps_facebook,
-                args=(page_id, topics, url),
-                daemon=True,
-            )
-            process_thread.start()
-            return Response.success("Successfully Started Processing")
+            # 1) Get the data changes and process them into a unit format
+            # 2) Save the data in the streaming folder
+            pass
 
         @self.flask_app.route(Router.REMOTE_CONFIG_ROUTE, methods=["GET", "POST"])
         def remote_config():
@@ -138,10 +101,20 @@ class FeedPulseAPI:
 
 
 if __name__ == "__main__":
-    app = FeedPulseAPI(
-        FeedbackClassifier(Settings.feedback_classification_model()),
-        TopicDetector(Settings.topic_segmentation_model()),
-        ReportHandler(Settings.report_creation_model()),
-        ExceptionReporter(),
+
+    # Define the global model provider (and load balancer)
+    model_provider = GlobalModelProvider(
+        providers=[GoogleModelProvider()],
+        retry_delay=60,
     )
+
+    # Define the api class
+    app = FeedPulseAPI(
+        feedback_classifier=FeedbackClassifier(...),
+        topic_detector=TopicDetector(model_provider),
+        report_handler=ReportHandler(model_provider),
+        exception_reporter=ExceptionReporter(),
+    )
+
+    # Run the app
     app.run()

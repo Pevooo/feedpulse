@@ -1,12 +1,3 @@
-from typing import Type
-
-# Suppressing unused import error as we need all the models to be imported to work properly
-
-from src.models.gemini_model import GeminiModel  # noqa: F401
-from src.models.phi_model import PhiModel  # noqa: F401
-from src.models.openai_model import OpenAiModel  # noqa: F401
-
-
 # This class is responsible for managing the setting of the whole app. You can add a setting by adding it in the class
 # alongside with its default value and also add it in `BOOLEAN_SETTINGS` if it's a boolean or in `MODEL_SETTINGS` if
 # it's a model setting (This is for remote config purposes)
@@ -18,28 +9,15 @@ class Settings:
     """
 
     BOOLEAN_SETTINGS = {
-        "enable_x_data_collection",
         "enable_facebook_data_collection",
         "enable_instagram_data_collection",
     }
 
-    MODEL_SETTINGS = {
-        "topic_segmentation_model",
-        "report_creation_model",
-        "feedback_classification_model",
-    }
-
     NUMBER_SETTINGS = {
-        "processing_batch_size": [1, 2, 4, 8, 16],
+        "processing_batch_size": [1, 2, 4, 8, 16, 32],
     }
-
-    # Model-related config
-    feedback_classification_model: Type = GeminiModel
-    topic_segmentation_model: Type = GeminiModel
-    report_creation_model: Type = GeminiModel
 
     # Features
-    enable_x_data_collection: bool = True
     enable_facebook_data_collection: bool = True
     enable_instagram_data_collection: bool = True
 
@@ -57,17 +35,6 @@ class Settings:
                     "type": "bool",
                     "choices": ["true", "false"],
                 },
-            )
-
-        for setting in cls.MODEL_SETTINGS:
-            settings.append(
-                {
-                    "settingName": setting,
-                    "settingValue": getattr(cls, setting).__name__,
-                    "prettyName": " ".join(setting.split("_")).title(),
-                    "type": "enum",
-                    "choices": ["GeminiModel", "PhiModel", "OpenAiModel"],
-                }
             )
 
         for setting in cls.NUMBER_SETTINGS:
@@ -98,19 +65,9 @@ class Settings:
         changed = False
         if setting_name in cls.BOOLEAN_SETTINGS:
             changed = cls._set_bool_setting(setting_name, value)
-        elif setting_name in cls.MODEL_SETTINGS:
-            changed = cls._set_model_setting(setting_name, value)
         elif setting_name in cls.NUMBER_SETTINGS:
             changed = cls._set_int_setting(setting_name, value)
         return changed
-
-    @classmethod
-    def _set_model_setting(cls, setting_name: str, value: str) -> bool:
-        model_class = globals().get(value)
-        if model_class is None:
-            return False  # Model not found
-        setattr(cls, setting_name, model_class)
-        return True
 
     @classmethod
     def _set_int_setting(cls, setting_name: str, value: str) -> bool:

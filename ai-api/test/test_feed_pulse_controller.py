@@ -3,7 +3,6 @@ from unittest.mock import Mock, patch, MagicMock
 from src.data.pipeline_result import PipelineResult
 from src.data.feedback_result import FeedbackResult
 from src.data.feedback_data_unit import FeedbackDataUnit
-from src.data_providers.x_data_provider import XDataProvider
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.topics.feedback_topic import FeedbackTopic
@@ -11,7 +10,7 @@ from src.topics.topic_detector import TopicDetector
 from src.control.feed_pulse_controller import FeedPulseController
 
 
-class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
+class TestFeedPulseController(unittest.TestCase):
     def setUp(self):
         self.feedback_classifier = Mock(spec=FeedbackClassifier)
         self.topic_detector = Mock(spec=TopicDetector)
@@ -41,9 +40,3 @@ class TestFeedPulseController(unittest.IsolatedAsyncioTestCase):
 
         self.assertIsInstance(result, PipelineResult)
         self.assertEqual(len(result.items), 1)
-
-    def test_wrong_provider_x(self):
-        self.data_provider = XDataProvider()
-
-        with self.assertRaises(TypeError):
-            self.controller.fetch_facebook_data()
