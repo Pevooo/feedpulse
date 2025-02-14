@@ -47,11 +47,17 @@ class FeedPulseAPI:
         @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["POST"])
         def instagram_webhook():
             # TODO: Implement Instagram Webhook
+
+            # 1) Get the data changes and process them into a unit format
+            # 2) Save the data in the streaming folder
             pass
 
         @self.flask_app.route(Router.FACEBOOK_WEBHOOK, methods=["POST"])
         def facebook_webhook():
             # TODO: Implement Facebook Webhook
+
+            # 1) Get the data changes and process them into a unit format
+            # 2) Save the data in the streaming folder
             pass
 
         @self.flask_app.route(Router.REMOTE_CONFIG_ROUTE, methods=["GET", "POST"])
