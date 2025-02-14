@@ -17,6 +17,6 @@ namespace Api.Data.Entities.Identity
         public DateTime ExpiryDate { get; set; }
         [ForeignKey(nameof(AppUserId))]
         [InverseProperty(nameof(Organization.UserRefreshTokens))]
-        public virtual Organization? Organization { get; set; }
+        public virtual AppUser? Organization { get; set; }
     }
 }

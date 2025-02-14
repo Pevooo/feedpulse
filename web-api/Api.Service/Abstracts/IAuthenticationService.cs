@@ -6,8 +6,8 @@ namespace Api.Service.Abstracts
 {
     public interface IAuthenticationService
     {
-        public Task<JWTAuthRes> GetJWTToken(Organization organization);
-        public Task<JWTAuthRes> GetRefreshToken(Organization organization, JwtSecurityToken jwtToken, DateTime? expiryDate, string refreshToken);
+        public Task<JWTAuthRes> GetJWTToken(AppUser organization);
+        public Task<JWTAuthRes> GetRefreshToken(AppUser organization, JwtSecurityToken jwtToken, DateTime? expiryDate, string refreshToken);
         public Task<(string, DateTime?)> ValidateDetails(JwtSecurityToken JwtToken, string accessToken, string RefreshToken);
         public JwtSecurityToken ReadJWTToken(string token);
         public Task<string> ValidateToken(string accessToken);

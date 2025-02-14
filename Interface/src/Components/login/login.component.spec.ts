@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LoginComponent } from '../login/login.component';
+import { LoginComponent } from './login.component';
 import { ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';  // For reactive forms
 import { HttpClientModule } from '@angular/common/http';  // Import HttpClientModule to provide HttpClient
-import { AuthService } from '../services/auth.service';  // Import AuthService for dependency injection
+import { AuthService } from '../../app/services/auth.service';  // Import AuthService for dependency injection
 
 describe('LoginComponent', () => {
   let component: LoginComponent;

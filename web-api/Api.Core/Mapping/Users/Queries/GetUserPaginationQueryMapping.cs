@@ -7,7 +7,7 @@ namespace Api.Core.Mapping.Users
     {
         public void GetUserPaginationMapping()
         {
-            _ = CreateMap<Organization, GetUserListResponse>()
+            _ = CreateMap<AppUser, GetUserListResponse>()
                 .ForMember(x => x.FullName, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(x => x.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(x => x.Address, opt => opt.MapFrom(src => src.Address))

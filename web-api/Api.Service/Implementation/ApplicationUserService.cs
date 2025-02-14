@@ -10,14 +10,14 @@ namespace Api.Service.Implementation
     public class ApplicationUserService : IApplicationUserService
     {
         #region Fields
-        private readonly UserManager<Organization> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ApplicationDbContext _dbcontext;
         private readonly IUrlHelper _urlHelper;
         #endregion
         #region Constructor
-        public ApplicationUserService(UserManager<Organization> userManager,
+        public ApplicationUserService(UserManager<AppUser> userManager,
                                      IHttpContextAccessor httpContextAccessor,
                                      IEmailService emailsService,
                                      ApplicationDbContext applicationDBContext,
@@ -33,7 +33,7 @@ namespace Api.Service.Implementation
 
         #endregion
         #region HandleFunctions
-        public async Task<string> AddUser(Organization user, string password)
+        public async Task<string> AddUser(AppUser user, string password)
         {
             var trans = _dbcontext.Database.BeginTransaction();
             try

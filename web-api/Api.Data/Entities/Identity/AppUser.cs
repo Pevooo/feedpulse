@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Api.Data.Entities.Identity
 {
-    public class Organization : IdentityUser
+    public class AppUser : IdentityUser
     {
         public string FullName { get; set; }
         public string? Address { get; set; }
         public string? Country { get; set; }
-        public string Description { get; set; }
+        public string Photo { get; set; }
         [EncryptColumn]
         public string? Code { get; set; }
 

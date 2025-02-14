@@ -57,7 +57,7 @@ namespace web_api
 
             using (var scope = app.Services.CreateScope())
             {
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Organization>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 await RoleSeeder.SeedAsync(roleManager);
                 await UserSeeder.SeedAsync(userManager);

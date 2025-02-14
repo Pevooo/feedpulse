@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<Organization>
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
-        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
     }
 }

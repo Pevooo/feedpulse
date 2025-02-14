@@ -17,11 +17,11 @@ namespace Api.Core.Features.Users.Commands.Handlers
     {
         #region Fields
         private readonly IMapper _mapper;
-        private readonly UserManager<Organization> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly IApplicationUserService _applicationUserService;
         #endregion
         #region Constructors
-        public UserCommandHandler(IMapper mapper, UserManager<Organization> userManager, IApplicationUserService applicationService)
+        public UserCommandHandler(IMapper mapper, UserManager<AppUser> userManager, IApplicationUserService applicationService)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -31,7 +31,7 @@ namespace Api.Core.Features.Users.Commands.Handlers
         #region HandlesFunctions
         public async Task<Response<string>> Handle(AddUserCommand request, CancellationToken cancellationToken)
         {
-            var identityUser = _mapper.Map<Organization>(request);
+            var identityUser = _mapper.Map<AppUser>(request);
             var result = await _applicationUserService.AddUser(identityUser, request.Password);
             switch (result)
             {

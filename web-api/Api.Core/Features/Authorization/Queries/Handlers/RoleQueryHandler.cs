@@ -18,12 +18,12 @@ namespace Api.Core.Features.Authorization.Queries.Handlers
         #region Fields
         private readonly IAuthorizationService _authorizationService;
         private readonly IMapper _mapper;
-        private readonly UserManager<Organization> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         #endregion
         #region Constructors
         public RoleQueryHandler(IAuthorizationService authorizationService,
                                 IMapper mapper,
-                                UserManager<Organization> userManager)
+                                UserManager<AppUser> userManager)
         {
             _authorizationService = authorizationService;
             _mapper = mapper;

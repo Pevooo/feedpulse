@@ -7,7 +7,7 @@ namespace Api.Core.Mapping.Users
     {
         public void GetUserByIdMapping()
         {
-            _ = CreateMap<Organization, GetUserByIdResponse>();
+            _ = CreateMap<AppUser, GetUserByIdResponse>();
         }
     }
 }

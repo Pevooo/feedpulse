@@ -1,0 +1,48 @@
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-12 col-lg-9 col-xl-7">
+        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+          <div class="card-body p-4 p-md-5">
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center">Login Form</h3>
+            <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)" class="needs-validation" novalidate>
+              <!-- Full Name -->
+              <div class="row">
+                <!-- User Name -->
+                
+                  <div class="form-floating mb-4">
+                    <input type="text" name="userName" [(ngModel)]="Model.userName" required minlength="3" maxlength="20" #userName="ngModel" class="form-control" id="userName" />
+                    <label for="userName">User Name*</label>
+                    <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="invalid-feedback">
+                      <small *ngIf="userName.errors!['required']">User Name is required.</small>
+                      <small *ngIf="userName.errors!['minlength']">User Name must be at least 3 characters long.</small>
+                      <small *ngIf="userName.errors!['maxlength']">User Name cannot exceed 20 characters.</small>
+                    </div>
+                  </div>
+                
+              </div>
+
+   
+
+              <!-- Password -->
+              <div class="form-floating mb-4">
+                <input type="password" name="password" [(ngModel)]="Model.password" required minlength="8" #password="ngModel" class="form-control" id="password" />
+                <label for="password">Password*</label>
+                <div *ngIf="password.invalid && (password.dirty || password.touched)" class="invalid-feedback">
+                  <small *ngIf="password.errors!['required']">Password is required.</small>
+                  <small *ngIf="password.errors!['minlength']">Password must be at least 8 characters long.</small>
+                </div>
+              </div>
+
+             
+              <!-- Submit Button -->
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg" >Login</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
