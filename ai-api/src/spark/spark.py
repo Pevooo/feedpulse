@@ -39,6 +39,7 @@ exceptions_schema = StructType(
     ]
 )
 
+
 class SparkTable(Enum):
     REPORTS = "reports"
     INPUT_COMMENTS = "input_comments"
@@ -66,5 +67,6 @@ class Spark:
 
     def modify(self, table: SparkTable, row_data: str):
         pass
+
 
 spark_instance = Spark()
