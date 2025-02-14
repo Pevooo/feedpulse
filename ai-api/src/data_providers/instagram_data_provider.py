@@ -1,6 +1,8 @@
 import requests
 from datetime import datetime
 
+from typing_extensions import deprecated
+
 from src.data.context_data_unit import ContextDataUnit
 from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.data_provider import DataProvider
@@ -14,6 +16,7 @@ class InstagramDataProvider(DataProvider):
     represents a data provider for the Facebook Graph API to fetch instagram data.
     """
 
+    @deprecated
     def get_instagram_account_id(self) -> str:
         """
         Retrieves the Instagram Business Account ID linked to the Facebook page.
@@ -36,6 +39,7 @@ class InstagramDataProvider(DataProvider):
 
         raise Exception("No Instagram Business Account linked to this page.")
 
+    @deprecated
     def get_posts(self) -> tuple[ContextDataUnit, ...]:
         """
         Gets the Instagram posts from the linked Instagram Business Account.

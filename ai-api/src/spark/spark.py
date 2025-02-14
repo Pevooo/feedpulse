@@ -66,3 +66,5 @@ class Spark:
 
     def modify(self, table: SparkTable, row_data: str):
         pass
+
+spark_instance = Spark()
