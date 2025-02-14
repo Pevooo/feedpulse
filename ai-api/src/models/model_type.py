@@ -1,0 +1,2 @@
+class ModelType:
+    DEFAULT = "default"

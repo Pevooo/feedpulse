@@ -1,5 +1,6 @@
 from typing import Iterable, Optional
-from src.models.model import Model
+
+from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
 from src.topics.feedback_topic import FeedbackTopic
 
@@ -9,8 +10,8 @@ class TopicDetector:
     Detects relevant topics from a given text based on a predefined list of topics.
     """
 
-    def __init__(self, model: Model) -> None:
-        self.model = model
+    def __init__(self, model_provider: GlobalModelProvider) -> None:
+        self.provider = model_provider
 
     def detect(
         self,
@@ -30,9 +31,8 @@ class TopicDetector:
             list[tuple[str, ...]]: A tuple of detected topics.
         """
         prompt = self._generate_prompt(text_batch, org_topics, context)
-        responses: list[str] = (
-            self.model.generate_content(prompt).lower().replace("\n", "").split("|")
-        )
+        response = self.provider.generate_content(prompt)
+        responses: list[str] = response.lower().replace("\n", "").split("|")
         return self._extract_topics(responses)
 
     @staticmethod

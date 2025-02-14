@@ -1,64 +1,46 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import Mock, MagicMock
+
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
-from src.models.gemini_model import GeminiModel
 
 
-class TestFeedbackClassifier(unittest.TestCase):
+class TestNLPClassifier(unittest.TestCase):
+    def setUp(self):
+        self.nlp_classifier = FeedbackClassifier(Mock())
+        self.nlp_classifier._get_sentiments = Mock()
 
-    @patch.object(GeminiModel, "generate_content")
-    def test_complaint(self, mock_generate_content):
-        feedback_classifier = FeedbackClassifier(GeminiModel())
-        mock_generate_content.return_value = "0"
-        result = feedback_classifier.classify(MagicMock())
+    def test_extract_positive_label(self):
+        self.nlp_classifier._get_sentiments.return_value = [
+            {"label": "Very Positive", "score": 0.9528169631958008}
+        ]
+        self.assertListEqual(self.nlp_classifier.classify(MagicMock()), [True])
 
-        mock_generate_content.assert_called_once()
-        self.assertListEqual(result, [False])
+    def test_extract_negative_label(self):
+        self.nlp_classifier._get_sentiments.return_value = [
+            {"label": "Negative", "score": 0.34671148657798767}
+        ]
+        self.assertListEqual(self.nlp_classifier.classify(MagicMock()), [False])
 
-    @patch.object(GeminiModel, "generate_content")
-    def test_compliment(self, mock_generate_content):
-        feedback_classifier = FeedbackClassifier(GeminiModel())
-        mock_generate_content.return_value = "1"
-        result = feedback_classifier.classify(MagicMock())
+    def test_extract_neutral_label(self):
+        self.nlp_classifier._get_sentiments.return_value = [
+            {"label": "Neutral", "score": 0.5609035491943359}
+        ]
+        self.assertListEqual(self.nlp_classifier.classify(MagicMock()), [None])
 
-        mock_generate_content.assert_called_once()
-        self.assertListEqual(result, [True])
-
-    @patch.object(GeminiModel, "generate_content")
-    def test_neutral(self, mock_generate_content):
-        feedback_classifier = FeedbackClassifier(GeminiModel())
-        mock_generate_content.return_value = "2"
-        result = feedback_classifier.classify(MagicMock())
-
-        mock_generate_content.assert_called_once()
-        self.assertListEqual(result, [None])
-
-    @patch.object(GeminiModel, "generate_content")
-    def test_multiple(self, mock_generate_content):
-        feedback_classifier = FeedbackClassifier(GeminiModel())
-        mock_generate_content.return_value = "0,1,2"
-        result = feedback_classifier.classify(MagicMock())
-
-        mock_generate_content.assert_called_once()
-        self.assertListEqual(result, [False, True, None])
-
-    @patch.object(GeminiModel, "generate_content")
-    def test_empty_string(self, mock_generate_content):
-        feedback_classifier = FeedbackClassifier(GeminiModel())
-        mock_generate_content.return_value = ""
-        result = feedback_classifier.classify(MagicMock())
-
-        mock_generate_content.assert_called_once()
-        self.assertListEqual(result, [])
-
-    @patch.object(GeminiModel, "generate_content")
-    def test_text_passed_to_generate_content(self, mock_generate_content):
-        feedback_classifier = FeedbackClassifier(GeminiModel())
-        mock_generate_content.return_value = ""
-        fake_list = ["hello"]
-        result = feedback_classifier.classify(fake_list)
-
-        mock_generate_content.assert_called_once_with(
-            feedback_classifier._generate_prompt(fake_list)
+    def test_extract_multiple_labels(self):
+        self.nlp_classifier._get_sentiments.return_value = [
+            {"label": "Very Positive", "score": 0.9528169631958008},
+            {"label": "Neutral", "score": 0.5609035491943359},
+            {"label": "Negative", "score": 0.34671148657798767},
+            {"label": "Very Negative", "score": 0.875544011592865},
+            {"label": "Very Positive", "score": 0.6028310060501099},
+            {"label": "Very Negative", "score": 0.6521781086921692},
+            {"label": "Negative", "score": 0.37015214562416077},
+            {"label": "Very Negative", "score": 0.6255631446838379},
+            {"label": "Very Positive", "score": 0.6727625131607056},
+            {"label": "Very Negative", "score": 0.9308859705924988},
+        ]
+        self.assertListEqual(
+            self.nlp_classifier.classify(MagicMock()),
+            [True, None, False, False, True, False, False, False, True, False],
         )
-        self.assertListEqual(result, [])

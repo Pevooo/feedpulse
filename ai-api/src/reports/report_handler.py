@@ -1,23 +1,13 @@
 import json
 
-import requests
-
 from src.data.pipeline_result import PipelineResult
-from src.models.model import Model
+from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
-from src.utlity.util import deprecated
 
 
 class ReportHandler:
-    def __init__(self, model: Model):
-        self.model = model
-
-    @deprecated
-    def send_report(self, report: str, url: str):
-        try:
-            requests.post(url, json=report, timeout=0.1)
-        except requests.exceptions.Timeout:
-            pass
+    def __init__(self, provider: GlobalModelProvider):
+        self.provider = provider
 
     def create(self, result: PipelineResult) -> str:
         """
@@ -32,7 +22,7 @@ class ReportHandler:
         """
 
         topic_counts = json.dumps(result.topic_counts)
-        return self.model.generate_content(self._generate_prompt(topic_counts))
+        return self.provider.generate_content(self._generate_prompt(topic_counts))
 
     @staticmethod
     def _generate_prompt(topic_counts: str) -> Prompt:
