@@ -1,15 +1,8 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import (
-    StructType,
-    StructField,
-    StringType,
-    TimestampType,
-    ArrayType,
-)
 
-spark = SparkSession
+spark = SparkSession.builder.appName("test").getOrCreate()
 
-df = spark.readStream.fomrat("json").load("ai-api/src/coming-data")
+df = spark.readStream.format("json").load("ai-api/src/coming-data")
 
 
 writer = (
