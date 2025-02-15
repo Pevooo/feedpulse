@@ -27,6 +27,8 @@ class TestSpark(unittest.TestCase):
             FakeTable.TEST_STREAMING_IN, FakeTable.TEST_STREAMING_OUT, fake_function
         )
 
+        self.spark.start_streaming_job()
+
     def test_singleton(self):
         new_spark = Spark(
             FakeTable.TEST_STREAMING_IN, FakeTable.TEST_STREAMING_OUT, MagicMock()
@@ -110,7 +112,6 @@ class TestSpark(unittest.TestCase):
 
     def test_streaming_read_1_item(self):
         self.init_paths()
-        self.spark.start_streaming_job()
 
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
@@ -149,7 +150,6 @@ class TestSpark(unittest.TestCase):
 
     def test_streaming_read_32_items_same_file(self):
         self.init_paths()
-        self.spark.start_streaming_job()
 
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
@@ -192,6 +192,7 @@ class TestSpark(unittest.TestCase):
     def reset_paths(self):
         if os.path.exists("test_spark"):
             shutil.rmtree("test_spark")
+            os.makedirs("test_spark/streaming_in")
 
     def init_paths(self):
         os.makedirs(FakeTable.TEST_STREAMING_IN.value, exist_ok=True)
