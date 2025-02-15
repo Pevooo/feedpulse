@@ -6,11 +6,12 @@ from src.config.environment import Environment
 from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
-from src.exception_handling.ExceptionReporter import ExceptionReporter
+from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
 from src.reports.report_handler import ReportHandler
+from src.spark.spark import Spark
 from src.topics.topic_detector import TopicDetector
 
 
@@ -21,15 +22,19 @@ class FeedPulseAPI:
         topic_detector: TopicDetector,
         report_handler: ReportHandler,
         exception_reporter: ExceptionReporter,
+        spark: Spark,
     ):
         self.flask_app = Flask(__name__)
         self.report_handler = report_handler
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
         self.reporter = exception_reporter
+        self.spark = spark
 
         self.__setup_routes()
         self.__setup_exception_reporter()
+
+        spark.start_streaming_job()
 
     def run(self):
         self.flask_app.run()
@@ -108,12 +113,16 @@ if __name__ == "__main__":
         retry_delay=60,
     )
 
+    # Define Spark Singleton
+    spark = Spark()
+
     # Define the api class
     app = FeedPulseAPI(
         feedback_classifier=FeedbackClassifier(...),
         topic_detector=TopicDetector(model_provider),
         report_handler=ReportHandler(model_provider),
-        exception_reporter=ExceptionReporter(),
+        exception_reporter=ExceptionReporter(spark),
+        spark=spark,
     )
 
     # Run the app
