@@ -132,14 +132,14 @@ class TestSpark(unittest.TestCase):
                 StructField("hashed_comment_id", StringType(), False),
                 StructField("platform", StringType(), False),
                 StructField("content", StringType(), False),
+                StructField("sentiment", StringType(), False),
             ]
         )
 
         df = (
             self.spark.spark.read.option("header", "true")
-            .option("inferSchema", "true")
-            .parquet("test_spark/test_streaming_out")
             .schema(output_stream_schema)
+            .parquet("test_spark/test_streaming_out")
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -177,14 +177,14 @@ class TestSpark(unittest.TestCase):
                 StructField("hashed_comment_id", StringType(), False),
                 StructField("platform", StringType(), False),
                 StructField("content", StringType(), False),
+                StructField("sentiment", StringType(), False),
             ]
         )
 
         df = (
             self.spark.spark.read.option("header", "true")
-            .option("inferSchema", "true")
-            .parquet("test_spark/test_streaming_out")
             .schema(output_stream_schema)
+            .parquet("test_spark/test_streaming_out")
         )
 
         data = [row.asDict() for row in df.collect()]

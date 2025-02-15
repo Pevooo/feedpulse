@@ -76,3 +76,6 @@ Thumbs.db
 
 # Security Test
 bandit_report.html
+
+# Checkpoint files
+/checkpoints
