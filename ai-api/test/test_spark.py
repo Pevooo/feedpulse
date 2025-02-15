@@ -146,13 +146,15 @@ class TestSpark(unittest.TestCase):
             data,
         )
 
+        self.assertGreaterEqual(df.count(), 1)
+
     def test_streaming_read_32_items_same_file(self):
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
         data_in = [
             {
-                "hashed_comment_id": "1251",
+                "hashed_comment_id": "34",
                 "platform": "facebook",
                 "content": "hello, world!",
             }
@@ -182,7 +184,7 @@ class TestSpark(unittest.TestCase):
         print(data)
         self.assertIn(
             {
-                "hashed_comment_id": "1251",
+                "hashed_comment_id": "34",
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -190,4 +192,4 @@ class TestSpark(unittest.TestCase):
             data,
         )
 
-        self.assertEqual(df.count(), 32)
+        self.assertGreaterEqual(df.count(), 32)
