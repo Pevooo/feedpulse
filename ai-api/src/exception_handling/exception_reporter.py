@@ -13,7 +13,7 @@ class ExceptionReporter:
             SparkTable.EXCEPTIONS,
             [
                 {
-                    "exception_id": uuid.uuid4(),
+                    "exception_id": str(uuid.uuid4()),
                     "exception_message": str(exception),
                     "time": datetime.now().isoformat(),
                 }

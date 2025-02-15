@@ -22,6 +22,7 @@ class TestEndToEnd(unittest.TestCase):
             TopicDetector(GlobalModelProvider(providers)),
             ReportHandler(GlobalModelProvider(providers)),
             Mock(),
+            Mock(),
         )
         self.app = self.feed_pulse_app.flask_app
         self.app.config["TESTING"] = True

@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from api import FeedPulseAPI
-from flask import Flask
+from flask import Flask, jsonify
 
 from src.config.response import Response
 
@@ -11,12 +11,12 @@ class TestAPI(unittest.TestCase):
     def setUp(self):
         # Set up a Flask test app
         self.app = Flask(__name__)
+        self.app.config["TESTING"] = True
         self.client = self.app.test_client()
+        self.mock_exception_reporter = Mock()
+        self.mock_exception_reporter.report = Mock()
         self.feed_pulse_app = FeedPulseAPI(
-            Mock(),
-            Mock(),
-            Mock(),
-            Mock(),
+            Mock(), Mock(), Mock(), self.mock_exception_reporter, Mock()
         )
 
         # Example route for testing
@@ -36,6 +36,16 @@ class TestAPI(unittest.TestCase):
         @self.feed_pulse_app.inject
         def inject_route(param1=None, param2=None):
             return Response.success({"param1": param1, "param2": param2})
+
+        @self.app.errorhandler(Exception)
+        def handle_exception(e):
+            self.mock_exception_reporter.report(e)
+            response = jsonify({"error": "Internal Server Error", "message": str(e)})
+            return response, 500
+
+        @self.app.route("/exception-endpoint")
+        def exception_endpoint():
+            raise Exception()
 
     def test_deprecated_response(self):
         # Simulate a request to the deprecated endpoint
@@ -100,3 +110,10 @@ class TestAPI(unittest.TestCase):
             self.assertEqual(json_data["status"], "SUCCESS")
             self.assertEqual(json_data["body"]["param1"], "form_value1")
             self.assertEqual(json_data["body"]["param2"], "form_value2")
+
+    def test_exception_reporting(self):
+        with self.app.test_request_context():
+            response = self.client.get("/exception-endpoint")
+
+        self.assertEqual(response.status_code, 500)
+        self.mock_exception_reporter.report.assert_called_once()
