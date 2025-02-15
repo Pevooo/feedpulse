@@ -1,6 +1,5 @@
-import os
 import unittest
-import shutil
+
 
 from enum import Enum
 
@@ -80,7 +79,3 @@ class TestSpark(unittest.TestCase):
         self.assertIn({"hi": "6", "hello": 6}, data)
 
         self.assertEqual(df.count(), 8)
-
-    def tearDown(self):
-        if os.path.exists("test_spark"):
-            shutil.rmtree("test_spark")
