@@ -42,7 +42,9 @@ class TestSpark(unittest.TestCase):
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
-        df.write.option("header", "true").parquet("test_spark/test_add")
+        df.write.mode("overwrite").option("header", "true").parquet(
+            "test_spark/test_add"
+        )
 
         future = self.spark.add(
             FakeTable.TEST_ADD, [{"hi": "random_data3", "hello": 3}]
@@ -69,7 +71,9 @@ class TestSpark(unittest.TestCase):
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
-        df.write.option("header", "true").parquet("test_spark/test_concurrent")
+        df.write.mode("overwrite").option("header", "true").parquet(
+            "test_spark/test_concurrent"
+        )
 
         # Adding 6 times so that it's over the number of maximum workers
         futures = [
