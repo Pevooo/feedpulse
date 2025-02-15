@@ -1,13 +1,12 @@
-from enum import Enum
-from pyspark.sql import SparkSession
-from pyspark.sql.types import (
-    StructType,
-    StructField,
-    StringType,
-    TimestampType,
-    ArrayType,
-)
+import os
+from concurrent.futures import ThreadPoolExecutor, Future
 
+from enum import Enum
+from typing import Any, Iterable
+
+from pyspark.sql import SparkSession
+
+"""
 # Define schemas
 pages_schema = StructType([StructField("page_id", StringType(), False)])
 
@@ -38,13 +37,19 @@ exceptions_schema = StructType(
         StructField("time", TimestampType(), False),
     ]
 )
+"""
+
+base_dir = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "database")
+)
 
 
 class SparkTable(Enum):
-    REPORTS = "reports"
-    INPUT_COMMENTS = "input_comments"
-    PROCESSED_COMMENTS = "processed_comments"
-    PAGES = "pages"
+    REPORTS = os.path.join(base_dir, "reports")
+    INPUT_COMMENTS = os.path.join(base_dir, "comments_stream")
+    PROCESSED_COMMENTS = os.path.join(base_dir, "processed_comments")
+    PAGES = os.path.join(base_dir, "pages")
+    EXCEPTIONS = os.path.join(base_dir, "exceptions")
 
 
 class Spark:
@@ -55,9 +60,13 @@ class Spark:
 
     def __init__(self):
         self.spark = SparkSession.builder.appName("session").getOrCreate()
+        self.executor = ThreadPoolExecutor(max_workers=5)
 
-    def add(self, table: SparkTable, row_data: str):
-        pass
+    def start_streaming_job(self):
+        return self.executor.submit(self._streaming_worker)
+
+    def add(self, table: SparkTable, row_data: Iterable[dict[str, Any]]) -> Future:
+        return self.executor.submit(self._add_worker, table, list(row_data))
 
     def delete(self, table: SparkTable, row_data: str):
         pass
@@ -68,5 +77,20 @@ class Spark:
     def modify(self, table: SparkTable, row_data: str):
         pass
 
+    def _add_worker(
+        self, table: SparkTable, row_data: Iterable[dict[str, Any]]
+    ) -> None:
+        self.spark.createDataFrame(row_data).write.mode("append").parquet(table.value)
 
-spark_instance = Spark()
+    def _streaming_worker(self):
+        df = self.spark.readStream.format("json").load(
+            os.path.join(base_dir, SparkTable.INPUT_COMMENTS.value)
+        )
+
+        # TODO: Some Processing
+
+        (
+            df.writeStream.outputMode("append")
+            .format("parquet")
+            .option("path", os.path.join(base_dir, SparkTable.PROCESSED_COMMENTS.value))
+        )
