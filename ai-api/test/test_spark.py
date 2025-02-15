@@ -36,6 +36,8 @@ class TestSpark(unittest.TestCase):
         self.assertEqual(self.spark.stream_out, FakeTable.TEST_STREAMING_OUT)
 
     def test_add(self):
+        self.init_paths()
+
         # Writing random data to test on
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
@@ -61,6 +63,8 @@ class TestSpark(unittest.TestCase):
         self.reset_paths()
 
     def test_concurrent_exceeds_num_workers(self):
+        self.init_paths()
+
         # Writing random data to test on
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
@@ -101,6 +105,7 @@ class TestSpark(unittest.TestCase):
         self.reset_paths()
 
     def test_streaming_read_1_item(self):
+        self.init_paths()
         self.spark.start_streaming_job()
 
         folder_path = "test_spark/test_streaming_in"
@@ -139,6 +144,7 @@ class TestSpark(unittest.TestCase):
         self.reset_paths()
 
     def test_streaming_read_32_items_same_file(self):
+        self.init_paths()
         self.spark.start_streaming_job()
 
         folder_path = "test_spark/test_streaming_in"
@@ -182,3 +188,9 @@ class TestSpark(unittest.TestCase):
     def reset_paths(self):
         if os.path.exists("test_spark"):
             shutil.rmtree("test_spark")
+
+    def init_paths(self):
+        os.makedirs(FakeTable.TEST_STREAMING_IN.value, exist_ok=True)
+        os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
+        os.makedirs(FakeTable.TEST_ADD.value, exist_ok=True)
+        os.makedirs(FakeTable.TEST_CONCURRENT.value, exist_ok=True)
