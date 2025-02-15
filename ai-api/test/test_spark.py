@@ -1,7 +1,13 @@
+import json
+import os
 import unittest
-
+import uuid
 
 from enum import Enum
+from time import sleep
+from unittest.mock import MagicMock
+
+from pyspark.sql.types import StructType, StructField, StringType
 
 from src.spark.spark import Spark
 
@@ -9,22 +15,37 @@ from src.spark.spark import Spark
 class FakeTable(Enum):
     TEST_ADD = "test_spark/test_add"
     TEST_CONCURRENT = "test_spark/test_concurrent"
+    TEST_STREAMING_IN = "test_spark/test_streaming_in"
+    TEST_STREAMING_OUT = "test_spark/test_streaming_out"
 
 
 class TestSpark(unittest.TestCase):
     def setUp(self):
-        self.spark = Spark()
+        def fake_function(batch: list[str]) -> list[str]:
+            return ["neutral"] * len(batch)
+
+        self.spark = Spark(
+            FakeTable.TEST_STREAMING_IN, FakeTable.TEST_STREAMING_OUT, fake_function
+        )
+
+        self.spark.start_streaming_job()
 
     def test_singleton(self):
-        new_spark = Spark()
-        self.assertIs(new_spark, Spark())
+        new_spark = Spark(
+            FakeTable.TEST_STREAMING_IN, FakeTable.TEST_STREAMING_OUT, MagicMock()
+        )
+        self.assertIs(new_spark, self.spark)
+        self.assertEqual(self.spark.stream_in, FakeTable.TEST_STREAMING_IN)
+        self.assertEqual(self.spark.stream_out, FakeTable.TEST_STREAMING_OUT)
 
     def test_add(self):
         # Writing random data to test on
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
-        df.write.option("header", "true").parquet("test_spark/test_add")
+        df.write.mode("overwrite").option("header", "true").parquet(
+            "test_spark/test_add"
+        )
 
         future = self.spark.add(
             FakeTable.TEST_ADD, [{"hi": "random_data3", "hello": 3}]
@@ -47,7 +68,9 @@ class TestSpark(unittest.TestCase):
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
-        df.write.option("header", "true").parquet("test_spark/test_concurrent")
+        df.write.mode("overwrite").option("header", "true").parquet(
+            "test_spark/test_concurrent"
+        )
 
         # Adding 6 times so that it's over the number of maximum workers
         futures = [
@@ -79,3 +102,94 @@ class TestSpark(unittest.TestCase):
         self.assertIn({"hi": "6", "hello": 6}, data)
 
         self.assertEqual(df.count(), 8)
+
+    def test_streaming_read_1_item(self):
+        folder_path = "test_spark/test_streaming_in"
+        os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
+
+        data_in = [
+            {
+                "hashed_comment_id": "1251",
+                "platform": "facebook",
+                "content": "hello, world!",
+            }
+        ]
+
+        with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
+            json.dump(data_in, f, indent=4)
+
+        sleep(30)
+
+        output_stream_schema = StructType(
+            [
+                StructField("hashed_comment_id", StringType(), False),
+                StructField("platform", StringType(), False),
+                StructField("content", StringType(), False),
+                StructField("sentiment", StringType(), False),
+            ]
+        )
+
+        df = (
+            self.spark.spark.read.option("header", "true")
+            .schema(output_stream_schema)
+            .parquet("test_spark/test_streaming_out")
+        )
+
+        data = [row.asDict() for row in df.collect()]
+        self.assertIn(
+            {
+                "hashed_comment_id": "1251",
+                "platform": "facebook",
+                "content": "hello, world!",
+                "sentiment": "neutral",
+            },
+            data,
+        )
+
+        self.assertGreaterEqual(df.count(), 1)
+
+    def test_streaming_read_32_items_same_file(self):
+        folder_path = "test_spark/test_streaming_in"
+        os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
+
+        data_in = [
+            {
+                "hashed_comment_id": "34",
+                "platform": "facebook",
+                "content": "hello, world!",
+            }
+        ] * 32
+
+        with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
+            json.dump(data_in, f, indent=4)
+
+        sleep(30)
+
+        output_stream_schema = StructType(
+            [
+                StructField("hashed_comment_id", StringType(), False),
+                StructField("platform", StringType(), False),
+                StructField("content", StringType(), False),
+                StructField("sentiment", StringType(), False),
+            ]
+        )
+
+        df = (
+            self.spark.spark.read.option("header", "true")
+            .schema(output_stream_schema)
+            .parquet("test_spark/test_streaming_out")
+        )
+
+        data = [row.asDict() for row in df.collect()]
+        print(data)
+        self.assertIn(
+            {
+                "hashed_comment_id": "34",
+                "platform": "facebook",
+                "content": "hello, world!",
+                "sentiment": "neutral",
+            },
+            data,
+        )
+
+        self.assertGreaterEqual(df.count(), 32)
