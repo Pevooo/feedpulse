@@ -1,6 +1,5 @@
 import json
 import os
-import shutil
 import unittest
 import uuid
 
@@ -40,8 +39,6 @@ class TestSpark(unittest.TestCase):
         self.assertEqual(self.spark.stream_out, FakeTable.TEST_STREAMING_OUT)
 
     def test_add(self):
-        self.init_paths()
-
         # Writing random data to test on
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
@@ -67,8 +64,6 @@ class TestSpark(unittest.TestCase):
         self.assertEqual(df.count(), 3)
 
     def test_concurrent_exceeds_num_workers(self):
-        self.init_paths()
-
         # Writing random data to test on
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
@@ -109,8 +104,6 @@ class TestSpark(unittest.TestCase):
         self.assertEqual(df.count(), 8)
 
     def test_streaming_read_1_item(self):
-        self.init_paths()
-
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
@@ -154,8 +147,6 @@ class TestSpark(unittest.TestCase):
         )
 
     def test_streaming_read_32_items_same_file(self):
-        self.init_paths()
-
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
@@ -200,14 +191,3 @@ class TestSpark(unittest.TestCase):
         )
 
         self.assertEqual(df.count(), 32)
-
-    def reset_paths(self):
-        if os.path.exists("test_spark"):
-            shutil.rmtree("test_spark")
-            os.makedirs("test_spark/streaming_in")
-
-    def init_paths(self):
-        os.makedirs(FakeTable.TEST_STREAMING_IN.value, exist_ok=True)
-        os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
-        os.makedirs(FakeTable.TEST_ADD.value, exist_ok=True)
-        os.makedirs(FakeTable.TEST_CONCURRENT.value, exist_ok=True)
