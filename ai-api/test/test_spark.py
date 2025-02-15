@@ -8,6 +8,8 @@ from enum import Enum
 from time import sleep
 from unittest.mock import MagicMock
 
+from pyspark.sql.types import StructType, StructField, StringType
+
 from src.spark.spark import Spark
 
 
@@ -64,8 +66,6 @@ class TestSpark(unittest.TestCase):
         self.assertIn({"hi": "random_data3", "hello": 3}, data)
         self.assertEqual(df.count(), 3)
 
-        self.reset_paths()
-
     def test_concurrent_exceeds_num_workers(self):
         self.init_paths()
 
@@ -108,8 +108,6 @@ class TestSpark(unittest.TestCase):
 
         self.assertEqual(df.count(), 8)
 
-        self.reset_paths()
-
     def test_streaming_read_1_item(self):
         self.init_paths()
 
@@ -129,10 +127,19 @@ class TestSpark(unittest.TestCase):
 
         sleep(30)
 
+        output_stream_schema = StructType(
+            [
+                StructField("hashed_comment_id", StringType(), False),
+                StructField("platform", StringType(), False),
+                StructField("content", StringType(), False),
+            ]
+        )
+
         df = (
             self.spark.spark.read.option("header", "true")
             .option("inferSchema", "true")
             .parquet("test_spark/test_streaming_out")
+            .schema(output_stream_schema)
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -145,8 +152,6 @@ class TestSpark(unittest.TestCase):
             },
             data,
         )
-
-        self.reset_paths()
 
     def test_streaming_read_32_items_same_file(self):
         self.init_paths()
@@ -167,10 +172,19 @@ class TestSpark(unittest.TestCase):
 
         sleep(30)
 
+        output_stream_schema = StructType(
+            [
+                StructField("hashed_comment_id", StringType(), False),
+                StructField("platform", StringType(), False),
+                StructField("content", StringType(), False),
+            ]
+        )
+
         df = (
             self.spark.spark.read.option("header", "true")
             .option("inferSchema", "true")
             .parquet("test_spark/test_streaming_out")
+            .schema(output_stream_schema)
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -186,8 +200,6 @@ class TestSpark(unittest.TestCase):
         )
 
         self.assertEqual(df.count(), 32)
-
-        self.reset_paths()
 
     def reset_paths(self):
         if os.path.exists("test_spark"):
