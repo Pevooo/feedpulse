@@ -13,12 +13,12 @@ namespace Api.Service.Implementation
     {
         #region Fields
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<Organization> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly ApplicationDbContext _dbContext;
         #endregion
         #region Constructor
         public AuthorizationService(RoleManager<IdentityRole> roleManager,
-            UserManager<Organization> userManager, ApplicationDbContext dbContext)
+            UserManager<AppUser> userManager, ApplicationDbContext dbContext)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -86,7 +86,7 @@ namespace Api.Service.Implementation
             var role = await _roleManager.Roles.Where(x => x.Id == id).FirstOrDefaultAsync();
             return role;
         }
-        public async Task<ManageUserRolesResponse> ManageUserRolesData(Organization user)
+        public async Task<ManageUserRolesResponse> ManageUserRolesData(AppUser user)
         {
             var result = new ManageUserRolesResponse();
             var roles = await _roleManager.Roles.ToListAsync();

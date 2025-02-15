@@ -14,7 +14,7 @@ namespace Api.Infrastructure
     {
         public static IServiceCollection ServiceRegisterationmethod(this IServiceCollection services, IConfiguration configuration)
         {
-            _ = services.AddIdentity<Organization, IdentityRole>(option =>
+            _ = services.AddIdentity<AppUser, IdentityRole>(option =>
             {
                 // Password settings.
                 option.Password.RequireDigit = true;

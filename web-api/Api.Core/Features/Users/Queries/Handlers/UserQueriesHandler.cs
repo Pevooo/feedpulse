@@ -16,10 +16,10 @@ namespace Api.Core.Features.Users.Queries.Handlers
     {
         #region fields
         private readonly IMapper _mapper;
-        private readonly UserManager<Organization> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         #endregion
         #region constructor
-        public UserQueriesHandler(IMapper mapper, UserManager<Organization> userManager)
+        public UserQueriesHandler(IMapper mapper, UserManager<AppUser> userManager)
         {
             _mapper = mapper;
             _userManager = userManager;

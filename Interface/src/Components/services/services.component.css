@@ -1,0 +1,84 @@
+/* General Styles */
+@import "../../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
+body {
+    font-family: 'Lato', sans-serif;
+    line-height: 1.8;
+    color: #818181;
+  }
+  
+  .container {
+    padding: 60px 15px;
+  }
+  
+  /* Section Title */
+  .section-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #303030;
+    margin-bottom: 20px;
+  }
+  
+  .section-subtitle {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 40px;
+  }
+  
+  /* Services Section */
+  .services-section {
+    background-color: #f9f9f9;
+    padding: 80px 0;
+  }
+  
+  .services-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+  }
+  
+  .service-item {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .service-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .service-icon {
+    font-size: 48px;
+    color: #1A3D7C;
+    margin-bottom: 20px;
+  }
+  
+  .service-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #303030;
+    margin-bottom: 15px;
+  }
+  
+  .service-description {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .services-grid {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .service-item {
+      max-width: 100%;
+    }
+  }

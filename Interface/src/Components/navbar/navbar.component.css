@@ -1,0 +1,109 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Navbar Container */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+/* Navbar Brand (Logo/Title) */
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+/* Navbar Links List */
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+/* Individual Link Styles */
+.navbar-links li {
+  position: relative;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+/* Active Link Underline Shadow */
+.navbar-links li.active a {
+  color: #007bff; /* Change color of active link */
+  position: relative;
+}
+
+.navbar-links li.active a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; /* Adjust distance from the text */
+  left: 0;
+  width: 100%;
+  height: 3px; /* Thickness of the underline */
+  background-color: #007bff; /* Color of the underline */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Shadow effect */
+}
+
+/* Hover Effect */
+.navbar-links a:hover {
+  color: #007bff; /* Change color on hover */
+}
+
+.navbar-links a:hover::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #007bff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .navbar-brand {
+    margin-bottom: 10px;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .navbar-links li {
+    width: 100%;
+    text-align: center;
+  }
+
+  .navbar-links a {
+    font-size: 0.9rem;
+  }
+}

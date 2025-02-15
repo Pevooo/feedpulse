@@ -19,13 +19,13 @@ namespace Api.Service.Implementation
         private readonly JwtSettings _jwtSettings;
         private readonly ApplicationDbContext _dbcontext;
         private readonly IRefreshTokenRepository _userRefreshTokenRepository;
-        private readonly UserManager<Organization> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
         #endregion
 
         #region Constructor
         public AuthenticationService(JwtSettings jwtSettings,
-            UserManager<Organization> userManager, IRefreshTokenRepository refreshTokenInf, ApplicationDbContext context, IEmailService emailService)
+            UserManager<AppUser> userManager, IRefreshTokenRepository refreshTokenInf, ApplicationDbContext context, IEmailService emailService)
         {
             _jwtSettings = jwtSettings;
             _dbcontext = context;
@@ -35,7 +35,7 @@ namespace Api.Service.Implementation
         }
         #endregion
         #region HandleFunctions
-        public async Task<JWTAuthRes> GetJWTToken(Organization user) // Generate JwtToken With new RefreshToken 
+        public async Task<JWTAuthRes> GetJWTToken(AppUser user) // Generate JwtToken With new RefreshToken 
         {
             var (JwtToken, Token) = await GenerateJWT(user);
             var RefreshToken = GetRefreshToken(user.UserName);
@@ -119,7 +119,7 @@ namespace Api.Service.Implementation
             var expirydate = refreshtoken.ExpiryDate;
             return (userId, expirydate);
         }
-        public async Task<JWTAuthRes> GetRefreshToken(Organization user, JwtSecurityToken jwtToken, DateTime? expiryDate, string refreshToken) //Get new refreshToken to user  
+        public async Task<JWTAuthRes> GetRefreshToken(AppUser user, JwtSecurityToken jwtToken, DateTime? expiryDate, string refreshToken) //Get new refreshToken to user  
         {
             var availablerefreshtoken = _userRefreshTokenRepository.GetTableNoTracking().Where(x => x.AppUserId == user.Id && x.IsUsed == true).ToList();
             foreach (var token in availablerefreshtoken)
@@ -222,7 +222,7 @@ namespace Api.Service.Implementation
             }
         }
         // Private Functions 
-        private async Task<List<Claim>> GetClaims(Organization user)// to return a list of Claims of User
+        private async Task<List<Claim>> GetClaims(AppUser user)// to return a list of Claims of User
         {
             var claims = new List<Claim>()
             {
@@ -259,7 +259,7 @@ namespace Api.Service.Implementation
             randomNumberGenerate.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
-        private async Task<(JwtSecurityToken, string)> GenerateJWT(Organization user) // to generate a JWT Token For Specific Organization 
+        private async Task<(JwtSecurityToken, string)> GenerateJWT(AppUser user) // to generate a JWT Token For Specific Organization 
         {
             var claims = await GetClaims(user);
             var jwtToken = new JwtSecurityToken(

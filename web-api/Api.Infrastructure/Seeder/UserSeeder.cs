@@ -20,12 +20,12 @@ namespace Api.Infrastructure.Seeder
             }
          
          */
-        public static async Task SeedAsync(UserManager<Organization> _userManager)
+        public static async Task SeedAsync(UserManager<AppUser> _userManager)
         {
             var usersCount = await _userManager.Users.CountAsync();
             if (usersCount <= 2)
             {
-                var defaultuser = new Organization()
+                var defaultuser = new AppUser()
                 {
                     UserName = "admin",
                     Email = "admin@project.com",
@@ -35,7 +35,7 @@ namespace Api.Infrastructure.Seeder
                     Address = "Egypt",
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = true,
-                    Description = "testing"
+                    Photo = ""
 
                 };
                 _ = await _userManager.CreateAsync(defaultuser, "M123_m");

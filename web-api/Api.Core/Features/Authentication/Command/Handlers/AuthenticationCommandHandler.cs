@@ -16,13 +16,13 @@ namespace Api.Core.Features.Authentication.Command.Handlers
 
     {
         #region Fields
-        private readonly UserManager<Organization> _userManager;
-        private readonly SignInManager<Organization> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly IAuthenticationService _authenticationService;
         #endregion
         #region Constructor
-        public AuthenticationCommandHandler(UserManager<Organization> userManager,
-                                             SignInManager<Organization> signInManager,
+        public AuthenticationCommandHandler(UserManager<AppUser> userManager,
+                                             SignInManager<AppUser> signInManager,
                                              IAuthenticationService authenticationService)
         {
             _userManager = userManager;

@@ -11,10 +11,10 @@ namespace Api.Service.AuthService.Implementation
     {
         #region Fields
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly UserManager<Organization> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         #endregion
         #region Constructors
-        public CurrentUserService(IHttpContextAccessor httpContextAccessor, UserManager<Organization> userManager)
+        public CurrentUserService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager)
         {
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
@@ -31,7 +31,7 @@ namespace Api.Service.AuthService.Implementation
             return int.Parse(userId);
         }
 
-        public async Task<Organization> GetUserAsync()
+        public async Task<AppUser> GetUserAsync()
         {
             var userId = GetUserId();
             var user = await _userManager.FindByIdAsync(userId.ToString());

@@ -14,7 +14,7 @@ namespace Api.Service.Abstracts
         public Task<string> DeleteRoleAsync(int RoleId);
         public Task<List<IdentityRole>> GetRolesList();
         public Task<IdentityRole> GetRoleById(string id);
-        public Task<ManageUserRolesResponse> ManageUserRolesData(Organization user);
+        public Task<ManageUserRolesResponse> ManageUserRolesData(AppUser user);
         public Task<string> UpdateUserRole(UpdateUserRolesRequest request);
         public Task<string> UpdateUserClaims(ManageUserClaimsRequest request);
         //public Task<ManageUserClaimsResponse> ManageUserClaimData(Organization User);
