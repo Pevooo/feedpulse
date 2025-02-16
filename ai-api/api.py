@@ -114,10 +114,11 @@ if __name__ == "__main__":
     )
 
     # Define Processing Components
-    feedback_classifier = FeedbackClassifier(...) # Leaving it empty so that we don't download the model everytime
+    feedback_classifier = FeedbackClassifier(
+        ...
+    )  # Leaving it empty so that we don't download the model everytime
     topic_detector = TopicDetector(model_provider)
     report_handler = ReportHandler(model_provider)
-
 
     # Define Spark Singleton
     spark = Spark(
