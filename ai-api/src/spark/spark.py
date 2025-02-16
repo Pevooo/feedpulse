@@ -72,10 +72,14 @@ class Spark:
         self,
         stream_in: SparkTable,
         stream_out: SparkTable,
-        batch_function: Callable[[list[str]], list[str]],
+        feedback_classification_batch_function: Callable[[list[str]], list[str]],
+        topic_detection_batch_function: Callable[[list[str]], list[list[str]]],
     ):
         self.spark = SparkSession.builder.appName("session").getOrCreate()
-        self.batch_function = batch_function
+        self.feedback_classification_batch_function = (
+            feedback_classification_batch_function
+        )
+        self.topic_detection_batch_function = topic_detection_batch_function
         self.executor = ThreadPoolExecutor(max_workers=5)
         self.stream_in = stream_in
         self.stream_out = stream_out
@@ -135,11 +139,15 @@ class Spark:
         for row in grouped_df.collect():
             batch_rows = row.batch_rows
             comments = [r.content for r in batch_rows]
-            processed_values = self.batch_function(comments)
-            for original_row, processed in zip(batch_rows, processed_values):
+            sentiments = self.feedback_classification_batch_function(comments)
+            topics = self.topic_detection_batch_function(comments)
+            for original_row, sentiment, related_topics in zip(
+                batch_rows, sentiments, topics
+            ):
                 row_dict = original_row.asDict()
                 del row_dict["batch_id"]
-                row_dict["sentiment"] = processed
+                row_dict["sentiment"] = sentiment
+                row_dict["related_topics"] = related_topics.copy()
                 results.append(row_dict)
 
         self.add(self.stream_out, results)

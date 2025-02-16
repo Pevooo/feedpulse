@@ -7,7 +7,7 @@ from enum import Enum
 from time import sleep
 from unittest.mock import MagicMock
 
-from pyspark.sql.types import StructType, StructField, StringType
+from pyspark.sql.types import StructType, StructField, StringType, ArrayType
 
 from src.spark.spark import Spark
 
@@ -21,11 +21,17 @@ class FakeTable(Enum):
 
 class TestSpark(unittest.TestCase):
     def setUp(self):
-        def fake_function(batch: list[str]) -> list[str]:
+        def fake_classification_function(batch: list[str]) -> list[str]:
             return ["neutral"] * len(batch)
 
+        def fake_topic_detection_function(batch: list[str]) -> list[list[str]]:
+            return [["cleanliness"]] * len(batch)
+
         self.spark = Spark(
-            FakeTable.TEST_STREAMING_IN, FakeTable.TEST_STREAMING_OUT, fake_function
+            FakeTable.TEST_STREAMING_IN,
+            FakeTable.TEST_STREAMING_OUT,
+            fake_classification_function,
+            fake_topic_detection_function,
         )
 
         self.spark.start_streaming_job()
@@ -126,6 +132,7 @@ class TestSpark(unittest.TestCase):
                 StructField("platform", StringType(), False),
                 StructField("content", StringType(), False),
                 StructField("sentiment", StringType(), False),
+                StructField("related_topics", ArrayType(StringType(), True), True),
             ]
         )
 
@@ -136,12 +143,14 @@ class TestSpark(unittest.TestCase):
         )
 
         data = [row.asDict() for row in df.collect()]
+        print(data)
         self.assertIn(
             {
                 "hashed_comment_id": "1251",
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
+                "related_topics": ["cleanliness"],
             },
             data,
         )
@@ -171,6 +180,7 @@ class TestSpark(unittest.TestCase):
                 StructField("platform", StringType(), False),
                 StructField("content", StringType(), False),
                 StructField("sentiment", StringType(), False),
+                StructField("related_topics", ArrayType(StringType(), True), True),
             ]
         )
 
@@ -181,13 +191,13 @@ class TestSpark(unittest.TestCase):
         )
 
         data = [row.asDict() for row in df.collect()]
-        print(data)
         self.assertIn(
             {
                 "hashed_comment_id": "34",
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
+                "related_topics": ["cleanliness"],
             },
             data,
         )
