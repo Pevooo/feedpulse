@@ -77,5 +77,8 @@ Thumbs.db
 # Security Test
 bandit_report.html
 
-# Checkpoint files
-/checkpoints
+# Spark Tests Files
+/test_spark
+
+# Local Database
+/database
