@@ -116,7 +116,7 @@ class Spark:
             .schema(input_stream_schema)
             .load(self.stream_in.value)
         )
-        df.writeStream.trigger(processingTime="2 seconds").foreachBatch(
+        df.writeStream.trigger(processingTime="5 seconds").foreachBatch(
             self.process_data
         ).option(
             "checkpointLocation",
