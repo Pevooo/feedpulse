@@ -38,7 +38,10 @@ class TestSpark(unittest.TestCase):
 
     def test_singleton(self):
         new_spark = Spark(
-            FakeTable.TEST_STREAMING_IN, FakeTable.TEST_STREAMING_OUT, MagicMock()
+            FakeTable.TEST_STREAMING_IN,
+            FakeTable.TEST_STREAMING_OUT,
+            MagicMock(),
+            MagicMock(),
         )
         self.assertIs(new_spark, self.spark)
         self.assertEqual(self.spark.stream_in, FakeTable.TEST_STREAMING_IN)
