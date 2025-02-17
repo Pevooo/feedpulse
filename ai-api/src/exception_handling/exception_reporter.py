@@ -11,12 +11,13 @@ class ExceptionReporter:
 
     def report(self, exception: Exception):
         self.exceptions.append(
-                {
-                    "exception_id": str(uuid.uuid4()),
-                    "exception_message": str(exception),
-                    "time": datetime.now().isoformat(),
-                })
-        if len(self.exceptions)==50:
+            {
+                "exception_id": str(uuid.uuid4()),
+                "exception_message": str(exception),
+                "time": datetime.now().isoformat(),
+            }
+        )
+        if len(self.exceptions) == 50:
             self.spark.add(
                 SparkTable.EXCEPTIONS,
                 self.exceptions,

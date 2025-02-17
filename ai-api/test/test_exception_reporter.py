@@ -26,7 +26,6 @@ class TestExceptionReporter(unittest.TestCase):
 
         self.assertEqual(len(self.exception_reporter.exceptions), 1)
 
-
     def test_50_report_exceptions(self):
         for _ in range(50):
             self.exception_reporter.report(Exception())
@@ -37,14 +36,13 @@ class TestExceptionReporter(unittest.TestCase):
                 "exception_message": str(Exception()),
                 "time": ANY,
             }
-        ]*50
-        
+        ] * 50
+
         self.mock_spark.add.assert_called_once_with(
             SparkTable.EXCEPTIONS, expected_input
         )
 
         self.assertEqual(len(self.exception_reporter.exceptions), 0)
-
 
     def test_more_than_50_report_exceptions(self):
         for _ in range(51):
@@ -56,7 +54,7 @@ class TestExceptionReporter(unittest.TestCase):
                 "exception_message": "Test Exception",
                 "time": ANY,
             }
-        ] * 50  
+        ] * 50
         self.mock_spark.add.assert_called_once_with(
             SparkTable.EXCEPTIONS, expected_input
         )
