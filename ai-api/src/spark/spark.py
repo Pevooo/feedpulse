@@ -16,6 +16,8 @@ from pyspark.sql.types import (
     StringType,
 )
 
+from src.topics.feedback_topic import FeedbackTopic
+
 """
 # Define schemas
 pages_schema = StructType([StructField("page_id", StringType(), False)])
@@ -75,7 +77,9 @@ class Spark:
         feedback_classification_batch_function: Callable[
             [list[str]], list[bool | None]
         ],
-        topic_detection_batch_function: Callable[[list[str]], list[list[str]]],
+        topic_detection_batch_function: Callable[
+            [list[str]], list[list[FeedbackTopic]]
+        ],
     ):
         self.spark = SparkSession.builder.appName("session").getOrCreate()
         self.feedback_classification_batch_function = (
@@ -159,7 +163,9 @@ class Spark:
                 else:
                     row_dict["sentiment"] = "negative"
 
-                row_dict["related_topics"] = related_topics.copy()
+                row_dict["related_topics"] = [
+                    related_topic.value for related_topic in related_topics
+                ]
                 results.append(row_dict)
 
         self.add(self.stream_out, results)

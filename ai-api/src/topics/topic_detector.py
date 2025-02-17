@@ -1,4 +1,4 @@
-from typing import Iterable, Optional
+from typing import Optional
 
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
@@ -16,27 +16,25 @@ class TopicDetector:
     def detect(
         self,
         text_batch: list[str],
-        org_topics: Iterable[FeedbackTopic],
         context: Optional[str] = None,
-    ) -> list[tuple[FeedbackTopic, ...]]:
+    ) -> list[list[FeedbackTopic]]:
         """
         Detects topics in the text that match the organization's topics.
 
         Args:
             text_batch (list[str]): The input text to analyze.
-            org_topics (Iterable[FeedbackTopic]): The list of topics to map against.
             context (Optional[str]): Additional context for mapping (currently unused).
 
         Returns:
             list[tuple[str, ...]]: A tuple of detected topics.
         """
-        prompt = self._generate_prompt(text_batch, org_topics, context)
+        prompt = self._generate_prompt(text_batch, context)
         response = self.provider.generate_content(prompt)
         responses: list[str] = response.lower().replace("\n", "").split("|")
         return self._extract_topics(responses)
 
     @staticmethod
-    def _extract_topics(responses: list[str]) -> list[tuple[FeedbackTopic, ...]]:
+    def _extract_topics(responses: list[str]) -> list[list[FeedbackTopic]]:
         """
         Extracts relevant topics from the model's response.
 
@@ -48,16 +46,15 @@ class TopicDetector:
         """
         results = []
         for response in responses:
-            if "no relevant topics found." in response:
-                results.append(tuple())
+            if "none" in response:
+                results.append(list())
             else:
-                results.append(tuple(map(FeedbackTopic, response.split(","))))
+                results.append(list(map(FeedbackTopic, response.split(","))))
         return results
 
     @staticmethod
     def _generate_prompt(
         text_batch: list[str],
-        org_topics: Iterable[FeedbackTopic],
         context: Optional[str] = None,
     ) -> Prompt:
         """
@@ -65,7 +62,6 @@ class TopicDetector:
 
         Args:
             text_batch (list[str]): The input text to analyze.
-            org_topics (Iterable[FeedbackTopic]): The list of topics to map against.
             context (Optional[str]): Additional context for the prompt (currently unused).
 
         Returns:
@@ -75,8 +71,8 @@ class TopicDetector:
         return Prompt(
             instructions=(
                 "Identify and list only the relevant topics from the provided list that "
-                f"relate to the content of the text. The topics are: {', '.join(topic.value for topic in org_topics)}.\n"
-                "Only respond with relevant topics. If no topics are relevant, respond with 'no relevant topics found.'"
+                f"relate to the content of the text. The topics are: {', '.join(topic.value for topic in FeedbackTopic.get_all_topics())}.\n"
+                "Only respond with relevant topics. If no topics are relevant, respond with 'NONE'"
                 "Don't add a space after or before each topic"
             ),
             context=context,
