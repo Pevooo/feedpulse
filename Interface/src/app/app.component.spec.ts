@@ -33,9 +33,8 @@ describe('AppComponent', () => {
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges(); // Ensure Angular updates the view
+    fixture.detectChanges(); 
     const compiled = fixture.nativeElement as HTMLElement;
-    console.log('Rendered HTML:', compiled.innerHTML); // Debugging
     expect(compiled.querySelector('h1')?.textContent).toContain('adminDashboard');
   });
 });
