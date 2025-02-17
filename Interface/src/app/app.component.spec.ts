@@ -33,8 +33,8 @@ describe('AppComponent', () => {
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges(); 
+    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('adminDashboard');
+    expect(compiled.querySelector('title')?.textContent).toContain('adminDashboard');
   });
 });
