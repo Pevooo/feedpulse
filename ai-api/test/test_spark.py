@@ -62,10 +62,7 @@ class TestSpark(unittest.TestCase):
             FakeTable.TEST_ADD, [{"hi": "random_data3", "hello": 3}]
         )
 
-        sleep(0.5)
-        self.assertEqual(
-            len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 1
-        )
+        self.assert_concurrent_jobs(1)
 
         future.result()
 
@@ -99,10 +96,7 @@ class TestSpark(unittest.TestCase):
             self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "6", "hello": 6}]),
         ]
 
-        sleep(0.5)
-        self.assertEqual(
-            len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 1
-        )
+        self.assert_concurrent_jobs(1)
 
         # Wait for all the jobs to complete
         for future in futures:
@@ -224,10 +218,7 @@ class TestSpark(unittest.TestCase):
 
         future_t2 = self.spark.add(FakeTable.TEST_T2, [{"hi": "file2", "hello": 3}])
 
-        sleep(0.5)
-        self.assertEqual(
-            len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 2
-        )
+        self.assert_concurrent_jobs(2)
 
         future_t1.result()
         future_t2.result()
@@ -251,3 +242,16 @@ class TestSpark(unittest.TestCase):
         self.assertIn({"hi": "file2", "hello": 3}, data_t2)
         self.assertEqual(df1.count(), 1)
         self.assertEqual(df2.count(), 1)
+
+    def assert_concurrent_jobs(self, num_jobs: int):
+        for _ in range(20):
+            if (
+                len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds())
+                == num_jobs
+            ):
+                break
+            sleep(0.05)
+        else:
+            self.fail(
+                f"Wrong Concurrent Jobs Found({self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()} != {num_jobs})"
+            )
