@@ -8,6 +8,8 @@ class FeedbackTopic(Enum):
     AMENITIES = "amenities"
     LOCATION = "location"
     WIFI = "wifi"
+    ACCESSIBILITY = "accessibility"
+    PRIVACY = "privacy"
     SECURITY = "security"
     COMFORT = "comfort"
     VALUE_FOR_MONEY = "value_for_money"
