@@ -11,6 +11,7 @@ from unittest.mock import MagicMock
 from pyspark.sql.types import StructType, StructField, StringType, ArrayType
 
 from src.spark.spark import Spark
+from src.topics.feedback_topic import FeedbackTopic
 
 
 class FakeTable(Enum):
@@ -23,12 +24,19 @@ class FakeTable(Enum):
 
 
 class TestSpark(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        if os.path.exists("test_spark"):
+            shutil.rmtree("test_spark")
+
     def setUp(self):
         def fake_classification_function(batch: list[str]) -> list[bool | None]:
             return [None] * len(batch)
 
-        def fake_topic_detection_function(batch: list[str]) -> list[list[str]]:
-            return [["cleanliness"]] * len(batch)
+        def fake_topic_detection_function(
+            batch: list[str],
+        ) -> list[list[FeedbackTopic]]:
+            return [[FeedbackTopic.CLEANLINESS]] * len(batch)
 
         self.spark = Spark(
             FakeTable.TEST_STREAMING_IN,
@@ -341,3 +349,8 @@ class TestSpark(unittest.TestCase):
                 shutil.rmtree(file_path)  # Recursively delete subdirectories
             else:
                 os.remove(file_path)  # Delete files
+
+    def tearDown(self):
+        for query in self.spark.spark.streams.active:
+            query.stop()
+        self.spark.spark.stop()
