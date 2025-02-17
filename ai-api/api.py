@@ -11,7 +11,7 @@ from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
 from src.reports.report_handler import ReportHandler
-from src.spark.spark import Spark
+from src.spark.spark import Spark, SparkTable
 from src.topics.topic_detector import TopicDetector
 
 
@@ -113,8 +113,23 @@ if __name__ == "__main__":
         retry_delay=60,
     )
 
+    # Define Processing Components
+    feedback_classifier = FeedbackClassifier(
+        ...
+    )  # Leaving it empty so that we don't download the model everytime
+    topic_detector = TopicDetector(model_provider)
+    report_handler = ReportHandler(model_provider)
+
     # Define Spark Singleton
-    spark = Spark()
+    spark = Spark(
+        stream_in=SparkTable.INPUT_COMMENTS,
+        stream_out=SparkTable.PROCESSED_COMMENTS,
+        feedback_classification_batch_function=feedback_classifier.classify,
+        topic_detection_batch_function=topic_detector.detect,
+    )
+
+    # Define Exception Reporter
+    exception_reporter = ExceptionReporter(spark)
 
     # Define the api class
     app = FeedPulseAPI(
