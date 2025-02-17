@@ -17,6 +17,8 @@ class FakeTable(Enum):
     TEST_CONCURRENT = "test_spark/test_concurrent"
     TEST_STREAMING_IN = "test_spark/test_streaming_in"
     TEST_STREAMING_OUT = "test_spark/test_streaming_out"
+    TEST_T1 = "test_spark/test_t1"
+    TEST_T2 = "test_spark/test_t2"
 
 
 class TestSpark(unittest.TestCase):
@@ -59,6 +61,12 @@ class TestSpark(unittest.TestCase):
         future = self.spark.add(
             FakeTable.TEST_ADD, [{"hi": "random_data3", "hello": 3}]
         )
+
+        sleep(3)
+        self.assertEqual(
+            len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 1
+        )
+
         future.result()
 
         df = (
@@ -72,7 +80,7 @@ class TestSpark(unittest.TestCase):
         self.assertIn({"hi": "random_data3", "hello": 3}, data)
         self.assertEqual(df.count(), 3)
 
-    def test_concurrent_exceeds_num_workers(self):
+    def test_multiple_jobs_same_table(self):
         # Writing random data to test on
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
@@ -90,6 +98,11 @@ class TestSpark(unittest.TestCase):
             self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "5", "hello": 5}]),
             self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "6", "hello": 6}]),
         ]
+
+        sleep(3)
+        self.assertEqual(
+            len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 1
+        )
 
         # Wait for all the jobs to complete
         for future in futures:
@@ -206,3 +219,36 @@ class TestSpark(unittest.TestCase):
         )
 
         self.assertGreaterEqual(df.count(), 32)
+
+    def test_concurrency_multiple_tables(self):
+        future_t1 = self.spark.add(FakeTable.TEST_T1, [{"hi": "file1", "hello": 3}])
+
+        future_t2 = self.spark.add(FakeTable.TEST_T2, [{"hi": "file2", "hello": 3}])
+
+        sleep(3)
+        self.assertEqual(
+            len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 2
+        )
+
+        future_t1.result()
+        future_t2.result()
+
+        df1 = (
+            self.spark.spark.read.option("header", "true")
+            .option("inferSchema", "true")
+            .parquet(FakeTable.TEST_T1.value)
+        )
+
+        df2 = (
+            self.spark.spark.read.option("header", "true")
+            .option("inferSchema", "true")
+            .parquet(FakeTable.TEST_T2.value)
+        )
+
+        data_t1 = [row.asDict() for row in df1.collect()]
+        data_t2 = [row.asDict() for row in df2.collect()]
+
+        self.assertIn({"hi": "file1", "hello": 3}, data_t1)
+        self.assertIn({"hi": "file2", "hello": 3}, data_t2)
+        self.assertEqual(df1.count(), 1)
+        self.assertEqual(df2.count(), 1)

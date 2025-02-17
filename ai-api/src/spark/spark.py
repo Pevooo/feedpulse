@@ -80,6 +80,7 @@ class Spark:
             feedback_classification_batch_function
         )
         self.topic_detection_batch_function = topic_detection_batch_function
+        self.executors: dict[SparkTable, ThreadPoolExecutor] = dict()
         self.executor = ThreadPoolExecutor(max_workers=5)
         self.stream_in = stream_in
         self.stream_out = stream_out
@@ -88,7 +89,10 @@ class Spark:
         self._streaming_worker()
 
     def add(self, table: SparkTable, row_data: Iterable[dict[str, Any]]) -> Future:
-        return self.executor.submit(self._add_worker, table, list(row_data))
+        if table not in self.executors:
+            self.executors[table] = ThreadPoolExecutor(max_workers=1)
+
+        return self.executors[table].submit(self._add_worker, table, list(row_data))
 
     def delete(self, table: SparkTable, row_data: str):
         pass
