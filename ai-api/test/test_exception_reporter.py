@@ -12,15 +12,16 @@ class TestExceptionReporter(unittest.TestCase):
         self.exception_reporter = ExceptionReporter(self.mock_spark)
 
     def test_one_report_exception(self):
-        self.exception_reporter.report(Exception())
+        self.exception_reporter.report(Exception("Test Exception"))
 
-        expected_input = [
+        self.assertIn(
             {
                 "exception_id": ANY,
-                "exception_message": str(Exception()),
+                "exception_message": "Test Exception",
                 "time": ANY,
-            }
-        ]
+            },
+            self.exception_reporter.exceptions,
+        )
 
         self.mock_spark.add.assert_not_called()
 
