@@ -81,7 +81,6 @@ class Spark:
         )
         self.topic_detection_batch_function = topic_detection_batch_function
         self.executors: dict[SparkTable, ThreadPoolExecutor] = dict()
-        self.executor = ThreadPoolExecutor(max_workers=5)
         self.stream_in = stream_in
         self.stream_out = stream_out
 

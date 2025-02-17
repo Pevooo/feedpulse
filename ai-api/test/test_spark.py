@@ -62,7 +62,7 @@ class TestSpark(unittest.TestCase):
             FakeTable.TEST_ADD, [{"hi": "random_data3", "hello": 3}]
         )
 
-        sleep(3)
+        sleep(1)
         self.assertEqual(
             len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 1
         )
@@ -99,7 +99,7 @@ class TestSpark(unittest.TestCase):
             self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "6", "hello": 6}]),
         ]
 
-        sleep(3)
+        sleep(1)
         self.assertEqual(
             len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 1
         )
@@ -159,7 +159,6 @@ class TestSpark(unittest.TestCase):
         )
 
         data = [row.asDict() for row in df.collect()]
-        print(data)
         self.assertIn(
             {
                 "hashed_comment_id": "1251",
@@ -225,7 +224,7 @@ class TestSpark(unittest.TestCase):
 
         future_t2 = self.spark.add(FakeTable.TEST_T2, [{"hi": "file2", "hello": 3}])
 
-        sleep(3)
+        sleep(1)
         self.assertEqual(
             len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()), 2
         )

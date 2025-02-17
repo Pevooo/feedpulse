@@ -78,7 +78,7 @@ Thumbs.db
 bandit_report.html
 
 # Spark Tests Files
-/test_spark
+/ai-api/test/test_spark/
 
 # Local Database
-/database
+/ai-api/database/
