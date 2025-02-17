@@ -2,6 +2,7 @@ import json
 import os
 import unittest
 import uuid
+import shutil
 
 from enum import Enum
 from time import sleep
@@ -134,7 +135,7 @@ class TestSpark(unittest.TestCase):
         with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
             json.dump(data_in, f, indent=4)
 
-        sleep(30)
+        sleep(10)
 
         output_stream_schema = StructType(
             [
@@ -164,7 +165,81 @@ class TestSpark(unittest.TestCase):
             data,
         )
 
-        self.assertGreaterEqual(df.count(), 1)
+        self.assertEqual(df.count(), 1)
+
+        self.empty_dir(FakeTable.TEST_STREAMING_IN.value)
+        self.empty_dir(FakeTable.TEST_STREAMING_OUT.value)
+
+    def test_streaming_read_2_items_2_files(self):
+        folder_path = "test_spark/test_streaming_in"
+        os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
+
+        data_in_1 = [
+            {
+                "hashed_comment_id": "1",
+                "platform": "facebook",
+                "content": "hello, world!",
+            }
+        ]
+
+        data_in_2 = [
+            {
+                "hashed_comment_id": "2",
+                "platform": "facebook",
+                "content": "hello, world!",
+            }
+        ]
+
+        with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
+            json.dump(data_in_1, f, indent=4)
+        with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
+            json.dump(data_in_2, f, indent=4)
+
+        sleep(10)
+
+        output_stream_schema = StructType(
+            [
+                StructField("hashed_comment_id", StringType(), False),
+                StructField("platform", StringType(), False),
+                StructField("content", StringType(), False),
+                StructField("sentiment", StringType(), False),
+                StructField("related_topics", ArrayType(StringType(), True), True),
+            ]
+        )
+
+        df = (
+            self.spark.spark.read.option("header", "true")
+            .schema(output_stream_schema)
+            .parquet("test_spark/test_streaming_out")
+        )
+
+        data = [row.asDict() for row in df.collect()]
+        self.assertIn(
+            {
+                "hashed_comment_id": "1",
+                "platform": "facebook",
+                "content": "hello, world!",
+                "sentiment": "neutral",
+                "related_topics": ["cleanliness"],
+            },
+            data,
+        )
+
+        self.assertIn(
+            {
+                "hashed_comment_id": "2",
+                "platform": "facebook",
+                "content": "hello, world!",
+                "sentiment": "neutral",
+                "related_topics": ["cleanliness"],
+            },
+            data,
+        )
+
+        self.assertEqual(df.count(), 2)
+
+        self.empty_dir(FakeTable.TEST_STREAMING_IN.value)
+        self.empty_dir(FakeTable.TEST_STREAMING_OUT.value)
 
     def test_streaming_read_32_items_same_file(self):
         folder_path = "test_spark/test_streaming_in"
@@ -181,7 +256,7 @@ class TestSpark(unittest.TestCase):
         with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
             json.dump(data_in, f, indent=4)
 
-        sleep(30)
+        sleep(10)
 
         output_stream_schema = StructType(
             [
@@ -211,7 +286,10 @@ class TestSpark(unittest.TestCase):
             data,
         )
 
-        self.assertGreaterEqual(df.count(), 32)
+        self.assertEqual(df.count(), 32)
+
+        self.empty_dir(FakeTable.TEST_STREAMING_IN.value)
+        self.empty_dir(FakeTable.TEST_STREAMING_OUT.value)
 
     def test_concurrency_multiple_tables(self):
         future_t1 = self.spark.add(FakeTable.TEST_T1, [{"hi": "file1", "hello": 3}])
@@ -255,3 +333,11 @@ class TestSpark(unittest.TestCase):
             self.fail(
                 f"Wrong Concurrent Jobs Found({self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()} != {num_jobs})"
             )
+
+    def empty_dir(self, path_to_directory: str):
+        for filename in os.listdir(path_to_directory):
+            file_path = os.path.join(path_to_directory, filename)
+            if os.path.isdir(file_path):
+                shutil.rmtree(file_path)  # Recursively delete subdirectories
+            else:
+                os.remove(file_path)  # Delete files
