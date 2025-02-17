@@ -135,7 +135,7 @@ class TestSpark(unittest.TestCase):
         with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
             json.dump(data_in, f, indent=4)
 
-        sleep(10)
+        sleep(20)
 
         output_stream_schema = StructType(
             [
@@ -195,7 +195,7 @@ class TestSpark(unittest.TestCase):
         with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
             json.dump(data_in_2, f, indent=4)
 
-        sleep(10)
+        sleep(20)
 
         output_stream_schema = StructType(
             [
@@ -256,7 +256,7 @@ class TestSpark(unittest.TestCase):
         with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
             json.dump(data_in, f, indent=4)
 
-        sleep(10)
+        sleep(20)
 
         output_stream_schema = StructType(
             [
