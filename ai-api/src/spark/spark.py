@@ -72,7 +72,9 @@ class Spark:
         self,
         stream_in: SparkTable,
         stream_out: SparkTable,
-        feedback_classification_batch_function: Callable[[list[str]], list[str]],
+        feedback_classification_batch_function: Callable[
+            [list[str]], list[bool | None]
+        ],
         topic_detection_batch_function: Callable[[list[str]], list[list[str]]],
     ):
         self.spark = SparkSession.builder.appName("session").getOrCreate()
@@ -149,7 +151,14 @@ class Spark:
             ):
                 row_dict = original_row.asDict()
                 del row_dict["batch_id"]
-                row_dict["sentiment"] = sentiment
+
+                if sentiment is None:
+                    row_dict["sentiment"] = "neutral"
+                elif sentiment:
+                    row_dict["sentiment"] = "positive"
+                else:
+                    row_dict["sentiment"] = "negative"
+
                 row_dict["related_topics"] = related_topics.copy()
                 results.append(row_dict)
 
