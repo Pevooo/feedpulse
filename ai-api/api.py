@@ -6,6 +6,8 @@ from src.config.environment import Environment
 from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
+from src.data_streamers.facebook_data_streamer import FacebookDataStreamer
+from src.data_streamers.instagram_data_streamer import InstagramDataStreamer
 from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
@@ -46,6 +48,7 @@ class FeedPulseAPI:
             Global exception handler for the Flask app.
             """
             self.reporter.report(e)
+            print(e)
             return Response.server_error()
 
     def __setup_routes(self):
@@ -57,13 +60,29 @@ class FeedPulseAPI:
             # 2) Save the data in the streaming folder
             pass
 
-        @self.flask_app.route(Router.FACEBOOK_WEBHOOK, methods=["POST"])
+        @self.flask_app.route(Router.FACEBOOK_WEBHOOK, methods=["GET", "POST"])
         def facebook_webhook():
-            # TODO: Implement Facebook Webhook
+            # This method does not return responses from the `Response` class due to compatability issues with graph api
+            if request.method == "GET":
+                # Extract the query parameters sent by Facebook
+                mode = request.args.get("hub.mode")
+                token = request.args.get("hub.verify_token")
+                challenge = request.args.get("hub.challenge")
 
-            # 1) Get the data changes and process them into a unit format
-            # 2) Save the data in the streaming folder
-            pass
+                # Check if the mode is 'subscribe' and the verify token matches
+                if (
+                    mode == "subscribe"
+                    and token == "test"
+                ):
+                    # Respond with the challenge token from the request
+                    return challenge, 200
+                else:
+                    # Token mismatch or wrong mode; return an error
+                    return "Verification token mismatch", 403
+            elif request.method == "POST":
+                print("Received a POST request: {}".format(request.json))
+                FacebookDataStreamer().stream(request.json)
+                return "Event received", 200
 
         @self.flask_app.route(Router.REMOTE_CONFIG_ROUTE, methods=["GET", "POST"])
         def remote_config():
@@ -127,6 +146,10 @@ if __name__ == "__main__":
         feedback_classification_batch_function=feedback_classifier.classify,
         topic_detection_batch_function=topic_detector.detect,
     )
+
+    # Define Data Streamers
+    facebook_data_streamer = FacebookDataStreamer()
+    instagram_data_streamer = InstagramDataStreamer()
 
     # Define Exception Reporter
     exception_reporter = ExceptionReporter(spark)

@@ -1,7 +1,7 @@
 import unittest
 import requests
 from unittest.mock import patch, Mock
-from src.data_providers.facebook_data_provider import FacebookDataProvider
+from src.data_streamers.facebook_data_streamer import FacebookDataProvider
 from datetime import datetime
 
 

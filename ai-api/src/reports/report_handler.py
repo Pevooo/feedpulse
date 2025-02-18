@@ -1,6 +1,5 @@
 import json
 
-from src.data.pipeline_result import PipelineResult
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
 
@@ -9,7 +8,7 @@ class ReportHandler:
     def __init__(self, provider: GlobalModelProvider):
         self.provider = provider
 
-    def create(self, result: PipelineResult) -> str:
+    def create(self, result) -> str:
         """
         Creates a report from the given result.
 
