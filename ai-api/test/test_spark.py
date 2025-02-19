@@ -8,8 +8,8 @@ from enum import Enum
 from time import sleep
 from unittest.mock import MagicMock
 
-from pyspark.sql.types import StructType, StructField, StringType, ArrayType
 
+from pyspark.sql.types import StructType, StructField, StringType, ArrayType
 from src.spark.spark import Spark
 
 

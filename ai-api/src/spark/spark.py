@@ -16,44 +16,13 @@ from pyspark.sql.types import (
     StringType,
 )
 
-"""
-# Define schemas
-pages_schema = StructType([StructField("page_id", StringType(), False)])
-
-posts_schema = StructType(
-    [
-        StructField("post_id", StringType(), False),
-        StructField("page_id", StringType(), False),
-        StructField("content", StringType(), True),
-    ]
-)
-
-comments_schema = StructType(
-    [
-        StructField("hashed_comment_id", StringType(), False),
-        StructField("platform", StringType(), False),
-        StructField("content", StringType(), False),
-        StructField("related_topics", ArrayType(StringType(), True), True),
-        StructField("sentiment", StringType(), True),
-        StructField("transaction_type", StringType(), True),
-        StructField("timestamp", TimestampType(), False),
-    ]
-)
-
-exceptions_schema = StructType(
-    [
-        StructField("exception_id", StringType(), False),
-        StructField("exception_message", StringType(), True),
-        StructField("time", TimestampType(), False),
-    ]
-)
-"""
-
+# Define base directory for storing data files
 base_dir = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "..", "database")
 )
 
 
+# Enum for managing Spark tables
 class SparkTable(Enum):
     REPORTS = os.path.join(base_dir, "reports")
     INPUT_COMMENTS = os.path.join(base_dir, "comments_stream")
@@ -92,7 +61,6 @@ class Spark:
     def add(self, table: SparkTable, row_data: Iterable[dict[str, Any]]) -> Future:
         if table not in self.executors:
             self.executors[table] = ThreadPoolExecutor(max_workers=1)
-
         return self.executors[table].submit(self._add_worker, table, list(row_data))
 
     def delete(self, table: SparkTable, row_data: str):
@@ -110,6 +78,7 @@ class Spark:
         self.spark.createDataFrame(row_data).write.mode("append").parquet(table.value)
 
     def _streaming_worker(self):
+        # Define schema for input streaming data
         input_stream_schema = StructType(
             [
                 StructField("hashed_comment_id", StringType(), False),
@@ -133,7 +102,7 @@ class Spark:
         ).start()
 
     def process_data(self, df, epoch_id):
-        # Add a batch_id column to group every 32 rows.
+        # Add a batch_id column to group every 32 rows
         df = df.withColumn("batch_id", floor(monotonically_increasing_id() / 32))
 
         grouped_df = df.groupBy("batch_id").agg(
@@ -141,25 +110,52 @@ class Spark:
         )
 
         results = []
-        for row in grouped_df.collect():
-            batch_rows = row.batch_rows
-            comments = [r.content for r in batch_rows]
-            sentiments = self.feedback_classification_batch_function(comments)
-            topics = self.topic_detection_batch_function(comments)
-            for original_row, sentiment, related_topics in zip(
-                batch_rows, sentiments, topics
-            ):
-                row_dict = original_row.asDict()
-                del row_dict["batch_id"]
 
-                if sentiment is None:
-                    row_dict["sentiment"] = "neutral"
-                elif sentiment:
-                    row_dict["sentiment"] = "positive"
-                else:
-                    row_dict["sentiment"] = "negative"
+        # Process each batch concurrently
+        with ThreadPoolExecutor() as executor:
+            futures = [
+                executor.submit(self.process_batch, row.batch_rows)
+                for row in grouped_df.collect()
+            ]
 
-                row_dict["related_topics"] = related_topics.copy()
-                results.append(row_dict)
+            # Collect results from each processed batch
+            for future in futures:
+                results.extend(future.result())
 
+        # Store processed data in Spark table
         self.add(self.stream_out, results)
+
+    def process_batch(self, batch_rows):
+
+        comments = [r.content for r in batch_rows]
+
+        # Execute sentiment analysis and topic detection concurrently
+        with ThreadPoolExecutor() as executor:
+            sentiment_future = executor.submit(
+                self.feedback_classification_batch_function, comments
+            )
+            topics_future = executor.submit(
+                self.topic_detection_batch_function, comments
+            )
+
+            sentiments = sentiment_future.result()
+            topics = topics_future.result()
+
+        batch_results = []
+        for original_row, sentiment, related_topics in zip(
+            batch_rows, sentiments, topics
+        ):
+            row_dict = original_row.asDict()
+            del row_dict["batch_id"]
+
+            # Convert sentiment to text format
+            row_dict["sentiment"] = (
+                "neutral"
+                if sentiment is None
+                else "positive" if sentiment else "negative"
+            )
+
+            row_dict["related_topics"] = related_topics.copy()
+            batch_results.append(row_dict)
+
+        return batch_results
