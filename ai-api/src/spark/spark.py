@@ -16,6 +16,8 @@ from pyspark.sql.types import (
     StringType,
 )
 
+from src.topics.feedback_topic import FeedbackTopic
+
 # Define base directory for storing data files
 base_dir = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "..", "database")
@@ -44,7 +46,9 @@ class Spark:
         feedback_classification_batch_function: Callable[
             [list[str]], list[bool | None]
         ],
-        topic_detection_batch_function: Callable[[list[str]], list[list[str]]],
+        topic_detection_batch_function: Callable[
+            [list[str]], list[list[FeedbackTopic]]
+        ],
     ):
         self.spark = SparkSession.builder.appName("session").getOrCreate()
         self.feedback_classification_batch_function = (
@@ -96,9 +100,6 @@ class Spark:
         )
         df.writeStream.trigger(processingTime="5 seconds").foreachBatch(
             self.process_data
-        ).option(
-            "checkpointLocation",
-            os.path.join(base_dir, "checkpoints/processed_comments"),
         ).start()
 
     def process_data(self, df, epoch_id):
@@ -155,7 +156,7 @@ class Spark:
                 else "positive" if sentiment else "negative"
             )
 
-            row_dict["related_topics"] = related_topics.copy()
+            row_dict["related_topics"] = [t.value for t in related_topics]
             batch_results.append(row_dict)
 
         return batch_results
