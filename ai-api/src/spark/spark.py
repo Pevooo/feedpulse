@@ -16,6 +16,7 @@ from pyspark.sql.types import (
     StringType,
 )
 
+# Define base directory for storing data files
 base_dir = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "..", "database")
 )
@@ -43,9 +44,7 @@ class Spark:
         feedback_classification_batch_function: Callable[
             [list[str]], list[bool | None]
         ],
-        topic_detection_batch_function: Callable[
-            [list[str]], list[list[FeedbackTopic]]
-        ],
+        topic_detection_batch_function: Callable[[list[str]], list[list[str]]],
     ):
         self.spark = SparkSession.builder.appName("session").getOrCreate()
         self.feedback_classification_batch_function = (
