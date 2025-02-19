@@ -19,34 +19,34 @@ class TestTopicDetector(unittest.TestCase):
 
     def test_detect_known_topic(self):
         self.mock_provider.generate_content.return_value = "food,wifi"
-        result = self.topic_detector.detect(MagicMock(), self.org_topics)
-        self.assertListEqual(result, [(FeedbackTopic.FOOD, FeedbackTopic.WIFI)])
+        result = self.topic_detector.detect(MagicMock())
+        self.assertListEqual(result, [[FeedbackTopic.FOOD, FeedbackTopic.WIFI]])
 
     def test_detect_multiple_known_topic(self):
         self.mock_provider.generate_content.return_value = (
             "food|accessibility,staff|wifi"
         )
-        result = self.topic_detector.detect(MagicMock(), self.org_topics)
+        result = self.topic_detector.detect(MagicMock())
         self.assertListEqual(
             result,
             [
-                (FeedbackTopic.FOOD,),
-                (FeedbackTopic.ACCESSIBILITY, FeedbackTopic.STAFF),
-                (FeedbackTopic.WIFI,),
+                [FeedbackTopic.FOOD],
+                [FeedbackTopic.ACCESSIBILITY, FeedbackTopic.STAFF],
+                [
+                    FeedbackTopic.WIFI,
+                ],
             ],
         )
 
     def test_detect_multiple_known_topic_and_no_matching_topic(self):
-        self.mock_provider.generate_content.return_value = (
-            "food|wifi,staff|no relevant topics found."
-        )
-        result = self.topic_detector.detect(MagicMock(), self.org_topics)
+        self.mock_provider.generate_content.return_value = "food|wifi,staff|NONE"
+        result = self.topic_detector.detect(MagicMock())
         self.assertListEqual(
             result,
-            [(FeedbackTopic.FOOD,), (FeedbackTopic.WIFI, FeedbackTopic.STAFF), tuple()],
+            [[FeedbackTopic.FOOD], [FeedbackTopic.WIFI, FeedbackTopic.STAFF], list()],
         )
 
     def test_no_matching_topic(self):
-        self.mock_provider.generate_content.return_value = "no relevant topics found."
-        result = self.topic_detector.detect(MagicMock(), self.org_topics)
-        self.assertListEqual(result, [tuple()])
+        self.mock_provider.generate_content.return_value = "NONE"
+        result = self.topic_detector.detect(MagicMock())
+        self.assertListEqual(result, [list()])
