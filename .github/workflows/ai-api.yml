@@ -1,7 +1,7 @@
 name: AI API
 
 on:
-  push:
+  pull_request:
     paths:
       - 'ai-api/**'
       - '.github/workflows/ai-api.yml'
