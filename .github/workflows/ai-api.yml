@@ -1,6 +1,12 @@
 name: AI API
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'ai-api/**'
+      - '.github/workflows/ai-api.yml'
   pull_request:
     paths:
       - 'ai-api/**'
@@ -14,6 +20,9 @@ jobs:
     concurrency:
       group: ai-${{ github.ref }}
       cancel-in-progress: true
+
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -52,6 +61,7 @@ jobs:
           PYTHONPATH=./ai-api python ai-api/test/performance_test.py
 
       - name: Post Performance Results as PR Comment
+        if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
           message-path: ai-api/performance_report.md
