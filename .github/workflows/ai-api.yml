@@ -52,7 +52,6 @@ jobs:
           PYTHONPATH=./ai-api python ai-api/test/performance_test.py
 
       - name: Post Performance Results as PR Comment
-        if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
           message-path: ai-api/performance_report.md
