@@ -22,8 +22,11 @@ def main():
     )  # Just create the instance so that we can use it later without the creation overhead
 
     tests = [
-        ("Spark Read 1,000 Rows", _exec_time(spark_write_1k, spark)),
-        ("Spark Read 1,000,000 Rows", _exec_time(spark_write_1m, spark)),
+        # Writes before read so we can read the pre-written data
+        ("Spark Write 1,000 Rows", _exec_time(spark_write_1k, spark)),
+        ("Spark Read 1,000 Rows", _exec_time(spark_read_1k, spark)),
+        ("Spark Write 1,000,000 Rows", _exec_time(spark_write_1m, spark)),
+        ("Spark Read 1,000,000 Rows", _exec_time(spark_read_1m, spark)),
     ]
 
     # Generate Markdown table
@@ -46,16 +49,32 @@ def _exec_time(func, *args, **kwargs):
     return end - start
 
 
+def spark_read_1m(spark):
+    spark.spark.read.parquet(FakeTable.M.value).collect()
+
+
 def spark_write_1k(spark: Spark):
-    spark.add(FakeTable.K, [
-        {"col1": "val1", "col2": "val2"},
-    ] * 1_000).result()
+    spark.add(
+        FakeTable.K,
+        [
+            {"col1": "val1", "col2": "val2"},
+        ]
+        * 1_000,
+    ).result()
+
+
+def spark_read_1k(spark: Spark):
+    spark.spark.read.parquet(FakeTable.K.value).collect()
 
 
 def spark_write_1m(spark: Spark):
-    spark.add(FakeTable.M, [
-        {"col1": "val1", "col2": "val2"},
-    ] * 1_000_000).result()
+    spark.add(
+        FakeTable.M,
+        [
+            {"col1": "val1", "col2": "val2"},
+        ]
+        * 1_000_000,
+    ).result()
 
 
 if __name__ == "__main__":
