@@ -14,7 +14,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 class FakeTable(Enum):
     K = os.path.join(BASE_DIR, "performance_test", "K")
     M = os.path.join(BASE_DIR, "performance_test", "M")
-    B = os.path.join(BASE_DIR, "performance_test", "B")
 
 
 def main():
@@ -31,9 +30,6 @@ def main():
         ("Spark Write 1M Rows", _exec_time(spark_write_1m, spark)),
         ("Spark Read 1M Rows", _exec_time(spark_read_1m, spark)),
         ("Spark Size of 1M Rows", _get_folder_size(FakeTable.M.value)),
-        ("Spark Write 1B Rows", _exec_time(spark_write_1b, spark)),
-        ("Spark Read 1B Rows", _exec_time(spark_read_1b, spark)),
-        ("Spark Size of 1B Rows", _get_folder_size(FakeTable.B.value)),
     ]
 
     # Generate Markdown table
@@ -85,20 +81,6 @@ def spark_write_1m(spark: Spark):
             {"col1": "val1", "col2": "val2"},
         ]
         * 1_000_000,
-    ).result()
-
-
-def spark_read_1b(spark: Spark):
-    spark.spark.read.parquet(FakeTable.B.value).collect()
-
-
-def spark_write_1b(spark: Spark):
-    spark.add(
-        FakeTable.B,
-        [
-            {"col1": "val1", "col2": "val2"},
-        ]
-        * 1_000_000_000,
     ).result()
 
 
