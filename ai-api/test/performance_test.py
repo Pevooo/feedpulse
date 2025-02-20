@@ -1,4 +1,5 @@
 import time
+import os
 from tabulate import tabulate
 
 
@@ -13,7 +14,10 @@ def main():
     performance_table = tabulate(
         tests, headers=["Component", "Execution Time (s)"], tablefmt="github"
     )
-    with open("performance_report.md", "w") as f:
+
+    save_path = os.path.join(os.path.dirname(__file__), "performance_report.md")
+
+    with open(save_path, "w") as f:
         f.write("## 🏎️ Performance Report\n\n")
         f.write(performance_table)
         f.write("\n")
