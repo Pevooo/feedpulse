@@ -16,7 +16,7 @@ jobs:
   test:
     name: Build and Test
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 10
     concurrency:
       group: ai-${{ github.ref }}
       cancel-in-progress: true
@@ -66,5 +66,5 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
-          message-path: ai-api/performance_report.md
+          message-path: ai-api/test/performance_report.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
