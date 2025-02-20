@@ -4,6 +4,7 @@ from unittest.mock import Mock
 
 from tabulate import tabulate
 from enum import Enum
+from pathlib import Path
 
 from src.spark.spark import Spark
 
@@ -13,6 +14,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 class FakeTable(Enum):
     K = os.path.join(BASE_DIR, "performance_test", "K")
     M = os.path.join(BASE_DIR, "performance_test", "M")
+    B = os.path.join(BASE_DIR, "performance_test", "B")
 
 
 def main():
@@ -23,10 +25,15 @@ def main():
 
     tests = [
         # Writes before read so we can read the pre-written data
-        ("Spark Write 1,000 Rows", _exec_time(spark_write_1k, spark)),
-        ("Spark Read 1,000 Rows", _exec_time(spark_read_1k, spark)),
-        ("Spark Write 1,000,000 Rows", _exec_time(spark_write_1m, spark)),
-        ("Spark Read 1,000,000 Rows", _exec_time(spark_read_1m, spark)),
+        ("Spark Write 1k Rows", _exec_time(spark_write_1k, spark)),
+        ("Spark Read 1k Rows", _exec_time(spark_read_1k, spark)),
+        ("Spark Size of 1k Rows", _get_folder_size(FakeTable.K)),
+        ("Spark Write 1M Rows", _exec_time(spark_write_1m, spark)),
+        ("Spark Read 1M Rows", _exec_time(spark_read_1m, spark)),
+        ("Spark Size of 1M Rows", _get_folder_size(FakeTable.M)),
+        ("Spark Write 1B Rows", _exec_time(spark_write_1b, spark)),
+        ("Spark Read 1B Rows", _exec_time(spark_read_1b, spark)),
+        ("Spark Size of 1B Rows", _get_folder_size(FakeTable.B)),
     ]
 
     # Generate Markdown table
@@ -48,6 +55,8 @@ def _exec_time(func, *args, **kwargs):
     end = time.perf_counter()
     return end - start
 
+def _get_folder_size(folder_path):
+    return sum(f.stat().st_size for f in Path(folder_path).rglob('*'))
 
 def spark_read_1m(spark):
     spark.spark.read.parquet(FakeTable.M.value).collect()
@@ -76,6 +85,17 @@ def spark_write_1m(spark: Spark):
         * 1_000_000,
     ).result()
 
+def spark_read_1b(spark: Spark):
+    spark.spark.read.parquet(FakeTable.B.value).collect()
+
+def spark_write_1b(spark: Spark):
+    spark.add(
+        FakeTable.B,
+        [
+            {"col1": "val1", "col2": "val2"},
+        ]
+        * 1_000_000_000,
+    ).result()
 
 if __name__ == "__main__":
     main()
