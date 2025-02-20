@@ -62,6 +62,12 @@ jobs:
         run: |
           PYTHONPATH=./ai-api python ai-api/test/performance_test.py
 
+      - name: Debug - List files
+        run: ls -lah ai-api/
+
+      - name: Debug - List files2
+        run: ls -lah ai-api/test/
+
       - name: Post Performance Results as PR Comment
         if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
