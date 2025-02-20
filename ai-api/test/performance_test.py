@@ -1,13 +1,29 @@
 import time
 import os
+from unittest.mock import Mock
+
 from tabulate import tabulate
+from enum import Enum
+
+from src.spark.spark import Spark
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+class FakeTable(Enum):
+    K = os.path.join(BASE_DIR, "performance_test", "K")
+    M = os.path.join(BASE_DIR, "performance_test", "M")
 
 
 def main():
 
+    spark = Spark(
+        Mock(), Mock(), Mock(), Mock()
+    )  # Just create the instance so that we can use it later without the creation overhead
+
     tests = [
-        ("Spark Read 1,000 Rows", _exec_time(spark_read_1k)),
-        ("Spark Read 1,000,000 Rows", _exec_time(spark_read_1m)),
+        ("Spark Read 1,000 Rows", _exec_time(spark_write_1k, spark)),
+        ("Spark Read 1,000,000 Rows", _exec_time(spark_write_1m, spark)),
     ]
 
     # Generate Markdown table
@@ -15,7 +31,7 @@ def main():
         tests, headers=["Component", "Execution Time (s)"], tablefmt="github"
     )
 
-    save_path = os.path.join(os.path.dirname(__file__), "performance_report.md")
+    save_path = os.path.join(BASE_DIR, "performance_report.md")
 
     with open(save_path, "w") as f:
         f.write("## 🏎️ Performance Report\n\n")
@@ -30,12 +46,16 @@ def _exec_time(func, *args, **kwargs):
     return end - start
 
 
-def spark_read_1k():
-    time.sleep(1.2)
+def spark_write_1k(spark: Spark):
+    spark.add(FakeTable.K, [
+        {"col1": "val1", "col2": "val2"},
+    ] * 1_000).result()
 
 
-def spark_read_1m():
-    time.sleep(0.5)
+def spark_write_1m(spark: Spark):
+    spark.add(FakeTable.M, [
+        {"col1": "val1", "col2": "val2"},
+    ] * 1_000_000).result()
 
 
 if __name__ == "__main__":
