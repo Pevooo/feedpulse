@@ -27,13 +27,13 @@ def main():
         # Writes before read so we can read the pre-written data
         ("Spark Write 1k Rows", _exec_time(spark_write_1k, spark)),
         ("Spark Read 1k Rows", _exec_time(spark_read_1k, spark)),
-        ("Spark Size of 1k Rows", _get_folder_size(FakeTable.K)),
+        ("Spark Size of 1k Rows", _get_folder_size(FakeTable.K.value)),
         ("Spark Write 1M Rows", _exec_time(spark_write_1m, spark)),
         ("Spark Read 1M Rows", _exec_time(spark_read_1m, spark)),
-        ("Spark Size of 1M Rows", _get_folder_size(FakeTable.M)),
+        ("Spark Size of 1M Rows", _get_folder_size(FakeTable.M.value)),
         ("Spark Write 1B Rows", _exec_time(spark_write_1b, spark)),
         ("Spark Read 1B Rows", _exec_time(spark_read_1b, spark)),
-        ("Spark Size of 1B Rows", _get_folder_size(FakeTable.B)),
+        ("Spark Size of 1B Rows", _get_folder_size(FakeTable.B.value)),
     ]
 
     # Generate Markdown table
