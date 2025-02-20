@@ -55,8 +55,10 @@ def _exec_time(func, *args, **kwargs):
     end = time.perf_counter()
     return end - start
 
+
 def _get_folder_size(folder_path):
-    return sum(f.stat().st_size for f in Path(folder_path).rglob('*'))
+    return sum(f.stat().st_size for f in Path(folder_path).rglob("*"))
+
 
 def spark_read_1m(spark):
     spark.spark.read.parquet(FakeTable.M.value).collect()
@@ -85,8 +87,10 @@ def spark_write_1m(spark: Spark):
         * 1_000_000,
     ).result()
 
+
 def spark_read_1b(spark: Spark):
     spark.spark.read.parquet(FakeTable.B.value).collect()
+
 
 def spark_write_1b(spark: Spark):
     spark.add(
@@ -96,6 +100,7 @@ def spark_write_1b(spark: Spark):
         ]
         * 1_000_000_000,
     ).result()
+
 
 if __name__ == "__main__":
     main()
