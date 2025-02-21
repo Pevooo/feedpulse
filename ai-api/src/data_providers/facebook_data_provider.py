@@ -45,33 +45,41 @@ class FacebookDataProvider(DataProvider):
         url = f"{FACEBOOK_GRAPH_URL}{page_id}"
         params = {
             "access_token": self.access_token,
-            "fields": "posts.limit(100){id,message,created_time,comments.limit(100){id,message,created_time,comments.limit(100){id,message,created_time}}}"
+            "fields": "posts.limit(100){id,message,created_time,comments.limit(100){id,message,created_time,comments.limit(100){id,message,created_time}}}",
         }
 
         data = requests.get(url, params, timeout=3).json()
         posts: list[dict] = []
         for post_data in data.get("posts", {}).get("data", []):
-            #posts
+            # posts
             post_id = post_data.get("id")
 
-            #comments
+            # comments
             for comment_data in post_data.get("comments", {}).get("data", []):
-                posts.append({
-                    "comment_id": comment_data.get("id"),
-                    "post_id": post_id,
-                    "message": comment_data.get("message"),
-                    "created_time": datetime.strptime(comment_data.get("created_time"), DATETIME_FORMAT),
-                    "platform": "facebook"
-                })
-
-                #replies
-                for reply_data in comment_data.get("comments", {}).get("data", []):
-                posts.append({
-                    "comment_id": reply_data.get("id"),
+                posts.append(
+                    {
+                        "comment_id": comment_data.get("id"),
                         "post_id": post_id,
-                        "message": reply_data.get("message"),
-                        "created_time": datetime.strptime(reply_data.get("created_time"), DATETIME_FORMAT),
-                        "platform": "facebook"
-                })
+                        "message": comment_data.get("message"),
+                        "created_time": datetime.strptime(
+                            comment_data.get("created_time"), DATETIME_FORMAT
+                        ),
+                        "platform": "facebook",
+                    }
+                )
+
+                # replies
+                for reply_data in comment_data.get("comments", {}).get("data", []):
+                    posts.append(
+                        {
+                            "comment_id": reply_data.get("id"),
+                            "post_id": post_id,
+                            "message": reply_data.get("message"),
+                            "created_time": datetime.strptime(
+                                reply_data.get("created_time"), DATETIME_FORMAT
+                            ),
+                            "platform": "facebook",
+                        }
+                    )
 
         return tuple(posts)
