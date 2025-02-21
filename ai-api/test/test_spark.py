@@ -377,5 +377,6 @@ class TestSpark(unittest.TestCase):
             query.stop()
         self.spark.spark.stop()
 
+
 if __name__ == "__main__":
     unittest.main()

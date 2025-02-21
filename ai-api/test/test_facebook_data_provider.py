@@ -98,7 +98,7 @@ class TestFacebookDataProvider(unittest.TestCase):
     def test_get_posts_comments_and_replies(self, mock_get):
         # Override get_page_id to avoid making a real HTTP call.
         self.provider.get_page_id = lambda: "12345"
-        
+
         # Construct a simulated API response:
         # - One post with two comments:
         #   - The first comment ("comment1") has two replies ("reply1" and "reply2").
@@ -135,7 +135,7 @@ class TestFacebookDataProvider(unittest.TestCase):
                                     "id": "comment2",
                                     "message": "Second comment message",
                                     "created_time": "2025-02-21T19:10:00+0000",
-                                    "comments": {"data": []}  # No replies.
+                                    "comments": {"data": []},  # No replies.
                                 },
                             ]
                         },
@@ -143,7 +143,7 @@ class TestFacebookDataProvider(unittest.TestCase):
                 ]
             }
         }
-        
+
         # Configure the mock for the posts API call.
         mock_response = MagicMock()
         mock_response.json.return_value = posts_response
@@ -151,42 +151,42 @@ class TestFacebookDataProvider(unittest.TestCase):
 
         # Call the method under test.
         posts = self.provider.get_posts()
-        
+
         # Expect four items: comment1, reply1, reply2, and comment2.
         self.assertEqual(len(posts), 4)
-        
+
         # Verify details for the first comment.
         self.assertEqual(posts[0]["comment_id"], "comment1")
         self.assertEqual(posts[0]["post_id"], "post1")
         self.assertEqual(posts[0]["content"], "Comment message")
         self.assertEqual(
             posts[0]["created_time"],
-            datetime.strptime("2025-02-21T19:05:00+0000", DATETIME_FORMAT)
+            datetime.strptime("2025-02-21T19:05:00+0000", DATETIME_FORMAT),
         )
-        
+
         # Verify details for the first reply.
         self.assertEqual(posts[1]["comment_id"], "reply1")
         self.assertEqual(posts[1]["post_id"], "post1")
         self.assertEqual(posts[1]["content"], "Reply message")
         self.assertEqual(
             posts[1]["created_time"],
-            datetime.strptime("2025-02-21T19:06:00+0000", DATETIME_FORMAT)
+            datetime.strptime("2025-02-21T19:06:00+0000", DATETIME_FORMAT),
         )
-        
+
         # Verify details for the second reply.
         self.assertEqual(posts[2]["comment_id"], "reply2")
         self.assertEqual(posts[2]["post_id"], "post1")
         self.assertEqual(posts[2]["content"], "Second reply message")
         self.assertEqual(
             posts[2]["created_time"],
-            datetime.strptime("2025-02-21T19:07:00+0000", DATETIME_FORMAT)
+            datetime.strptime("2025-02-21T19:07:00+0000", DATETIME_FORMAT),
         )
-        
+
         # Verify details for the second comment.
         self.assertEqual(posts[3]["comment_id"], "comment2")
         self.assertEqual(posts[3]["post_id"], "post1")
         self.assertEqual(posts[3]["content"], "Second comment message")
         self.assertEqual(
             posts[3]["created_time"],
-            datetime.strptime("2025-02-21T19:10:00+0000", DATETIME_FORMAT)
+            datetime.strptime("2025-02-21T19:10:00+0000", DATETIME_FORMAT),
         )
