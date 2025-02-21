@@ -135,8 +135,10 @@ class TestSpark(unittest.TestCase):
         data_in = [
             {
                 "hashed_comment_id": "1251",
-                "platform": "facebook",
+                "post_id": "123",
                 "content": "hello, world!",
+                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "platform": "facebook",
             }
         ]
 
@@ -148,6 +150,8 @@ class TestSpark(unittest.TestCase):
         output_stream_schema = StructType(
             [
                 StructField("hashed_comment_id", StringType(), False),
+                StructField("post_id", StringType(), False),
+                StructField("created_time", TimestampType(), False),
                 StructField("platform", StringType(), False),
                 StructField("content", StringType(), False),
                 StructField("sentiment", StringType(), False),
@@ -165,6 +169,8 @@ class TestSpark(unittest.TestCase):
         self.assertIn(
             {
                 "hashed_comment_id": "1251",
+                "post_id": "123",
+                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -185,6 +191,8 @@ class TestSpark(unittest.TestCase):
         data_in_1 = [
             {
                 "hashed_comment_id": "1",
+                "post_id": "123",
+                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
                 "platform": "facebook",
                 "content": "hello, world!",
             }
@@ -193,6 +201,8 @@ class TestSpark(unittest.TestCase):
         data_in_2 = [
             {
                 "hashed_comment_id": "2",
+                "post_id": "123",
+                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
                 "platform": "facebook",
                 "content": "hello, world!",
             }
@@ -208,6 +218,8 @@ class TestSpark(unittest.TestCase):
         output_stream_schema = StructType(
             [
                 StructField("hashed_comment_id", StringType(), False),
+                StructField("post_id", StringType(), False),
+                StructField("created_time", TimestampType(), False),
                 StructField("platform", StringType(), False),
                 StructField("content", StringType(), False),
                 StructField("sentiment", StringType(), False),
@@ -225,6 +237,8 @@ class TestSpark(unittest.TestCase):
         self.assertIn(
             {
                 "hashed_comment_id": "1",
+                "post_id": "123",
+                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -236,6 +250,8 @@ class TestSpark(unittest.TestCase):
         self.assertIn(
             {
                 "hashed_comment_id": "2",
+                "post_id": "123",
+                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -256,6 +272,8 @@ class TestSpark(unittest.TestCase):
         data_in = [
             {
                 "hashed_comment_id": "34",
+                "post_id": "123",
+                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
                 "platform": "facebook",
                 "content": "hello, world!",
             }
@@ -269,6 +287,8 @@ class TestSpark(unittest.TestCase):
         output_stream_schema = StructType(
             [
                 StructField("hashed_comment_id", StringType(), False),
+                StructField("post_id", StringType(), False),
+                StructField("created_time", TimestampType(), False),
                 StructField("platform", StringType(), False),
                 StructField("content", StringType(), False),
                 StructField("sentiment", StringType(), False),
@@ -286,6 +306,8 @@ class TestSpark(unittest.TestCase):
         self.assertIn(
             {
                 "hashed_comment_id": "34",
+                "post_id": "123",
+                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -354,3 +376,6 @@ class TestSpark(unittest.TestCase):
         for query in self.spark.spark.streams.active:
             query.stop()
         self.spark.spark.stop()
+
+if __name__ == "__main__":
+    unittest.main()
