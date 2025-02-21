@@ -34,7 +34,7 @@ def main():
 
     # Generate Markdown table
     performance_table = tabulate(
-        tests, headers=["Component", "Execution Time (s)"], tablefmt="github"
+        tests, headers=["Component", "Value"], tablefmt="github"
     )
 
     save_path = os.path.join(BASE_DIR, "performance_report.md")
@@ -49,11 +49,11 @@ def _exec_time(func, *args, **kwargs):
     start = time.perf_counter()
     func(*args, **kwargs)  # Should be synchronous
     end = time.perf_counter()
-    return end - start
+    return f"{end - start}s"
 
 
 def _get_folder_size(folder_path):
-    return sum(f.stat().st_size for f in Path(folder_path).rglob("*"))
+    return f"{sum(f.stat().st_size for f in Path(folder_path).rglob("*"))}b"
 
 
 def spark_read_1m(spark):
