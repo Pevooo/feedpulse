@@ -3,7 +3,7 @@ import os
 import unittest
 import uuid
 import shutil
-
+import datetime
 from enum import Enum
 from time import sleep
 from unittest.mock import MagicMock
@@ -138,12 +138,17 @@ class TestSpark(unittest.TestCase):
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
+        # Create an ISO string for JSON serialization.
+        created_time_str = datetime.datetime(
+            2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc
+        ).isoformat()
+
         data_in = [
             {
                 "hashed_comment_id": "1251",
                 "post_id": "123",
                 "content": "hello, world!",
-                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "created_time": created_time_str,
                 "platform": "facebook",
             }
         ]
@@ -176,7 +181,7 @@ class TestSpark(unittest.TestCase):
             {
                 "hashed_comment_id": "1251",
                 "post_id": "123",
-                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -194,11 +199,16 @@ class TestSpark(unittest.TestCase):
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
+        # Create an ISO string for JSON serialization.
+        created_time_str = datetime.datetime(
+            2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc
+        ).isoformat()
+
         data_in_1 = [
             {
                 "hashed_comment_id": "1",
                 "post_id": "123",
-                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "created_time": created_time_str,
                 "platform": "facebook",
                 "content": "hello, world!",
             }
@@ -208,7 +218,7 @@ class TestSpark(unittest.TestCase):
             {
                 "hashed_comment_id": "2",
                 "post_id": "123",
-                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "created_time": created_time_str,
                 "platform": "facebook",
                 "content": "hello, world!",
             }
@@ -244,7 +254,7 @@ class TestSpark(unittest.TestCase):
             {
                 "hashed_comment_id": "1",
                 "post_id": "123",
-                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -257,7 +267,7 @@ class TestSpark(unittest.TestCase):
             {
                 "hashed_comment_id": "2",
                 "post_id": "123",
-                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -275,11 +285,16 @@ class TestSpark(unittest.TestCase):
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
+        # Create an ISO string for JSON serialization.
+        created_time_str = datetime.datetime(
+            2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc
+        ).isoformat()
+
         data_in = [
             {
                 "hashed_comment_id": "34",
                 "post_id": "123",
-                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "created_time": created_time_str,
                 "platform": "facebook",
                 "content": "hello, world!",
             }
@@ -313,7 +328,7 @@ class TestSpark(unittest.TestCase):
             {
                 "hashed_comment_id": "34",
                 "post_id": "123",
-                "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
+                "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
@@ -382,3 +397,7 @@ class TestSpark(unittest.TestCase):
         for query in self.spark.spark.streams.active:
             query.stop()
         self.spark.spark.stop()
+
+
+if __name__ == "__main__":
+    unittest.main()
