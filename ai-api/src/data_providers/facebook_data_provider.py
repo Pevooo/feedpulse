@@ -1,8 +1,6 @@
 import requests
 from datetime import datetime
 
-from src.data.context_data_unit import ContextDataUnit
-from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.data_provider import DataProvider
 from src.utlity.util import deprecated
 
@@ -34,43 +32,77 @@ class FacebookDataProvider(DataProvider):
         return data.get("id")
 
     @deprecated
-    def get_posts(self) -> tuple[ContextDataUnit, ...]:
+    def get_posts(self) -> tuple[dict, ...]:
         """
-        Gets the posts from a Facebook page using the page access token.
+        Gets the last 100 posts with all of their comments and replies from a Facebook page using the page access token.
 
         Returns:
-            tuple[ContextDataUnit, ...]: A tuple containing all the collected posts as ContextDataUnit objects.
+            tuple[dict, ...]: A tuple containing all the collected comments and replies as dictionaries.
         """
         page_id = self.get_page_id()
         url = f"{FACEBOOK_GRAPH_URL}{page_id}"
         params = {
             "access_token": self.access_token,
-            "fields": "posts{comments,message,created_time}",
+            "fields": "posts.limit(1){id,message,created_time,comments.limit(1){id,message,created_time,comments.limit(1)}}",
         }
 
         data = requests.get(url, params, timeout=3).json()
-        posts: list[ContextDataUnit] = []
+        posts: list[dict] = []
         for post_data in data.get("posts", {}).get("data", []):
-            message: str = post_data.get("message", "")
+            # posts
+            post_id = post_data.get("id")
 
-            time_created: datetime = datetime.strptime(
-                post_data["created_time"], DATETIME_FORMAT
-            )
+            # comments
+            comments_edge = post_data.get("comments", {})
+            comments = comments_edge.get("data", [])
 
-            comments: list[FeedbackDataUnit] = (
-                [
-                    FeedbackDataUnit(
-                        comment_data["message"],
-                        datetime.strptime(
-                            comment_data["created_time"], DATETIME_FORMAT
+            if "paging" in comments_edge and "next" in comments_edge["paging"]:
+                comments += self.fetch_all_items(comments_edge["paging"]["next"])
+
+            for comment_data in comments:
+                posts.append(
+                    {
+                        "comment_id": comment_data.get("id"),
+                        "post_id": post_id,
+                        "content": comment_data.get("message"),
+                        "created_time": datetime.strptime(
+                            comment_data.get("created_time"), DATETIME_FORMAT
                         ),
-                        tuple(),
-                    )
-                    for comment_data in post_data.get("comments", {}).get("data", [])
-                ]
-                if post_data.get("comments")
-                else tuple()
-            )
+                        "platform": "facebook",
+                    }
+                )
 
-            posts.append(ContextDataUnit(message, time_created, tuple(comments)))
+                # replies
+                if "comments" in comment_data:
+
+                    replies_edge = comment_data.get("comments", {})
+                    replies = replies_edge.get("data", [])
+
+                    if "paging" in replies_edge and "next" in replies_edge["paging"]:
+                        replies += self.fetch_all_items(replies_edge["paging"]["next"])
+
+                    for reply_data in replies:
+                        posts.append(
+                            {
+                                "comment_id": reply_data.get("id"),
+                                "post_id": post_id,
+                                "content": reply_data.get("message"),
+                                "created_time": datetime.strptime(
+                                    reply_data.get("created_time"), DATETIME_FORMAT
+                                ),
+                                "platform": "facebook",
+                            }
+                        )
+
         return tuple(posts)
+
+    def fetch_all_items(self, url: str, params: dict = None) -> list[dict]:
+        """Fetch all items by following pagination cursors."""
+        items = []
+        while url:
+            response = requests.get(url, params=params, timeout=3).json()
+            items.extend(response.get("data", []))
+            # Once the first page is fetched, subsequent requests use the 'next' URL directly.
+            url = response.get("paging", {}).get("next")
+            params = None  # 'next' already contains all necessary query parameters.
+        return items

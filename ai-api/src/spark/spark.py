@@ -14,6 +14,7 @@ from pyspark.sql.types import (
     StructField,
     StructType,
     StringType,
+    TimestampType,
 )
 
 from src.topics.feedback_topic import FeedbackTopic
@@ -86,8 +87,10 @@ class Spark:
         input_stream_schema = StructType(
             [
                 StructField("hashed_comment_id", StringType(), False),
-                StructField("platform", StringType(), False),
+                StructField("post_id", StringType(), False),
                 StructField("content", StringType(), False),
+                StructField("created_time", TimestampType(), False),
+                StructField("platform", StringType(), False),
             ]
         )
 
