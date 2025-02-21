@@ -1,9 +1,0 @@
-[
-    {
-        "hashed_comment_id": "1251",
-        "post_id": "123",
-        "content": "hello, world!",
-        "created_time": "datetime.datetime(2025, 2, 21, 18, 47, 43, tzinfo=datetime.timezone.utc)",
-        "platform": "facebook"
-    }
-]

@@ -9,7 +9,13 @@ from time import sleep
 from unittest.mock import MagicMock
 
 
-from pyspark.sql.types import StructType, StructField, StringType, ArrayType
+from pyspark.sql.types import (
+    StructType,
+    StructField,
+    StringType,
+    TimestampType,
+    ArrayType,
+)
 from src.spark.spark import Spark
 from src.topics.feedback_topic import FeedbackTopic
 
@@ -376,7 +382,3 @@ class TestSpark(unittest.TestCase):
         for query in self.spark.spark.streams.active:
             query.stop()
         self.spark.spark.stop()
-
-
-if __name__ == "__main__":
-    unittest.main()
