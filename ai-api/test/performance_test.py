@@ -53,7 +53,7 @@ def _exec_time(func, *args, **kwargs):
 
 
 def _get_folder_size(folder_path):
-    return f"{sum(f.stat().st_size for f in Path(folder_path).rglob("*"))}b"
+    return f"{sum(f.stat().st_size for f in Path(folder_path).rglob('*'))}b"
 
 
 def spark_read_1m(spark):
