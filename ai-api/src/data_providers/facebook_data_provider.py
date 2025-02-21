@@ -1,8 +1,6 @@
 import requests
 from datetime import datetime
 
-from src.data.context_data_unit import ContextDataUnit
-from src.data.feedback_data_unit import FeedbackDataUnit
 from src.data_providers.data_provider import DataProvider
 from src.utlity.util import deprecated
 
