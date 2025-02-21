@@ -397,7 +397,3 @@ class TestSpark(unittest.TestCase):
         for query in self.spark.spark.streams.active:
             query.stop()
         self.spark.spark.stop()
-
-
-if __name__ == "__main__":
-    unittest.main()
