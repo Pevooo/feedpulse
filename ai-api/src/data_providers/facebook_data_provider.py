@@ -43,7 +43,7 @@ class FacebookDataProvider(DataProvider):
         url = f"{FACEBOOK_GRAPH_URL}{page_id}"
         params = {
             "access_token": self.access_token,
-            "fields": "posts.limit(100){id,message,created_time,comments.limit(100){id,message,created_time,comments.limit(100){id,message,created_time}}}",
+            "fields": "posts.limit(100){id,message,created_time,comments{id,message,created_time,comments}}",
         }
 
         data = requests.get(url, params, timeout=3).json()
@@ -53,7 +53,13 @@ class FacebookDataProvider(DataProvider):
             post_id = post_data.get("id")
 
             # comments
-            for comment_data in post_data.get("comments", {}).get("data", []):
+            comments_edge = post_data.get("comments", {})
+            comments = comments_edge.get("data", [])
+
+            if "paging" in comments_edge and "next" in comments_edge["paging"]:
+                comments += fetch_all_items(comments_edge["paging"]["next"])
+
+            for comment_data in comments:
                 posts.append(
                     {
                         "comment_id": comment_data.get("id"),
@@ -67,17 +73,35 @@ class FacebookDataProvider(DataProvider):
                 )
 
                 # replies
-                for reply_data in comment_data.get("comments", {}).get("data", []):
-                    posts.append(
-                        {
-                            "comment_id": reply_data.get("id"),
-                            "post_id": post_id,
-                            "message": reply_data.get("message"),
-                            "created_time": datetime.strptime(
-                                reply_data.get("created_time"), DATETIME_FORMAT
-                            ),
-                            "platform": "facebook",
-                        }
-                    )
+                if "comments" in comments:
+                    replies_edge = comment["comments"]
+                    replies = replies_edge.get("data", [])
+
+                    if "paging" in replies_edge and "next" in replies_edge["paging"]:
+                        replies += fetch_all_items(replies_edge["paging"]["next"])
+
+                    for reply_data in replies:
+                        posts.append(
+                            {
+                                "comment_id": reply_data.get("id"),
+                                "post_id": post_id,
+                                "message": reply_data.get("message"),
+                                "created_time": datetime.strptime(
+                                    reply_data.get("created_time"), DATETIME_FORMAT
+                                ),
+                                "platform": "facebook",
+                            }
+                        )
 
         return tuple(posts)
+
+    def fetch_all_items(url: str, params: dict = None) -> list[dict]:
+        """Fetch all items by following pagination cursors."""
+        items = []
+        while url:
+            response = requests.get(url, params=params, timeout=3).json()
+            items.extend(response.get("data", []))
+            # Once the first page is fetched, subsequent requests use the 'next' URL directly.
+            url = response.get("paging", {}).get("next")
+            params = None  # 'next' already contains all necessary query parameters.
+        return items
