@@ -6,10 +6,24 @@ import pyspark
 
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.data_streamers.data_streamer import DataStreamer
-from src.spark.spark import SparkTable
+from src.spark.spark import SparkTable, Spark
 
 
 class PollingDataStreamer(DataStreamer):
+    def __init__(
+        self,
+        spark: Spark,
+        trigger_time: int,
+        streaming_in: SparkTable,
+        streaming_out: SparkTable,
+        pages_dir: SparkTable,
+    ):
+        self.spark = spark
+        self.trigger_time = trigger_time
+        self.streaming_in = streaming_in
+        self.streaming_out = streaming_out
+        self.pages_dir = pages_dir
+
     def start_streaming(self) -> None:
         with ThreadPoolExecutor(max_workers=1) as executor:
             while True:
@@ -28,14 +42,14 @@ class PollingDataStreamer(DataStreamer):
         #     return InstagramDataProvider(ac_token).get_posts()
 
     def streaming_worker(self):
-        df = self.spark.read(SparkTable.AC_TOKENS)
+        df = self.spark.read(self.pages_dir)
 
         flattened_df = self._get_flattened(df)
 
-        processed_comments = self.spark.read(SparkTable.PROCESSED_COMMENTS)
+        processed_comments = self.spark.read(self.streaming_out)
         stream_df = self._get_unique(flattened_df, processed_comments)
 
-        self.spark.add(SparkTable.INPUT_COMMENTS, stream_df, "json").result()
+        self.spark.add(self.streaming_in, stream_df, "json").result()
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         results_rdd = df.rdd.flatMap(self.process_page)

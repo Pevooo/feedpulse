@@ -16,7 +16,7 @@ class TestAPI(unittest.TestCase):
         self.mock_exception_reporter = Mock()
         self.mock_exception_reporter.report = Mock()
         self.feed_pulse_app = FeedPulseAPI(
-            Mock(), Mock(), Mock(), self.mock_exception_reporter, Mock()
+            Mock(), Mock(), Mock(), self.mock_exception_reporter, Mock(), Mock()
         )
 
         # Example route for testing
