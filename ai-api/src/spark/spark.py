@@ -89,7 +89,7 @@ class Spark:
         pass
 
     def read(self, table: SparkTable) -> pyspark.sql.DataFrame:
-        return self.spark.read.parquet(table.value)
+        return self.spark.read.format("delta").load(table.value)
 
     def modify(self, table: SparkTable, row_data: str):
         pass
