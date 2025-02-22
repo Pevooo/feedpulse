@@ -45,6 +45,10 @@ class TestStreamingIntegration(unittest.TestCase):
             pages_dir=FakeTable.PAGES_DIR,
         )
 
+        os.makedirs(FakeTable.PAGES_DIR.value, exist_ok=True)
+        os.makedirs(FakeTable.TEST_STREAMING_IN.value, exist_ok=True)
+        os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
+
     def test_integration(self):
         pages_df = self.spark.spark.createDataFrame(
             [{"platform": "facebook", "ac_token": "fake_ac_token"}]
@@ -70,9 +74,6 @@ class TestStreamingIntegration(unittest.TestCase):
             },
         )
 
-        os.makedirs(FakeTable.PAGES_DIR.value, exist_ok=True)
-        os.makedirs(FakeTable.TEST_STREAMING_IN.value, exist_ok=True)
-        os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
         self.spark.start_streaming_job()
         time.sleep(5)
         self.streamer.start_streaming()
