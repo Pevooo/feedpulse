@@ -154,21 +154,8 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        output_stream_schema = StructType(
-            [
-                StructField("hashed_comment_id", StringType(), False),
-                StructField("post_id", StringType(), False),
-                StructField("created_time", TimestampType(), False),
-                StructField("platform", StringType(), False),
-                StructField("content", StringType(), False),
-                StructField("sentiment", StringType(), False),
-                StructField("related_topics", ArrayType(StringType(), True), True),
-            ]
-        )
-
         df = (
             self.spark.spark.read.format("delta")
-            .schema(output_stream_schema)
             .load("test_spark/test_streaming_out")
         )
 
@@ -227,21 +214,8 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        output_stream_schema = StructType(
-            [
-                StructField("hashed_comment_id", StringType(), False),
-                StructField("post_id", StringType(), False),
-                StructField("created_time", TimestampType(), False),
-                StructField("platform", StringType(), False),
-                StructField("content", StringType(), False),
-                StructField("sentiment", StringType(), False),
-                StructField("related_topics", ArrayType(StringType(), True), True),
-            ]
-        )
-
         df = (
             self.spark.spark.read.format("delta")
-            .schema(output_stream_schema)
             .load("test_spark/test_streaming_out")
         )
 
@@ -301,21 +275,8 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        output_stream_schema = StructType(
-            [
-                StructField("hashed_comment_id", StringType(), False),
-                StructField("post_id", StringType(), False),
-                StructField("created_time", TimestampType(), False),
-                StructField("platform", StringType(), False),
-                StructField("content", StringType(), False),
-                StructField("sentiment", StringType(), False),
-                StructField("related_topics", ArrayType(StringType(), True), True),
-            ]
-        )
-
         df = (
             self.spark.spark.read.format("delta")
-            .schema(output_stream_schema)
             .load("test_spark/test_streaming_out")
         )
 
