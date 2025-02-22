@@ -69,9 +69,7 @@ class TestSpark(unittest.TestCase):
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
-        df.write.mode("overwrite").option("header", "true").parquet(
-            "test_spark/test_add"
-        )
+        df.write.mode("overwrite").format("delta").save("test_spark/test_add")
 
         future = self.spark.add(
             FakeTable.TEST_ADD, [{"hi": "random_data3", "hello": 3}]
@@ -83,8 +81,8 @@ class TestSpark(unittest.TestCase):
 
         df = (
             self.spark.spark.read.option("header", "true")
-            .option("inferSchema", "true")
-            .parquet("test_spark/test_add")
+            .format("delta")
+            .load("test_spark/test_add")
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -97,9 +95,7 @@ class TestSpark(unittest.TestCase):
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
-        df.write.mode("overwrite").option("header", "true").parquet(
-            "test_spark/test_concurrent"
-        )
+        df.write.mode("overwrite").format("delta").save("test_spark/test_concurrent")
 
         # Adding 6 times so that it's over the number of maximum workers
         futures = [
@@ -111,16 +107,16 @@ class TestSpark(unittest.TestCase):
             self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "6", "hello": 6}]),
         ]
 
-        self.assert_concurrent_jobs(1)
+        self.assert_concurrent_jobs(5)
 
         # Wait for all the jobs to complete
         for future in futures:
             future.result()  # This will block until the individual job is done
 
         df = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .option("inferSchema", "true")
-            .parquet("test_spark/test_concurrent")
+            .load("test_spark/test_concurrent")
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -171,9 +167,9 @@ class TestSpark(unittest.TestCase):
         )
 
         df = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .schema(output_stream_schema)
-            .parquet("test_spark/test_streaming_out")
+            .load("test_spark/test_streaming_out")
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -244,9 +240,9 @@ class TestSpark(unittest.TestCase):
         )
 
         df = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .schema(output_stream_schema)
-            .parquet("test_spark/test_streaming_out")
+            .load("test_spark/test_streaming_out")
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -318,9 +314,9 @@ class TestSpark(unittest.TestCase):
         )
 
         df = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .schema(output_stream_schema)
-            .parquet("test_spark/test_streaming_out")
+            .load("test_spark/test_streaming_out")
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -353,15 +349,15 @@ class TestSpark(unittest.TestCase):
         future_t2.result()
 
         df1 = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .option("inferSchema", "true")
-            .parquet(FakeTable.TEST_T1.value)
+            .load(FakeTable.TEST_T1.value)
         )
 
         df2 = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .option("inferSchema", "true")
-            .parquet(FakeTable.TEST_T2.value)
+            .load(FakeTable.TEST_T2.value)
         )
 
         data_t1 = [row.asDict() for row in df1.collect()]
