@@ -15,11 +15,17 @@ from src.models.hf_model_provider import HFModelProvider
 from src.spark.spark import Spark
 from src.topics.topic_detector import TopicDetector
 
+base_path = os.path.dirname(__file__)
+
 
 class FakeTable(Enum):
-    TEST_STREAMING_IN = "test_streaming_integration/test_streaming_in"
-    TEST_STREAMING_OUT = "test_streaming_integration/test_streaming_out"
-    PAGES_DIR = "test_streaming_integration/pages"
+    TEST_STREAMING_IN = os.path.join(
+        base_path, "test_streaming_integration", "test_streaming_in"
+    )
+    TEST_STREAMING_OUT = os.path.join(
+        "test_streaming_integration", "test_streaming_out"
+    )
+    PAGES_DIR = os.path.join("test_streaming_integration", "pages")
 
 
 class TestStreamingIntegration(unittest.TestCase):
