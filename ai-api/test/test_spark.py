@@ -8,14 +8,6 @@ from enum import Enum
 from time import sleep
 from unittest.mock import MagicMock
 
-
-from pyspark.sql.types import (
-    StructType,
-    StructField,
-    StringType,
-    TimestampType,
-    ArrayType,
-)
 from src.spark.spark import Spark
 from src.topics.feedback_topic import FeedbackTopic
 
@@ -154,10 +146,7 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        df = (
-            self.spark.spark.read.format("delta")
-            .load("test_spark/test_streaming_out")
-        )
+        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -214,10 +203,7 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        df = (
-            self.spark.spark.read.format("delta")
-            .load("test_spark/test_streaming_out")
-        )
+        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -275,10 +261,7 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        df = (
-            self.spark.spark.read.format("delta")
-            .load("test_spark/test_streaming_out")
-        )
+        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(

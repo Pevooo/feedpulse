@@ -79,7 +79,7 @@ class Spark:
     def add(
         self,
         table: SparkTable,
-        row_data: Iterable[dict[str, Any]],
+        row_data: Iterable[dict[str, Any]] | pyspark.sql.DataFrame,
         write_format: str = "delta",
     ) -> Future:
         return self.executor.submit(self._add_worker, table, row_data, write_format)
