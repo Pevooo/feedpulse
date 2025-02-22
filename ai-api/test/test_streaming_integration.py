@@ -46,7 +46,7 @@ class TestStreamingIntegration(unittest.TestCase):
 
     def test_integration(self):
         pages_df = self.spark.spark.createDataFrame(
-            {"platform": "facebook", "ac_token": "fake_ac_token"}
+            [{"platform": "facebook", "ac_token": "fake_ac_token"}]
         )
         pages_df.write.format("json").mode("overwrite").save(FakeTable.PAGES_DIR)
         created_time_str = datetime.datetime(
