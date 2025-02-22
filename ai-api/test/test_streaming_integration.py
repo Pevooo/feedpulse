@@ -23,9 +23,9 @@ class FakeTable(Enum):
         base_path, "test_streaming_integration", "test_streaming_in"
     )
     TEST_STREAMING_OUT = os.path.join(
-        "test_streaming_integration", "test_streaming_out"
+        base_path, "test_streaming_integration", "test_streaming_out"
     )
-    PAGES_DIR = os.path.join("test_streaming_integration", "pages")
+    PAGES_DIR = os.path.join(base_path, "test_streaming_integration", "pages")
 
 
 class TestStreamingIntegration(unittest.TestCase):
