@@ -1,3 +1,4 @@
+import os
 import unittest
 import time
 import datetime
@@ -69,6 +70,9 @@ class TestStreamingIntegration(unittest.TestCase):
             },
         )
 
+        os.makedirs(FakeTable.PAGES_DIR.value, exist_ok=True)
+        os.makedirs(FakeTable.TEST_STREAMING_IN.value, exist_ok=True)
+        os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
         self.spark.start_streaming_job()
         time.sleep(5)
         self.streamer.start_streaming()
