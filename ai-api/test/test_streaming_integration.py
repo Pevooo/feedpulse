@@ -24,7 +24,9 @@ class FakeTable(Enum):
 class TestStreamingIntegration(unittest.TestCase):
     def setUp(self):
         self.feedback_classifier = FeedbackClassifier(
-            pipeline("tabularisai/multilingual-sentiment-analysis")
+            pipeline(
+                "sentiment-analysis", "tabularisai/multilingual-sentiment-analysis"
+            )
         )
         self.model_provider = GlobalModelProvider([HFModelProvider()])
         self.topic_detector = TopicDetector(self.model_provider)

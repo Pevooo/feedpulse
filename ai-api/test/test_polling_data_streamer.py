@@ -30,7 +30,11 @@ class TestPollingDataStreamer(unittest.TestCase):
         self.mock_spark.read = MagicMock()
         self.mock_spark.spark = self.spark
         self.polling_streamer = PollingDataStreamer(
-            self.mock_spark, 20, FakeTable.STREAM
+            self.mock_spark,
+            20,
+            FakeTable.STREAM,
+            MagicMock(),
+            MagicMock(),
         )
 
     @patch.object(FacebookDataProvider, "get_posts")
