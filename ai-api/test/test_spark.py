@@ -8,14 +8,6 @@ from enum import Enum
 from time import sleep
 from unittest.mock import MagicMock
 
-
-from pyspark.sql.types import (
-    StructType,
-    StructField,
-    StringType,
-    TimestampType,
-    ArrayType,
-)
 from src.spark.spark import Spark
 from src.topics.feedback_topic import FeedbackTopic
 
@@ -69,9 +61,7 @@ class TestSpark(unittest.TestCase):
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
-        df.write.mode("overwrite").option("header", "true").parquet(
-            "test_spark/test_add"
-        )
+        df.write.mode("overwrite").format("delta").save("test_spark/test_add")
 
         future = self.spark.add(
             FakeTable.TEST_ADD, [{"hi": "random_data3", "hello": 3}]
@@ -83,8 +73,8 @@ class TestSpark(unittest.TestCase):
 
         df = (
             self.spark.spark.read.option("header", "true")
-            .option("inferSchema", "true")
-            .parquet("test_spark/test_add")
+            .format("delta")
+            .load("test_spark/test_add")
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -97,9 +87,7 @@ class TestSpark(unittest.TestCase):
         df = self.spark.spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
-        df.write.mode("overwrite").option("header", "true").parquet(
-            "test_spark/test_concurrent"
-        )
+        df.write.mode("overwrite").format("delta").save("test_spark/test_concurrent")
 
         # Adding 6 times so that it's over the number of maximum workers
         futures = [
@@ -111,16 +99,16 @@ class TestSpark(unittest.TestCase):
             self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "6", "hello": 6}]),
         ]
 
-        self.assert_concurrent_jobs(1)
+        self.assert_concurrent_jobs(5)
 
         # Wait for all the jobs to complete
         for future in futures:
             future.result()  # This will block until the individual job is done
 
         df = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .option("inferSchema", "true")
-            .parquet("test_spark/test_concurrent")
+            .load("test_spark/test_concurrent")
         )
 
         data = [row.asDict() for row in df.collect()]
@@ -158,23 +146,7 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        output_stream_schema = StructType(
-            [
-                StructField("hashed_comment_id", StringType(), False),
-                StructField("post_id", StringType(), False),
-                StructField("created_time", TimestampType(), False),
-                StructField("platform", StringType(), False),
-                StructField("content", StringType(), False),
-                StructField("sentiment", StringType(), False),
-                StructField("related_topics", ArrayType(StringType(), True), True),
-            ]
-        )
-
-        df = (
-            self.spark.spark.read.option("header", "true")
-            .schema(output_stream_schema)
-            .parquet("test_spark/test_streaming_out")
-        )
+        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -231,23 +203,7 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        output_stream_schema = StructType(
-            [
-                StructField("hashed_comment_id", StringType(), False),
-                StructField("post_id", StringType(), False),
-                StructField("created_time", TimestampType(), False),
-                StructField("platform", StringType(), False),
-                StructField("content", StringType(), False),
-                StructField("sentiment", StringType(), False),
-                StructField("related_topics", ArrayType(StringType(), True), True),
-            ]
-        )
-
-        df = (
-            self.spark.spark.read.option("header", "true")
-            .schema(output_stream_schema)
-            .parquet("test_spark/test_streaming_out")
-        )
+        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -305,23 +261,7 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        output_stream_schema = StructType(
-            [
-                StructField("hashed_comment_id", StringType(), False),
-                StructField("post_id", StringType(), False),
-                StructField("created_time", TimestampType(), False),
-                StructField("platform", StringType(), False),
-                StructField("content", StringType(), False),
-                StructField("sentiment", StringType(), False),
-                StructField("related_topics", ArrayType(StringType(), True), True),
-            ]
-        )
-
-        df = (
-            self.spark.spark.read.option("header", "true")
-            .schema(output_stream_schema)
-            .parquet("test_spark/test_streaming_out")
-        )
+        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -353,15 +293,15 @@ class TestSpark(unittest.TestCase):
         future_t2.result()
 
         df1 = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .option("inferSchema", "true")
-            .parquet(FakeTable.TEST_T1.value)
+            .load(FakeTable.TEST_T1.value)
         )
 
         df2 = (
-            self.spark.spark.read.option("header", "true")
+            self.spark.spark.read.format("delta")
             .option("inferSchema", "true")
-            .parquet(FakeTable.TEST_T2.value)
+            .load(FakeTable.TEST_T2.value)
         )
 
         data_t1 = [row.asDict() for row in df1.collect()]

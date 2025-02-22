@@ -2,7 +2,8 @@ import os
 from concurrent.futures import ThreadPoolExecutor, Future
 from enum import Enum
 from typing import Any, Iterable, Callable
-
+from delta import configure_spark_with_delta_pip
+import pyspark
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
     monotonically_increasing_id,
@@ -32,6 +33,7 @@ class SparkTable(Enum):
     PROCESSED_COMMENTS = os.path.join(base_dir, "processed_comments")
     PAGES = os.path.join(base_dir, "pages")
     EXCEPTIONS = os.path.join(base_dir, "exceptions")
+    AC_TOKENS = os.path.join(base_dir, "tokens")
 
 
 class Spark:
@@ -51,36 +53,59 @@ class Spark:
             [list[str]], list[list[FeedbackTopic]]
         ],
     ):
-        self.spark = SparkSession.builder.appName("session").getOrCreate()
+        builder = (
+            SparkSession.builder.appName("session")
+            .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+            .config(
+                "spark.sql.catalog.spark_catalog",
+                "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+            )
+            .master("local[1]")
+        )
+
+        self.spark = configure_spark_with_delta_pip(builder).getOrCreate()
+
         self.feedback_classification_batch_function = (
             feedback_classification_batch_function
         )
+
         self.topic_detection_batch_function = topic_detection_batch_function
-        self.executors: dict[SparkTable, ThreadPoolExecutor] = dict()
+        self.executor = ThreadPoolExecutor(max_workers=5)
         self.stream_in = stream_in
         self.stream_out = stream_out
 
     def start_streaming_job(self):
         self._streaming_worker()
 
-    def add(self, table: SparkTable, row_data: Iterable[dict[str, Any]]) -> Future:
-        if table not in self.executors:
-            self.executors[table] = ThreadPoolExecutor(max_workers=1)
-        return self.executors[table].submit(self._add_worker, table, list(row_data))
+    def add(
+        self,
+        table: SparkTable,
+        row_data: Iterable[dict[str, Any]] | pyspark.sql.DataFrame,
+        write_format: str = "delta",
+    ) -> Future:
+        return self.executor.submit(self._add_worker, table, row_data, write_format)
 
     def delete(self, table: SparkTable, row_data: str):
         pass
 
-    def query(self, table: SparkTable, row_data: str):
-        pass
+    def read(self, table: SparkTable) -> pyspark.sql.DataFrame:
+        return self.spark.read.parquet(table.value)
 
     def modify(self, table: SparkTable, row_data: str):
         pass
 
     def _add_worker(
-        self, table: SparkTable, row_data: Iterable[dict[str, Any]]
+        self,
+        table: SparkTable,
+        row_data: Iterable[dict[str, Any]] | pyspark.sql.DataFrame,
+        write_format: str = "delta",
     ) -> None:
-        self.spark.createDataFrame(row_data).write.mode("append").parquet(table.value)
+        if isinstance(row_data, pyspark.sql.DataFrame):
+            df = row_data
+        else:
+            df = self.spark.createDataFrame(row_data)
+
+        df.write.mode("append").format(write_format).save(table.value)
 
     def _streaming_worker(self):
         # Define schema for input streaming data
