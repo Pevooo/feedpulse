@@ -60,6 +60,7 @@ class Spark:
                 "spark.sql.catalog.spark_catalog",
                 "org.apache.spark.sql.delta.catalog.DeltaCatalog",
             )
+            .master("local[1]")
         )
 
         self.spark = configure_spark_with_delta_pip(builder).getOrCreate()

@@ -5,7 +5,6 @@ from concurrent.futures import ThreadPoolExecutor
 import pyspark
 
 from src.data_providers.facebook_data_provider import FacebookDataProvider
-from src.data_providers.instagram_data_provider import InstagramDataProvider
 from src.data_streamers.data_streamer import DataStreamer
 from src.spark.spark import SparkTable
 
@@ -23,8 +22,10 @@ class PollingDataStreamer(DataStreamer):
 
         if platform == "facebook":
             return FacebookDataProvider(ac_token).get_posts()
-        elif platform == "instagram":
-            return InstagramDataProvider(ac_token).get_posts()
+
+        # TODO: Integrate Instagram
+        # elif platform == "instagram":
+        #     return InstagramDataProvider(ac_token).get_posts()
 
     def streaming_worker(self):
         df = self.spark.read(SparkTable.AC_TOKENS)
