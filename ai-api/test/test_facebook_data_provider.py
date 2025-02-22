@@ -22,7 +22,7 @@ class TestFacebookDataProvider(unittest.TestCase):
 
         page_id = self.provider.get_page_id()
         self.assertEqual(page_id, "12345")
-        # Verify URL and params are correct (optional)
+
         mock_get.assert_called_with(
             f"{FACEBOOK_GRAPH_URL}me",
             {"access_token": "dummy_access_token"},
