@@ -29,6 +29,7 @@ class TestPollingDataStreamer(unittest.TestCase):
         )
 
         cls.spark = configure_spark_with_delta_pip(builder).getOrCreate()
+        cls.spark.sparkContext.setLogLevel("ERROR")
         cls.mock_spark = MagicMock()
         cls.mock_spark.read = MagicMock()
         cls.mock_spark.spark = cls.spark

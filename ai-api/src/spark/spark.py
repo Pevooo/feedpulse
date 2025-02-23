@@ -64,6 +64,7 @@ class Spark:
         )
 
         self.spark = configure_spark_with_delta_pip(builder).getOrCreate()
+        self.spark.sparkContext.setLogLevel("ERROR")
 
         self.feedback_classification_batch_function = (
             feedback_classification_batch_function
