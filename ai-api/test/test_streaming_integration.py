@@ -59,7 +59,7 @@ class TestStreamingIntegration(unittest.TestCase):
         pages_df = self.spark.spark.createDataFrame(
             [{"platform": "facebook", "ac_token": "fake_ac_token"}]
         )
-        pages_df.write.format("json").mode("overwrite").save(FakeTable.PAGES_DIR.value)
+        pages_df.write.format("delta").mode("overwrite").save(FakeTable.PAGES_DIR.value)
         created_time_str = datetime.datetime(
             2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
         ).isoformat()
