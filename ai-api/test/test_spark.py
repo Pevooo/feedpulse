@@ -197,10 +197,10 @@ class TestSpark(unittest.TestCase):
 
         self.spark.spark.createDataFrame(data_in_1).write.mode("append").format(
             "json"
-        ).save("test_spark/test_streaming_out")
+        ).save("test_spark/test_streaming_in")
         self.spark.spark.createDataFrame(data_in_2).write.mode("append").format(
             "json"
-        ).save("test_spark/test_streaming_out")
+        ).save("test_spark/test_streaming_in")
 
         sleep(20)
 
@@ -257,9 +257,9 @@ class TestSpark(unittest.TestCase):
             }
         ] * 32
 
-        self.spark.spark.createDataFrame(data_in).write.format("json").save(
-            "test_spark/test_streaming_in"
-        )
+        self.spark.spark.createDataFrame(data_in).write.mode("append").format(
+            "json"
+        ).save("test_spark/test_streaming_in")
 
         sleep(20)
 
