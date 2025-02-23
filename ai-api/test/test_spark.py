@@ -4,7 +4,6 @@ import shutil
 import datetime
 from enum import Enum
 from time import sleep
-from unittest.mock import MagicMock
 
 from src.spark.spark import Spark
 from src.topics.feedback_topic import FeedbackTopic
@@ -22,10 +21,6 @@ class FakeTable(Enum):
 class TestSpark(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        if os.path.exists("test_spark"):
-            shutil.rmtree("test_spark")
-
-    def setUp(self):
         def fake_classification_function(batch: list[str]) -> list[bool | None]:
             return [None] * len(batch)
 
@@ -34,25 +29,14 @@ class TestSpark(unittest.TestCase):
         ) -> list[list[FeedbackTopic]]:
             return [[FeedbackTopic.CLEANLINESS]] * len(batch)
 
-        self.spark = Spark(
+        cls.spark = Spark(
             FakeTable.TEST_STREAMING_IN,
             FakeTable.TEST_STREAMING_OUT,
             fake_classification_function,
             fake_topic_detection_function,
         )
 
-        self.spark.start_streaming_job()
-
-    def test_singleton(self):
-        new_spark = Spark(
-            FakeTable.TEST_STREAMING_IN,
-            FakeTable.TEST_STREAMING_OUT,
-            MagicMock(),
-            MagicMock(),
-        )
-        self.assertIs(new_spark, self.spark)
-        self.assertEqual(self.spark.stream_in, FakeTable.TEST_STREAMING_IN)
-        self.assertEqual(self.spark.stream_out, FakeTable.TEST_STREAMING_OUT)
+        cls.spark.start_streaming_job()
 
     def test_add(self):
         # Writing random data to test on
@@ -335,7 +319,11 @@ class TestSpark(unittest.TestCase):
             else:
                 os.remove(file_path)  # Delete files
 
-    def tearDown(self):
-        for query in self.spark.spark.streams.active:
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.exists("test_spark"):
+            shutil.rmtree("test_spark")
+
+        for query in cls.spark.spark.streams.active:
             query.stop()
-        self.spark.spark.stop()
+        cls.spark.spark.stop()

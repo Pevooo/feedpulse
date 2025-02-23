@@ -1,4 +1,6 @@
+import os
 import unittest
+import shutil
 from unittest.mock import patch, MagicMock
 
 from delta import configure_spark_with_delta_pip
@@ -14,7 +16,8 @@ class FakeTable(Enum):
 
 
 class TestPollingDataStreamer(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         builder = (
             SparkSession.builder.appName("session")
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
@@ -25,12 +28,13 @@ class TestPollingDataStreamer(unittest.TestCase):
             .master("local[1]")
         )
 
-        self.spark = configure_spark_with_delta_pip(builder).getOrCreate()
-        self.mock_spark = MagicMock()
-        self.mock_spark.read = MagicMock()
-        self.mock_spark.spark = self.spark
-        self.polling_streamer = PollingDataStreamer(
-            self.mock_spark,
+        cls.spark = configure_spark_with_delta_pip(builder).getOrCreate()
+        cls.spark.sparkContext.setLogLevel("ERROR")
+        cls.mock_spark = MagicMock()
+        cls.mock_spark.read = MagicMock()
+        cls.mock_spark.spark = cls.spark
+        cls.polling_streamer = PollingDataStreamer(
+            cls.mock_spark,
             20,
             FakeTable.STREAM,
             MagicMock(),
@@ -95,7 +99,11 @@ class TestPollingDataStreamer(unittest.TestCase):
 
         self.assertSetEqual(result, expected, f"Expected {expected}, but got {result}")
 
-    def tearDown(self):
-        for query in self.spark.streams.active:
+    @classmethod
+    def tearDownClass(cls):
+        for query in cls.spark.streams.active:
             query.stop()
-        self.spark.stop()
+        cls.spark.stop()
+
+        if os.path.exists("test_polling_data_streamer"):
+            shutil.rmtree("test_polling_data_streamer")
