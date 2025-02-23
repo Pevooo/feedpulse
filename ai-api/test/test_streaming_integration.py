@@ -4,14 +4,15 @@ import time
 import datetime
 
 from enum import Enum
-from typing import Any, Iterable
+from typing import Iterable
+from unittest.mock import ANY
 
 from transformers import pipeline
 
 from src.data_streamers.polling_data_streamer import PollingDataStreamer
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
-from src.models.hf_model_provider import HFModelProvider
+from src.models.google_model_provider import GoogleModelProvider
 from src.spark.spark import Spark
 from src.topics.topic_detector import TopicDetector
 
@@ -35,7 +36,7 @@ class TestStreamingIntegration(unittest.TestCase):
                 "sentiment-analysis", "tabularisai/multilingual-sentiment-analysis"
             )
         )
-        self.model_provider = GlobalModelProvider([HFModelProvider()])
+        self.model_provider = GlobalModelProvider([GoogleModelProvider()])
         self.topic_detector = TopicDetector(self.model_provider)
         self.spark = Spark(
             FakeTable.TEST_STREAMING_IN,
@@ -85,13 +86,14 @@ class TestStreamingIntegration(unittest.TestCase):
         self.streamer.start_streaming()
 
         # Sleeping until streamer streams data successfully and receiver receives data and process it and saves it successfully
-        time.sleep(120)
+        time.sleep(60)
 
         result_df = self.spark.spark.read.format("delta").load(
-            FakeTable.TEST_STREAMING_OUT
+            FakeTable.TEST_STREAMING_OUT.value
         )
 
         data = [row.asDict() for row in result_df.collect()]
+        print(data)
         self.assertTrue(isinstance(data[0]["related_topics"], Iterable))
         self.assertTrue(isinstance(data[1]["related_topics"], Iterable))
         self.assertIn(data[0]["sentiment"], ["positive", "negative", "neutral"])
@@ -103,8 +105,8 @@ class TestStreamingIntegration(unittest.TestCase):
                 "content": "this place is not clean",
                 "created_time": created_time_str,
                 "platform": "facebook",
-                "sentiment": Any,
-                "related_topics": Any,
+                "sentiment": ANY,
+                "related_topics": ANY,
             },
             data,
         )
@@ -116,8 +118,8 @@ class TestStreamingIntegration(unittest.TestCase):
                 "content": "this place is the best",
                 "created_time": created_time_str,
                 "platform": "facebook",
-                "sentiment": Any,
-                "related_topics": Any,
+                "sentiment": ANY,
+                "related_topics": ANY,
             },
             data,
         )

@@ -23,12 +23,10 @@ class PollingDataStreamer(DataStreamer):
         self.streaming_in = streaming_in
         self.streaming_out = streaming_out
         self.pages_dir = pages_dir
+        self.executor = ThreadPoolExecutor(max_workers=1)
 
     def start_streaming(self) -> None:
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            while True:
-                executor.submit(self.streaming_worker).result()
-                time.sleep(self.trigger_time)
+        self.executor.submit(self.streaming_worker)
 
     def process_page(self, row):
         ac_token = row["ac_token"]
@@ -53,9 +51,12 @@ class PollingDataStreamer(DataStreamer):
         else:
             self.spark.add(self.streaming_in, flattened_df, "json").result()
 
+        time.sleep(self.trigger_time)
+        self.executor.submit(self.streaming_worker)
+
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         results_rdd = df.rdd.flatMap(self.process_page)
         return self.spark.spark.createDataFrame(results_rdd)
 
     def _get_unique(self, new_df, old_df) -> pyspark.sql.DataFrame:
-        return new_df.join(old_df, on="hashed_comment_id", how="left_anti")
+        return new_df.join(old_df, on="comment_id", how="left_anti")
