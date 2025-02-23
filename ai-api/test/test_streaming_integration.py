@@ -2,6 +2,7 @@ import os
 import unittest
 import time
 import datetime
+import shutil
 
 from enum import Enum
 from typing import Iterable
@@ -123,3 +124,11 @@ class TestStreamingIntegration(unittest.TestCase):
             },
             data,
         )
+
+    def tearDown(self):
+        for query in self.spark.spark.streams.active:
+            query.stop()
+        self.spark.spark.stop()
+
+        if os.path.exists(os.path.join(base_path, "test_streaming_integration")):
+            shutil.rmtree(os.path.join(base_path, "test_streaming_integration"))
