@@ -1,7 +1,6 @@
 import os
 import unittest
 import time
-import datetime
 import shutil
 
 from enum import Enum
@@ -59,28 +58,14 @@ class TestStreamingIntegration(unittest.TestCase):
 
     def test_integration(self):
         pages_df = self.spark.spark.createDataFrame(
-            [{"platform": "facebook", "ac_token": "fake_ac_token"}]
+            [
+                {
+                    "platform": "facebook",
+                    "ac_token": os.getenv("TEST_AC_TOKEN"),
+                }
+            ]
         )
         pages_df.write.format("delta").mode("overwrite").save(FakeTable.PAGES_DIR.value)
-        created_time_str = datetime.datetime(
-            2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
-        ).isoformat()
-        self.streamer.process_page = lambda row: (
-            {
-                "comment_id": "fake_id1",
-                "post_id": "fake_post_id1",
-                "content": "this place is not clean",
-                "created_time": created_time_str,
-                "platform": "facebook",
-            },
-            {
-                "comment_id": "fake_id2",
-                "post_id": "fake_post_id2",
-                "content": "this place is the best",
-                "created_time": created_time_str,
-                "platform": "facebook",
-            },
-        )
 
         self.spark.start_streaming_job()
         time.sleep(5)
@@ -101,10 +86,10 @@ class TestStreamingIntegration(unittest.TestCase):
         self.assertIn(data[1]["sentiment"], ["positive", "negative", "neutral"])
         self.assertIn(
             {
-                "comment_id": "fake_id1",
-                "post_id": "fake_post_id1",
-                "content": "this place is not clean",
-                "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
+                "comment_id": ANY,
+                "post_id": ANY,
+                "content": "The service was really really bad :(",
+                "created_time": ANY,
                 "platform": "facebook",
                 "sentiment": ANY,
                 "related_topics": ANY,
@@ -114,10 +99,10 @@ class TestStreamingIntegration(unittest.TestCase):
 
         self.assertIn(
             {
-                "comment_id": "fake_id2",
-                "post_id": "fake_post_id2",
-                "content": "this place is the best",
-                "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
+                "comment_id": ANY,
+                "post_id": ANY,
+                "content": "yes, it really was very bad, but the food was mid",
+                "created_time": ANY,
                 "platform": "facebook",
                 "sentiment": ANY,
                 "related_topics": ANY,

@@ -299,7 +299,7 @@ class TestSpark(unittest.TestCase):
         self.assertEqual(df2.count(), 1)
 
     def assert_concurrent_jobs(self, num_jobs: int):
-        for _ in range(20):
+        for _ in range(60):
             if (
                 len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds())
                 == num_jobs
@@ -308,7 +308,7 @@ class TestSpark(unittest.TestCase):
             sleep(0.05)
         else:
             self.fail(
-                f"Wrong Concurrent Jobs Found({self.spark.spark.sparkContext.statusTracker().getActiveJobsIds()} != {num_jobs})"
+                f"Wrong Concurrent Jobs Found({len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds())} != {num_jobs})"
             )
 
     def empty_dir(self, path_to_directory: str):

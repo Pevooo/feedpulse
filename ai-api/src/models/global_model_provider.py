@@ -13,8 +13,7 @@ class GlobalModelProvider:
         for _ in range(3):
             for provider in self.providers:
                 try:
-                    text = provider.generate_content(prompt)
-                    return text
+                    return provider.generate_content(prompt)
                 except Exception:
                     pass
             time.sleep(self.retry_delay)

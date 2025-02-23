@@ -137,7 +137,6 @@ class Spark:
     def process_data(self, df, epoch_id):
         # Add a batch_id column to group every 32 rows
         df = df.withColumn("batch_id", floor(monotonically_increasing_id() / 32))
-
         grouped_df = df.groupBy("batch_id").agg(
             collect_list(struct(*df.columns)).alias("batch_rows")
         )
@@ -145,22 +144,21 @@ class Spark:
         results = []
 
         # Process each batch concurrently
+        grouped_data = grouped_df.collect()
         with ThreadPoolExecutor() as executor:
             futures = [
                 executor.submit(self.process_batch, row.batch_rows)
-                for row in grouped_df.collect()
+                for row in grouped_data
             ]
 
             # Collect results from each processed batch
             for future in futures:
                 results.extend(future.result())
-
         # Store processed data in Spark table
         self.add(self.stream_out, results)
 
     def process_batch(self, batch_rows):
         comments = [r.content for r in batch_rows]
-
         # Execute sentiment analysis and topic detection concurrently
         with ThreadPoolExecutor() as executor:
             sentiment_future = executor.submit(

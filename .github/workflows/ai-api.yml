@@ -15,6 +15,7 @@ on:
 env:
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
   HF_TOKEN: ${{ secrets.HF_TOKEN }}
+  TEST_AC_TOKEN: ${{ secrets.TEST_AC_TOKEN }}
 
 jobs:  
   test:
