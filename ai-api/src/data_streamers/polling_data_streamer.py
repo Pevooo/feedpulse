@@ -47,9 +47,11 @@ class PollingDataStreamer(DataStreamer):
         flattened_df = self._get_flattened(df)
 
         processed_comments = self.spark.read(self.streaming_out)
-        stream_df = self._get_unique(flattened_df, processed_comments)
-
-        self.spark.add(self.streaming_in, stream_df, "json").result()
+        if processed_comments:
+            stream_df = self._get_unique(flattened_df, processed_comments)
+            self.spark.add(self.streaming_in, stream_df, "json").result()
+        else:
+            self.spark.add(self.streaming_in, flattened_df, "json").result()
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         results_rdd = df.rdd.flatMap(self.process_page)

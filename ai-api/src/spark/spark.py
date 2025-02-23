@@ -88,8 +88,11 @@ class Spark:
     def delete(self, table: SparkTable, row_data: str):
         pass
 
-    def read(self, table: SparkTable) -> pyspark.sql.DataFrame:
-        return self.spark.read.format("delta").load(table.value)
+    def read(self, table: SparkTable) -> pyspark.sql.DataFrame | None:
+        try:
+            return self.spark.read.format("delta").load(table.value)
+        except Exception:
+            return None
 
     def modify(self, table: SparkTable, row_data: str):
         pass
