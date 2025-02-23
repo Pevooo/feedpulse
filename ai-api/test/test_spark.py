@@ -1,7 +1,5 @@
-import json
 import os
 import unittest
-import uuid
 import shutil
 import datetime
 from enum import Enum
@@ -133,7 +131,7 @@ class TestSpark(unittest.TestCase):
 
         data_in = [
             {
-                "hashed_comment_id": "1251",
+                "comment_id": "1251",
                 "post_id": "123",
                 "content": "hello, world!",
                 "created_time": created_time_str,
@@ -141,8 +139,9 @@ class TestSpark(unittest.TestCase):
             }
         ]
 
-        with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
-            json.dump(data_in, f, indent=4)
+        self.spark.spark.createDataFrame(data_in).write.mode("append").format(
+            "json"
+        ).save(folder_path)
 
         sleep(20)
 
@@ -151,7 +150,7 @@ class TestSpark(unittest.TestCase):
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
             {
-                "hashed_comment_id": "1251",
+                "comment_id": "1251",
                 "post_id": "123",
                 "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
@@ -178,7 +177,7 @@ class TestSpark(unittest.TestCase):
 
         data_in_1 = [
             {
-                "hashed_comment_id": "1",
+                "comment_id": "1",
                 "post_id": "123",
                 "created_time": created_time_str,
                 "platform": "facebook",
@@ -188,7 +187,7 @@ class TestSpark(unittest.TestCase):
 
         data_in_2 = [
             {
-                "hashed_comment_id": "2",
+                "comment_id": "2",
                 "post_id": "123",
                 "created_time": created_time_str,
                 "platform": "facebook",
@@ -196,10 +195,12 @@ class TestSpark(unittest.TestCase):
             }
         ]
 
-        with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
-            json.dump(data_in_1, f, indent=4)
-        with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
-            json.dump(data_in_2, f, indent=4)
+        self.spark.spark.createDataFrame(data_in_1).write.mode("append").format(
+            "json"
+        ).save("test_spark/test_streaming_in")
+        self.spark.spark.createDataFrame(data_in_2).write.mode("append").format(
+            "json"
+        ).save("test_spark/test_streaming_in")
 
         sleep(20)
 
@@ -208,7 +209,7 @@ class TestSpark(unittest.TestCase):
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
             {
-                "hashed_comment_id": "1",
+                "comment_id": "1",
                 "post_id": "123",
                 "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
@@ -221,7 +222,7 @@ class TestSpark(unittest.TestCase):
 
         self.assertIn(
             {
-                "hashed_comment_id": "2",
+                "comment_id": "2",
                 "post_id": "123",
                 "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
@@ -248,7 +249,7 @@ class TestSpark(unittest.TestCase):
 
         data_in = [
             {
-                "hashed_comment_id": "34",
+                "comment_id": "34",
                 "post_id": "123",
                 "created_time": created_time_str,
                 "platform": "facebook",
@@ -256,8 +257,9 @@ class TestSpark(unittest.TestCase):
             }
         ] * 32
 
-        with open(os.path.join(folder_path, f"{uuid.uuid4()}.json"), "w") as f:
-            json.dump(data_in, f, indent=4)
+        self.spark.spark.createDataFrame(data_in).write.mode("append").format(
+            "json"
+        ).save("test_spark/test_streaming_in")
 
         sleep(20)
 
@@ -266,7 +268,7 @@ class TestSpark(unittest.TestCase):
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
             {
-                "hashed_comment_id": "34",
+                "comment_id": "34",
                 "post_id": "123",
                 "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",

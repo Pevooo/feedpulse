@@ -6,15 +6,27 @@ import pyspark
 
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.data_streamers.data_streamer import DataStreamer
-from src.spark.spark import SparkTable
+from src.spark.spark import SparkTable, Spark
 
 
 class PollingDataStreamer(DataStreamer):
+    def __init__(
+        self,
+        spark: Spark,
+        trigger_time: int,
+        streaming_in: SparkTable,
+        streaming_out: SparkTable,
+        pages_dir: SparkTable,
+    ):
+        self.spark = spark
+        self.trigger_time = trigger_time
+        self.streaming_in = streaming_in
+        self.streaming_out = streaming_out
+        self.pages_dir = pages_dir
+        self.executor = ThreadPoolExecutor(max_workers=1)
+
     def start_streaming(self) -> None:
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            while True:
-                executor.submit(self.streaming_worker).result()
-                time.sleep(self.trigger_time)
+        self.executor.submit(self.streaming_worker)
 
     def process_page(self, row):
         ac_token = row["ac_token"]
@@ -28,18 +40,23 @@ class PollingDataStreamer(DataStreamer):
         #     return InstagramDataProvider(ac_token).get_posts()
 
     def streaming_worker(self):
-        df = self.spark.read(SparkTable.AC_TOKENS)
+        df = self.spark.read(self.pages_dir)
 
         flattened_df = self._get_flattened(df)
 
-        processed_comments = self.spark.read(SparkTable.PROCESSED_COMMENTS)
-        stream_df = self._get_unique(flattened_df, processed_comments)
+        processed_comments = self.spark.read(self.streaming_out)
+        if processed_comments:
+            stream_df = self._get_unique(flattened_df, processed_comments)
+            self.spark.add(self.streaming_in, stream_df, "json").result()
+        else:
+            self.spark.add(self.streaming_in, flattened_df, "json").result()
 
-        self.spark.add(SparkTable.INPUT_COMMENTS, stream_df, "json").result()
+        time.sleep(self.trigger_time)
+        self.executor.submit(self.streaming_worker)
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         results_rdd = df.rdd.flatMap(self.process_page)
         return self.spark.spark.createDataFrame(results_rdd)
 
     def _get_unique(self, new_df, old_df) -> pyspark.sql.DataFrame:
-        return new_df.join(old_df, on="hashed_comment_id", how="left_anti")
+        return new_df.join(old_df, on="comment_id", how="left_anti")

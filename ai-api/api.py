@@ -6,6 +6,8 @@ from src.config.environment import Environment
 from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
+from src.data_streamers.data_streamer import DataStreamer
+from src.data_streamers.polling_data_streamer import PollingDataStreamer
 from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
@@ -23,6 +25,7 @@ class FeedPulseAPI:
         report_handler: ReportHandler,
         exception_reporter: ExceptionReporter,
         spark: Spark,
+        data_streamer: DataStreamer,
     ):
         self.flask_app = Flask(__name__)
         self.report_handler = report_handler
@@ -30,11 +33,13 @@ class FeedPulseAPI:
         self.feedback_classifier = feedback_classifier
         self.reporter = exception_reporter
         self.spark = spark
+        self.data_streamer = data_streamer
 
         self.__setup_routes()
         self.__setup_exception_reporter()
 
         spark.start_streaming_job()
+        data_streamer.start_streaming()
 
     def run(self):
         self.flask_app.run()
@@ -128,6 +133,9 @@ if __name__ == "__main__":
         topic_detection_batch_function=topic_detector.detect,
     )
 
+    # Define Streamer
+    data_streamer = PollingDataStreamer(spark, 60, SparkTable.INPUT_COMMENTS)
+
     # Define Exception Reporter
     exception_reporter = ExceptionReporter(spark)
 
@@ -138,6 +146,7 @@ if __name__ == "__main__":
         report_handler=ReportHandler(model_provider),
         exception_reporter=ExceptionReporter(spark),
         spark=spark,
+        data_streamer=data_streamer,
     )
 
     # Run the app

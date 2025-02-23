@@ -13,4 +13,4 @@ class GoogleModelProvider(ModelProvider):
     def generate_content(
         self, prompt: Prompt, model: GoogleModel = GoogleModel.DEFAULT
     ) -> str:
-        return genai.GenerativeModel(str(model)).generate_content(str(prompt)).text
+        return genai.GenerativeModel(model.value).generate_content(str(prompt)).text

@@ -73,7 +73,8 @@ class TopicDetector:
                 "Identify and list only the relevant topics from the provided list that "
                 f"relate to the content of the text. The topics are: {', '.join(topic.value for topic in FeedbackTopic.get_all_topics())}.\n"
                 "Only respond with relevant topics. If no topics are relevant, respond with 'NONE'"
-                "Don't add a space after or before each topic"
+                "Don't add a space after or before each topic or put anything in the response other than the topics and the separators\n"
+                "For each comment write the relevant topics, for separating topics use a comma, for separating each text use |"
             ),
             context=context,
             examples=(

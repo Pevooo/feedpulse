@@ -88,8 +88,11 @@ class Spark:
     def delete(self, table: SparkTable, row_data: str):
         pass
 
-    def read(self, table: SparkTable) -> pyspark.sql.DataFrame:
-        return self.spark.read.parquet(table.value)
+    def read(self, table: SparkTable) -> pyspark.sql.DataFrame | None:
+        try:
+            return self.spark.read.format("delta").load(table.value)
+        except Exception:
+            return None
 
     def modify(self, table: SparkTable, row_data: str):
         pass
@@ -105,13 +108,13 @@ class Spark:
         else:
             df = self.spark.createDataFrame(row_data)
 
-        df.write.mode("append").format(write_format).save(table.value)
+        df.coalesce(1).write.mode("append").format(write_format).save(table.value)
 
     def _streaming_worker(self):
         # Define schema for input streaming data
         input_stream_schema = StructType(
             [
-                StructField("hashed_comment_id", StringType(), False),
+                StructField("comment_id", StringType(), False),
                 StructField("post_id", StringType(), False),
                 StructField("content", StringType(), False),
                 StructField("created_time", TimestampType(), False),
@@ -122,7 +125,7 @@ class Spark:
         os.makedirs(self.stream_in.value, exist_ok=True)
         df = (
             self.spark.readStream.format("json")
-            .option("multiLine", True)
+            .option("multiLine", False)
             .schema(input_stream_schema)
             .load(self.stream_in.value)
         )
@@ -155,7 +158,6 @@ class Spark:
         self.add(self.stream_out, results)
 
     def process_batch(self, batch_rows):
-
         comments = [r.content for r in batch_rows]
 
         # Execute sentiment analysis and topic detection concurrently
