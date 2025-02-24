@@ -53,18 +53,14 @@ class Spark:
             [list[str]], list[list[FeedbackTopic]]
         ],
     ):
-        builder = (
-            SparkSession.builder.appName("session")
+        self.spark = configure_spark_with_delta_pip(
+            SparkSession.builder.appName("FeedPulse")
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
             .config(
                 "spark.sql.catalog.spark_catalog",
                 "org.apache.spark.sql.delta.catalog.DeltaCatalog",
             )
-            .master("local[1]")
-        )
-
-        self.spark = configure_spark_with_delta_pip(builder).getOrCreate()
-        self.spark.sparkContext.setLogLevel("ERROR")
+        ).getOrCreate()
 
         self.feedback_classification_batch_function = (
             feedback_classification_batch_function
@@ -109,7 +105,7 @@ class Spark:
         else:
             df = self.spark.createDataFrame(row_data)
 
-        df.coalesce(1).write.mode("append").format(write_format).save(table.value)
+        df.write.mode("append").format(write_format).save(table.value)
 
     def _streaming_worker(self):
         # Define schema for input streaming data
