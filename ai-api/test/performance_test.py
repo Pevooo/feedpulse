@@ -49,11 +49,11 @@ def _exec_time(func, *args, **kwargs):
     start = time.perf_counter()
     func(*args, **kwargs)  # Should be synchronous
     end = time.perf_counter()
-    return f"{(end - start):.2f}**s**"
+    return f"{(end - start):.2f} **s**"
 
 
 def _get_folder_size(folder_path):
-    return f"{(sum(f.stat().st_size for f in Path(folder_path).rglob('*'))):.2f}**b**"
+    return f"{int(sum(f.stat().st_size for f in Path(folder_path).rglob('*')) / 1024)} **KB**"
 
 
 def spark_read_1m(spark):
