@@ -67,35 +67,37 @@ class TopicDetector:
         Returns:
             str: The formatted prompt string.
         """
-
+        input_text = ""
+        for i, text in enumerate(text_batch):
+            input_text += f"\ntext{i}: {text}"
         return Prompt(
             instructions=(
                 "Identify and list only the relevant topics from the provided list that "
-                f"relate to the content of the text. The topics are: {', '.join(topic.value for topic in FeedbackTopic.get_all_topics())}.\n"
+                f"relate to the content of the text. The topics are: {', '.join(FeedbackTopic.get_all_topics_as_string())}.\n"
                 "Only respond with relevant topics. If no topics are relevant, respond with 'NONE'"
-                "Don't add a space after or before each topic or put anything in the response other than the topics and the separators\n"
-                "For each comment write the relevant topics, for separating topics use a comma, for separating each text use |"
+                "Don't add a space after or before each topic and do not put anything in the response other than the topics and the separators\n"
+                "For each comment that starts with text{n} write the relevant topics, for separating topics use a comma, for separating each text use |"
             ),
             context=context,
             examples=(
                 (
                     "I didn't enjoy the food; it was bland and lacked variety.",
-                    "food quality",
+                    "food",
                 ),
                 (
                     "The check-in process was very slow and we had to wait for over an hour.",
-                    "customer service,wait time",
+                    "customer_service",
                 ),
                 (
                     "The service was excellent; the staff were always polite, friendly, and eager to help.",
-                    "service",
+                    "service,communication",
                 ),
                 (
-                    "I didn't enjoy the food; it was bland and lacked variety.,"
-                    "The check-in process was very slow and we had to wait for over an hour.,"
-                    "The service was excellent; the staff were always polite, friendly, and eager to help.",
-                    "food quality|customer service,wait time|service",
+                    "text{0}: I didn't enjoy the food; it was bland and lacked variety.,"
+                    "text{1}: The check-in process was very slow and we had to wait for over an hour.,"
+                    "text{2}: The service was excellent; the staff were always polite, friendly, and eager to help.",
+                    "food|customer_service|service,communication",
                 ),
             ),
-            input_text=",".join(text_batch),
+            input_text=input_text,
         )

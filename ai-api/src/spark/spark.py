@@ -53,18 +53,14 @@ class Spark:
             [list[str]], list[list[FeedbackTopic]]
         ],
     ):
-        builder = (
-            SparkSession.builder.appName("session")
+        self.spark = configure_spark_with_delta_pip(
+            SparkSession.builder.appName("FeedPulse")
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
             .config(
                 "spark.sql.catalog.spark_catalog",
                 "org.apache.spark.sql.delta.catalog.DeltaCatalog",
             )
-            .master("local[1]")
-        )
-
-        self.spark = configure_spark_with_delta_pip(builder).getOrCreate()
-        self.spark.sparkContext.setLogLevel("ERROR")
+        ).getOrCreate()
 
         self.feedback_classification_batch_function = (
             feedback_classification_batch_function
@@ -109,7 +105,7 @@ class Spark:
         else:
             df = self.spark.createDataFrame(row_data)
 
-        df.coalesce(1).write.mode("append").format(write_format).save(table.value)
+        df.write.mode("append").format(write_format).save(table.value)
 
     def _streaming_worker(self):
         # Define schema for input streaming data
@@ -137,7 +133,6 @@ class Spark:
     def process_data(self, df, epoch_id):
         # Add a batch_id column to group every 32 rows
         df = df.withColumn("batch_id", floor(monotonically_increasing_id() / 32))
-
         grouped_df = df.groupBy("batch_id").agg(
             collect_list(struct(*df.columns)).alias("batch_rows")
         )
@@ -145,22 +140,21 @@ class Spark:
         results = []
 
         # Process each batch concurrently
+        grouped_data = grouped_df.collect()
         with ThreadPoolExecutor() as executor:
             futures = [
                 executor.submit(self.process_batch, row.batch_rows)
-                for row in grouped_df.collect()
+                for row in grouped_data
             ]
 
             # Collect results from each processed batch
             for future in futures:
                 results.extend(future.result())
-
         # Store processed data in Spark table
         self.add(self.stream_out, results)
 
     def process_batch(self, batch_rows):
         comments = [r.content for r in batch_rows]
-
         # Execute sentiment analysis and topic detection concurrently
         with ThreadPoolExecutor() as executor:
             sentiment_future = executor.submit(

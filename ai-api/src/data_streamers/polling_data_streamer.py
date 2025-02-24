@@ -28,17 +28,6 @@ class PollingDataStreamer(DataStreamer):
     def start_streaming(self) -> None:
         self.executor.submit(self.streaming_worker)
 
-    def process_page(self, row):
-        ac_token = row["ac_token"]
-        platform = row["platform"]
-
-        if platform == "facebook":
-            return FacebookDataProvider(ac_token).get_posts()
-
-        # TODO: Integrate Instagram
-        # elif platform == "instagram":
-        #     return InstagramDataProvider(ac_token).get_posts()
-
     def streaming_worker(self):
         df = self.spark.read(self.pages_dir)
 
@@ -55,7 +44,18 @@ class PollingDataStreamer(DataStreamer):
         self.executor.submit(self.streaming_worker)
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
-        results_rdd = df.rdd.flatMap(self.process_page)
+        def process_page(row):
+            ac_token = row["ac_token"]
+            platform = row["platform"]
+
+            if platform == "facebook":
+                return FacebookDataProvider(ac_token).get_posts()
+
+            # TODO: Integrate Instagram
+            # elif platform == "instagram":
+            #     return InstagramDataProvider(ac_token).get_posts()
+
+        results_rdd = df.rdd.flatMap(process_page)
         return self.spark.spark.createDataFrame(results_rdd)
 
     def _get_unique(self, new_df, old_df) -> pyspark.sql.DataFrame:
