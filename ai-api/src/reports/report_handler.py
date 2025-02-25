@@ -1,15 +1,16 @@
 import json
 
-from src.data.pipeline_result import PipelineResult
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
+from src.utlity.util import deprecated
 
 
 class ReportHandler:
     def __init__(self, provider: GlobalModelProvider):
         self.provider = provider
 
-    def create(self, result: PipelineResult) -> str:
+    @deprecated
+    def create(self, result) -> str:
         """
         Creates a report from the given result.
 
@@ -25,6 +26,7 @@ class ReportHandler:
         return self.provider.generate_content(self._generate_prompt(topic_counts))
 
     @staticmethod
+    @deprecated
     def _generate_prompt(topic_counts: str) -> Prompt:
         return Prompt(
             instructions=(

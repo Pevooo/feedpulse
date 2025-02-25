@@ -1,6 +1,7 @@
 from functools import wraps
 
 from flask import Flask, request, jsonify
+from transformers import pipeline
 
 from src.config.environment import Environment
 from src.config.settings import Settings
@@ -12,6 +13,7 @@ from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
+from src.models.hf_model_provider import HFModelProvider
 from src.reports.report_handler import ReportHandler
 from src.spark.spark import Spark, SparkTable
 from src.topics.topic_detector import TopicDetector
@@ -114,14 +116,16 @@ if __name__ == "__main__":
 
     # Define the global model provider (and load balancer)
     model_provider = GlobalModelProvider(
-        providers=[GoogleModelProvider()],
+        providers=[GoogleModelProvider(), HFModelProvider()],
         retry_delay=60,
     )
 
     # Define Processing Components
     feedback_classifier = FeedbackClassifier(
-        ...
-    )  # Leaving it empty so that we don't download the model everytime
+        classifier=pipeline(
+            "sentiment-analysis", "tabularisai/multilingual-sentiment-analysis"
+        )
+    )
     topic_detector = TopicDetector(model_provider)
     report_handler = ReportHandler(model_provider)
 
@@ -134,17 +138,23 @@ if __name__ == "__main__":
     )
 
     # Define Streamer
-    data_streamer = PollingDataStreamer(spark, 60, SparkTable.INPUT_COMMENTS)
+    data_streamer = PollingDataStreamer(
+        spark=spark,
+        trigger_time=60,
+        streaming_in=SparkTable.INPUT_COMMENTS,
+        streaming_out=SparkTable.PROCESSED_COMMENTS,
+        pages_dir=SparkTable.PAGES,
+    )
 
     # Define Exception Reporter
     exception_reporter = ExceptionReporter(spark)
 
     # Define the api class
     app = FeedPulseAPI(
-        feedback_classifier=FeedbackClassifier(...),
-        topic_detector=TopicDetector(model_provider),
-        report_handler=ReportHandler(model_provider),
-        exception_reporter=ExceptionReporter(spark),
+        feedback_classifier=feedback_classifier,
+        topic_detector=topic_detector,
+        report_handler=report_handler,
+        exception_reporter=exception_reporter,
         spark=spark,
         data_streamer=data_streamer,
     )
