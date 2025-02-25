@@ -21,7 +21,7 @@ class Settings:
     enable_facebook_data_collection: bool = True
     enable_instagram_data_collection: bool = True
 
-    processing_batch_size: int = 1
+    processing_batch_size: int = 32
 
     @classmethod
     def get_settings(cls) -> list[dict[str, str]]:

@@ -1,6 +1,5 @@
 import os
 from concurrent.futures import ThreadPoolExecutor, Future
-from enum import Enum
 from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
 import pyspark
@@ -18,25 +17,13 @@ from pyspark.sql.types import (
     TimestampType,
 )
 
+from src.spark.spark_table import SparkTable
 from src.topics.feedback_topic import FeedbackTopic
-
-# Define base directory for storing data files
-base_dir = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "database")
-)
-
-
-# Enum for managing Spark tables
-class SparkTable(Enum):
-    REPORTS = os.path.join(base_dir, "reports")
-    INPUT_COMMENTS = os.path.join(base_dir, "comments_stream")
-    PROCESSED_COMMENTS = os.path.join(base_dir, "processed_comments")
-    PAGES = os.path.join(base_dir, "pages")
-    EXCEPTIONS = os.path.join(base_dir, "exceptions")
-    AC_TOKENS = os.path.join(base_dir, "tokens")
 
 
 class Spark:
+    instance: "Spark"
+
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
             cls.instance = super(Spark, cls).__new__(cls)
