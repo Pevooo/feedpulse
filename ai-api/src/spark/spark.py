@@ -1,4 +1,8 @@
 import os
+import tracemalloc
+import traceback
+import warnings
+
 from concurrent.futures import ThreadPoolExecutor, Future
 from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
@@ -19,6 +23,16 @@ from pyspark.sql.types import (
 
 from src.spark.spark_table import SparkTable
 from src.topics.feedback_topic import FeedbackTopic
+
+tracemalloc.start()
+
+
+def warn_with_traceback(message, category, filename, lineno, file=None, line=None):
+    log = traceback.format_stack()  # Capture the stack trace
+    print(f"{message}\nTraceback:\n{''.join(log)}")
+
+
+warnings.showwarning = warn_with_traceback  # Attach custom warning handler
 
 
 class Spark:
