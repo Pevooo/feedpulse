@@ -186,3 +186,9 @@ class Spark:
             batch_results.append(row_dict)
 
         return batch_results
+
+    def __del__(self):
+        for query in self.spark.streams.active:
+            query.stop()
+        self.executor.shutdown(wait=True)  # Ensure threads are closed
+        self.spark.stop()
