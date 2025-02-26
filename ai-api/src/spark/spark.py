@@ -1,5 +1,4 @@
 import os
-import warnings
 
 from concurrent.futures import ThreadPoolExecutor, Future
 from typing import Any, Iterable, Callable
@@ -21,9 +20,6 @@ from pyspark.sql.types import (
 
 from src.spark.spark_table import SparkTable
 from src.topics.feedback_topic import FeedbackTopic
-
-
-warnings.filterwarnings("ignore", category=ResourceWarning)
 
 
 class Spark:
