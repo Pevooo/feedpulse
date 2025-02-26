@@ -19,8 +19,7 @@ class FakeTable(Enum):
 
 
 class TestSpark(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         def fake_classification_function(batch: list[str]) -> list[bool | None]:
             return [None] * len(batch)
 
@@ -29,14 +28,12 @@ class TestSpark(unittest.TestCase):
         ) -> list[list[FeedbackTopic]]:
             return [[FeedbackTopic.CLEANLINESS]] * len(batch)
 
-        cls.spark = Spark(
+        self.spark = Spark(
             FakeTable.TEST_STREAMING_IN,
             FakeTable.TEST_STREAMING_OUT,
             fake_classification_function,
             fake_topic_detection_function,
         )
-
-        cls.spark.start_streaming_job()
 
     def test_add(self):
         # Writing random data to test on
@@ -62,7 +59,7 @@ class TestSpark(unittest.TestCase):
         data = [row.asDict() for row in df.collect()]
 
         self.assertIn({"hi": "random_data3", "hello": 3}, data)
-        self.assertEqual(df.count(), 3)
+        self.assertEqual(len(data), 3)
 
     def test_multiple_jobs_same_table(self):
         # Writing random data to test on
@@ -105,6 +102,7 @@ class TestSpark(unittest.TestCase):
         self.assertEqual(df.count(), 8)
 
     def test_streaming_read_1_item(self):
+        self.spark.start_streaming_job()
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
@@ -151,6 +149,7 @@ class TestSpark(unittest.TestCase):
         self.empty_dir(FakeTable.TEST_STREAMING_OUT.value)
 
     def test_streaming_read_2_items_2_files(self):
+        self.spark.start_streaming_job()
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
@@ -223,6 +222,7 @@ class TestSpark(unittest.TestCase):
         self.empty_dir(FakeTable.TEST_STREAMING_OUT.value)
 
     def test_streaming_read_32_items_same_file(self):
+        self.spark.start_streaming_job()
         folder_path = "test_spark/test_streaming_in"
         os.makedirs(folder_path, exist_ok=True)  # Create folder if it doesn't exist
 
@@ -319,11 +319,16 @@ class TestSpark(unittest.TestCase):
             else:
                 os.remove(file_path)  # Delete files
 
+    def tearDown(self):
+
+        # Close any streams (if any)
+        for query in self.spark.spark.streams.active:
+            query.stop()
+
+        # Shutdown Spark
+        self.spark.spark.stop()
+
     @classmethod
     def tearDownClass(cls):
         if os.path.exists("test_spark"):
             shutil.rmtree("test_spark")
-
-        for query in cls.spark.spark.streams.active:
-            query.stop()
-        cls.spark.spark.stop()
