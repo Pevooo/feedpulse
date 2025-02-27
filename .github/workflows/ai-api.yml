@@ -17,6 +17,10 @@ env:
   HF_TOKEN: ${{ secrets.HF_TOKEN }}
   TEST_AC_TOKEN: ${{ secrets.TEST_AC_TOKEN }}
 
+concurrency:
+  group: ai-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   setup:
     name: Setup Environment
@@ -63,7 +67,7 @@ jobs:
       - name: Run Unit Tests
         run: |
           PYTHONPATH=./ai-api python -m unittest discover -s "ai-api/test/unit_tests" -p "test_*.py"
-  
+
   performance-tests:
     name: Run Performance Tests
     runs-on: ubuntu-latest
@@ -84,7 +88,7 @@ jobs:
         with:
           message-path: ai-api/test/performance/performance_report.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-  
+
   integration-tests:
     name: Run Integration Tests
     runs-on: ubuntu-latest
