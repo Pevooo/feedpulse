@@ -17,29 +17,22 @@ env:
   HF_TOKEN: ${{ secrets.HF_TOKEN }}
   TEST_AC_TOKEN: ${{ secrets.TEST_AC_TOKEN }}
 
-jobs:  
-  test:
-    name: Build and Test
+jobs:
+  setup:
+    name: Setup Environment
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    concurrency:
-      group: ai-${{ github.ref }}
-      cancel-in-progress: true
-
-    permissions:
-      pull-requests: write
-
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.PAT_TOKEN }}
-
+      
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.10.6'
-
+      
       - name: Cache Python packages
         uses: actions/cache@v3
         with:
@@ -47,27 +40,61 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
+      
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r ai-api/requirements.txt
           pip install flake8 tabulate
 
+  unit-tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+      
       - name: Run Flake8
         run: flake8 --max-line-length=180 .
-
+      
       - name: Run Unit Tests
         run: |
-          PYTHONPATH=./ai-api python -m unittest discover -s "ai-api/test" -p "test_*.py"
-
+          PYTHONPATH=./ai-api python -m unittest discover -s "ai-api/test/unit_tests" -p "test_*.py"
+  
+  performance-tests:
+    name: Run Performance Tests
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+      
       - name: Run Performance Tests
         run: |
-          PYTHONPATH=./ai-api python ai-api/test/performance_test.py
-
+          PYTHONPATH=./ai-api python ai-api/test/performance/performance_test.py
+      
       - name: Post Performance Results as PR Comment
         if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
-          message-path: ai-api/test/performance_report.md
+          message-path: ai-api/test/performance/performance_report.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+  
+  integration-tests:
+    name: Run Integration Tests
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+      
+      - name: Run Integration Tests
+        run: |
+          PYTHONPATH=./ai-api python -m unittest discover -s "ai-api/test/integration" -p "test_*.py"
