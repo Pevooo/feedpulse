@@ -35,6 +35,7 @@ namespace Api.Infrastructure.Migrations
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FacebookAccessToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -162,19 +163,20 @@ namespace Api.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Organization",
+                name: "Organizations",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PageAccessToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Organization", x => x.Id);
+                    table.PrimaryKey("PK_Organizations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Organization_AspNetUsers_UserId",
+                        name: "FK_Organizations_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -182,7 +184,7 @@ namespace Api.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserRefershToken",
+                name: "UserRefershTokens",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -198,31 +200,11 @@ namespace Api.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserRefershToken", x => x.Id);
+                    table.PrimaryKey("PK_UserRefershTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserRefershToken_AspNetUsers_AppUserId",
+                        name: "FK_UserRefershTokens_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrganizationAccessToken",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrganizationId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrganizationAccessToken", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrganizationAccessToken_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
-                        principalTable: "Organization",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -267,18 +249,13 @@ namespace Api.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Organization_UserId",
-                table: "Organization",
+                name: "IX_Organizations_UserId",
+                table: "Organizations",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganizationAccessToken_OrganizationId",
-                table: "OrganizationAccessToken",
-                column: "OrganizationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRefershToken_AppUserId",
-                table: "UserRefershToken",
+                name: "IX_UserRefershTokens_AppUserId",
+                table: "UserRefershTokens",
                 column: "AppUserId");
         }
 
@@ -301,16 +278,13 @@ namespace Api.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "OrganizationAccessToken");
+                name: "Organizations");
 
             migrationBuilder.DropTable(
-                name: "UserRefershToken");
+                name: "UserRefershTokens");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Organization");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

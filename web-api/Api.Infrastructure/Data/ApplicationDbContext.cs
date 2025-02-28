@@ -13,7 +13,6 @@ namespace Api.Infrastructure.Data
         }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Organization> Organizations { get; set; }
-        public DbSet<OrganizationAccessToken> OrganizationAccessTokens { get; set; }
         public DbSet<UserRefershToken> UserRefershTokens { get; set; }
     }
 }

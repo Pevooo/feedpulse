@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250215103452_initial")]
+    [Migration("20250228130537_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -52,6 +52,10 @@ namespace Api.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FacebookAccessToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -144,7 +148,7 @@ namespace Api.Infrastructure.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("UserRefershToken");
+                    b.ToTable("UserRefershTokens");
                 });
 
             modelBuilder.Entity("Api.Data.Entities.Organization", b =>
@@ -160,6 +164,10 @@ namespace Api.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PageAccessToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -168,30 +176,7 @@ namespace Api.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Organization");
-                });
-
-            modelBuilder.Entity("Api.Data.Entities.OrganizationAccessToken", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OrganizationId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrganizationId");
-
-                    b.ToTable("OrganizationAccessToken");
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -349,17 +334,6 @@ namespace Api.Infrastructure.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("Api.Data.Entities.OrganizationAccessToken", b =>
-                {
-                    b.HasOne("Api.Data.Entities.Organization", "Organization")
-                        .WithMany("Tokens")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Organization");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -416,11 +390,6 @@ namespace Api.Infrastructure.Migrations
                     b.Navigation("Organizations");
 
                     b.Navigation("UserRefreshTokens");
-                });
-
-            modelBuilder.Entity("Api.Data.Entities.Organization", b =>
-                {
-                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }
