@@ -12,8 +12,12 @@ namespace Api.Data.Entities.Identity
         public string Photo { get; set; }
         [EncryptColumn]
         public string? Code { get; set; }
+        public string? FacebookAccessToken { get; set; }
 
-        [InverseProperty(nameof(UserRefershToken.Organization))]
+        [InverseProperty(nameof(UserRefershToken.user))]
         public virtual ICollection<UserRefershToken> UserRefreshTokens { get; set; }
+
+        [InverseProperty(nameof(Organization.user))]
+        public virtual ICollection<Organization> Organizations { get; set; }
     }
 }
