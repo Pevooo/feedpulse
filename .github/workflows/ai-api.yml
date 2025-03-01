@@ -18,6 +18,7 @@ env:
   TEST_AC_TOKEN: ${{ secrets.TEST_AC_TOKEN }}
 
 permissions:
+  contents: read
   pull-requests: write  
 
 concurrency:
