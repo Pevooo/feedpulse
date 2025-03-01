@@ -1,23 +1,31 @@
 ﻿using Api.Core.Bases;
+using Api.Core.Features.Authorization.Queries.Response;
 using Api.Core.Features.Facebook.Queries.Models;
+using Api.Core.Features.Facebook.Queries.Responses;
+using Api.Data.DTOS;
 using Api.Data.Entities.Identity;
 using Api.Service.Abstracts;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Api.Core.Features.Facebook.Queries.Handler
 {
-    public class FacebookQueriesHandler : ResponseHandler, IRequestHandler<FacebookAuthQuery, Response<string>>
-    {
+    public class FacebookQueriesHandler : ResponseHandler, IRequestHandler<FacebookAuthQuery, Response<string>>,
+        IRequestHandler<GetFacebookPageListQuery,Response<List<SingleFacebookPageResponse>>>
+
+	{
         #region Fields
         IFacebookService _facebookService;
-        UserManager<AppUser> _userManager;
+		private readonly IMapper _mapper;
+		UserManager<AppUser> _userManager;
         #endregion
         #region Constructor
-        public FacebookQueriesHandler(IFacebookService facebookService, UserManager<AppUser> userManager)
+        public FacebookQueriesHandler(IFacebookService facebookService, UserManager<AppUser> userManager, IMapper mapper)
         {
             _facebookService = facebookService;
             _userManager = userManager;
+            _mapper = mapper;
         }
         #endregion
         #region HandleFunctions
@@ -39,6 +47,22 @@ namespace Api.Core.Features.Facebook.Queries.Handler
             return Success<string>("Success");
 
         }
-        #endregion
-    }
+
+        public async Task<Response<List<SingleFacebookPageResponse>>> Handle(GetFacebookPageListQuery request, CancellationToken cancellationToken)
+        {
+            var pages = await _facebookService.GetFacebookPages(request.AccessToken);
+
+            var result = pages.Select(page => new SingleFacebookPageResponse
+			{
+				Id = page.Id,
+				Name = page.Name,
+				AccessToken = page.AccessToken
+			}).ToList();
+
+			return Success(result);
+		}
+
+
+		#endregion
+	}
 }

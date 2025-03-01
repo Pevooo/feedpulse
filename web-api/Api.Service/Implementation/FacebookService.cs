@@ -1,7 +1,10 @@
 ﻿using Api.Data.Helpers;
 using Api.Service.Abstracts;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Http;
 using System.Text.Json;
+using Api.Data.DTOS;
+using System.Net.Http;
 
 namespace Api.Service.Implementation
 {
@@ -48,6 +51,24 @@ namespace Api.Service.Implementation
             return json.GetProperty("data").GetProperty("is_valid").GetBoolean();
         }
 
-        #endregion
-    }
+        public async Task<List<FacebookPage>> GetFacebookPages (string accessToken)
+        {
+			string url = $"https://graph.facebook.com/me/accounts?access_token={accessToken}";
+
+			var response = await _httpClient.GetStringAsync(url);
+			var pagesData = JsonSerializer.Deserialize<JsonElement>(response);
+
+			var pages = pagesData.GetProperty("data").EnumerateArray().Select(p => new FacebookPage
+			{
+				Id = p.GetProperty("id").GetString(),
+				Name = p.GetProperty("name").GetString(),
+				AccessToken = p.TryGetProperty("access_token", out var token) ? token.GetString() : null
+			}).ToList();
+
+			return pages;
+		}
+
+
+		#endregion
+	}
 }
