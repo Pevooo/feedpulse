@@ -17,6 +17,10 @@ env:
   HF_TOKEN: ${{ secrets.HF_TOKEN }}
   TEST_AC_TOKEN: ${{ secrets.TEST_AC_TOKEN }}
 
+permissions:
+  contents: read
+  pull-requests: write  # للسماح بنشر تعليقات على PRs
+
 concurrency:
   group: ai-${{ github.ref }}
   cancel-in-progress: true
