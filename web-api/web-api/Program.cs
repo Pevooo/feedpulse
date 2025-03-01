@@ -1,5 +1,6 @@
 using Api.Core;
 using Api.Data.Entities.Identity;
+using Api.Data.Helpers;
 using Api.Infrastructure;
 using Api.Infrastructure.Data;
 using Api.Infrastructure.Seeder;
@@ -51,6 +52,8 @@ namespace web_api
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
                 return factory.GetUrlHelper(actionContext);
             });
+            _ = builder.Services.AddHttpClient();
+            _ = builder.Services.Configure<FacebookSettings>(builder.Configuration.GetSection("facebookSettings"));
             #endregion
             var app = builder.Build();
             #region Seeder

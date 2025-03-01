@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Facebook\Commands\" />
     <Folder Include="Mapping\Authorization\" />
     <Folder Include="Mapping\Roles\Command\" />
   </ItemGroup>
