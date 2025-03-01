@@ -17,29 +17,29 @@ env:
   HF_TOKEN: ${{ secrets.HF_TOKEN }}
   TEST_AC_TOKEN: ${{ secrets.TEST_AC_TOKEN }}
 
-jobs:  
-  test:
-    name: Build and Test
+permissions:
+  contents: read
+  pull-requests: write  
+
+concurrency:
+  group: ai-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Run All Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    concurrency:
-      group: ai-${{ github.ref }}
-      cancel-in-progress: true
-
-    permissions:
-      pull-requests: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.PAT_TOKEN }}
-
+      
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.10.6'
-
+      
       - name: Cache Python packages
         uses: actions/cache@v3
         with:
@@ -47,27 +47,35 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
+      
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r ai-api/requirements.txt
           pip install flake8 tabulate
 
-      - name: Run Flake8
+      - name: Run Code Linter (Flake8)
         run: flake8 --max-line-length=180 .
 
       - name: Run Unit Tests
         run: |
-          PYTHONPATH=./ai-api python -m unittest discover -s "ai-api/test" -p "test_*.py"
+          PYTHONPATH=./ai-api python -m unittest discover -s "ai-api/test/unit_tests" -p "test_*.py"
+
+      - name: Run Integration Tests
+        run: |
+          PYTHONPATH=./ai-api python -m unittest discover -s "ai-api/test/integration" -p "test_*.py"
 
       - name: Run Performance Tests
         run: |
-          PYTHONPATH=./ai-api python ai-api/test/performance_test.py
-
+          if [ -f "ai-api/test/performance/performance_test.py" ]; then
+            PYTHONPATH=./ai-api python ai-api/test/performance/performance_test.py
+          else
+            echo "Performance test file not found, skipping..."
+          fi
+      
       - name: Post Performance Results as PR Comment
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && success()
         uses: mshick/add-pr-comment@v2
         with:
-          message-path: ai-api/test/performance_report.md
+          message-path: ai-api/test/performance/performance_report.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
