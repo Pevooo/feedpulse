@@ -18,8 +18,7 @@ env:
   TEST_AC_TOKEN: ${{ secrets.TEST_AC_TOKEN }}
 
 permissions:
-  contents: read
-  pull-requests: write  # للسماح بنشر تعليقات على PRs
+  pull-requests: write  
 
 concurrency:
   group: ai-${{ github.ref }}
@@ -52,7 +51,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r ai-api/requirements.txt
-          pip install --no-cache-dir flake8 tabulate
+          pip install flake8 tabulate
 
       - name: Run Code Linter (Flake8)
         run: flake8 --max-line-length=180 .
