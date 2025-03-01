@@ -14,3 +14,6 @@ class Router:
 
     # Report generation route
     REPORT = "/report"
+
+    # Access token registration route
+    REGISTER_AC_TOKEN = "/register_token"

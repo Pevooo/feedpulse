@@ -87,6 +87,28 @@ class FeedPulseAPI:
                     print(e)
                     return "Failure", 400
 
+        @self.flask_app.route(Router.REGISTER_AC_TOKEN, methods=["POST"])
+        def register_ac_token():
+            """
+            Register the access token
+            """
+            try:
+                data = request.json
+                access_token = data.get("access_token")
+
+                if not access_token:
+                    return "Failure", 400
+
+                page_id = data.get("page_id")
+                row = [{"page_id": page_id, "access_token": access_token}]
+
+                self.spark.add(SparkTable.PAGES, row)
+
+                return "Success", 200
+            except Exception as e:
+                print(e)
+                return "Failure", 400
+
     @staticmethod
     def internal(func):
         """Mark this route as internal and hide it when the app is on production."""
