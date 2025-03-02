@@ -97,17 +97,17 @@ class FeedPulseAPI:
                 access_token = data.get("access_token")
 
                 if not access_token:
-                    return "Failure", 400
+                    return Response.failure()
 
                 page_id = data.get("page_id")
                 row = [{"page_id": page_id, "access_token": access_token}]
 
                 self.spark.add(SparkTable.PAGES, row)
 
-                return "Success", 200
+                return Response.success()
             except Exception as e:
                 print(e)
-                return "Failure", 400
+                return Response.failure()
 
     @staticmethod
     def internal(func):
