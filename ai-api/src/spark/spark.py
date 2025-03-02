@@ -81,6 +81,7 @@ class Spark:
     def modify(self, table: SparkTable, row_data: str):
         pass
 
+    # Modified _add_worker function to reduce Spark-level parallelism for small datasets
     def _add_worker(
         self,
         table: SparkTable,
@@ -90,8 +91,10 @@ class Spark:
         if isinstance(row_data, pyspark.sql.DataFrame):
             df = row_data
         else:
-            df = self.spark.createDataFrame(row_data)
-
+            data_list = list(row_data)  # Convert iterable to list for size checking
+            df = self.spark.createDataFrame(data_list)
+            if len(data_list) < 100:  # For small datasets, reduce the number of partitions to lower Spark-level parallelism
+                df = df.coalesce(1)
         df.write.mode("append").format(write_format).save(table.value)
 
     def _streaming_worker(self):
