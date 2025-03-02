@@ -15,13 +15,11 @@ namespace web_api.Controllers
             return NewResult(response);
         }
 
-		[HttpPost("pages")]
-		public async Task<IActionResult> GetPages ([FromBody] GetFacebookPageListQuery query)
-		{
-			var response = await Mediator.Send(query);
-			return NewResult(response);
-		}
-
-
+	[HttpPost("pages")]
+	public async Task<IActionResult> GetPages ([FromBody] GetFacebookPageListQuery query)
+	{
+		var response = await Mediator.Send(query);
+		return NewResult(response);
 	}
+    }
 }
