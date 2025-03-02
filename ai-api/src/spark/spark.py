@@ -81,6 +81,7 @@ class Spark:
     def modify(self, table: SparkTable, row_data: str):
         pass
 
+    # Modified _add_worker function to avoid parallelism for small datasets
     def _add_worker(
         self,
         table: SparkTable,
@@ -90,9 +91,20 @@ class Spark:
         if isinstance(row_data, pyspark.sql.DataFrame):
             df = row_data
         else:
-            df = self.spark.createDataFrame(row_data)
+            data_list = list(row_data)  # Convert iterable to list for size checking
+            if len(data_list) < 100:  # For small datasets, avoid extra parallelism overhead
+                df = self.spark.createDataFrame(data_list)
+                df.write.mode("append").format(write_format).save(table.value)
+                return
+            else:
+                df = self.spark.createDataFrame(data_list)
 
-        df.write.mode("append").format(write_format).save(table.value)
+        # For larger datasets, use ThreadPoolExecutor for asynchronous writing
+        with ThreadPoolExecutor() as executor:
+            future = executor.submit(
+                lambda: df.write.mode("append").format(write_format).save(table.value)
+            )
+            future.result()
 
     def _streaming_worker(self):
         # Define schema for input streaming data
