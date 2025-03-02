@@ -1,42 +1,64 @@
 import json
 
+from datetime import datetime
+
+from pyspark.sql import DataFrame
+from pyspark.sql.functions import col
+
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
-from src.utlity.util import deprecated
+from src.spark.spark import Spark
+from src.spark.spark_table import SparkTable
 
 
 class ReportHandler:
-    def __init__(self, provider: GlobalModelProvider):
+    def __init__(
+        self, provider: GlobalModelProvider, spark: Spark, comments_table: SparkTable
+    ):
         self.provider = provider
+        self.spark = spark
+        self.comments_table = comments_table
 
-    @deprecated
-    def create(self, result) -> str:
+    def create(self, page_id: str, start_date: datetime, end_date: datetime) -> str:
         """
         Creates a report from the given result.
 
         Args:
-            result (PipelineResult): The result of the pipeline.
+            page_id (str): The id of the page which the report belongs to.
+            start_date (datetime): The start date of the data to be included in the report.
+            end_date (datetime): The end date of the data to be included in the report.
 
         Returns:
             str : contains a report that represent each topic and the number of positive feedbacks and number
             of negative feedbacks.
         """
 
-        topic_counts = json.dumps(result.topic_counts)
-        return self.provider.generate_content(self._generate_prompt(topic_counts))
+        filtered_data_df = self._get_filtered_page_data(page_id, start_date, end_date)
+
+        filtered_data = filtered_data_df.collect()
+        data_as_dict = [row.asDict() for row in filtered_data]
+
+        return self.provider.generate_content(
+            self._generate_prompt(json.dumps(data_as_dict))
+        )
+
+    def _get_filtered_page_data(
+        self, page_id: str, start_date: datetime, end_date: datetime
+    ) -> DataFrame:
+        return self.spark.read(self.comments_table).filter(
+            (col("page_id") == page_id)
+            & (col("created_time") >= start_date)
+            & (col("created_time") <= end_date)
+        )
 
     @staticmethod
-    @deprecated
-    def _generate_prompt(topic_counts: str) -> Prompt:
+    def _generate_prompt(data: str) -> Prompt:
         return Prompt(
             instructions=(
                 """
                 Please generate a well-structured report summarizing the positive and negative feedback counts
                 for multiple topics based on the provided data.
-                The data is in JSON format, where each key represents a topic name,
-                and its value is another dictionary containing the counts of 'positive_feedback' and 'negative_feedback' for that topic.
-
-                Here is the data in JSON format:
+                The data is in JSON format, where each object represents a comment containing useful information.,
 
                 The report should include:
                 1.	A section for each topic with its name.
@@ -47,5 +69,5 @@ class ReportHandler:
             ),
             context=None,
             examples=None,
-            input_text=topic_counts,
+            input_text=data,
         )

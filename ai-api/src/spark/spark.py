@@ -93,7 +93,9 @@ class Spark:
         else:
             data_list = list(row_data)  # Convert iterable to list for size checking
             df = self.spark.createDataFrame(data_list)
-            if len(data_list) < 100:  # For small datasets, reduce the number of partitions to lower Spark-level parallelism
+            if (
+                len(data_list) < 100
+            ):  # For small datasets, reduce the number of partitions to lower Spark-level parallelism
                 df = df.coalesce(1)
         df.write.mode("append").format(write_format).save(table.value)
 
