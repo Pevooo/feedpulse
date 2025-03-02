@@ -20,5 +20,11 @@ namespace web_api.Controllers
             var response = await Mediator.Send(query);
             return NewResult(response);
         }
-    }
+		[HttpPost("unregisteredpages")]
+		public async Task<IActionResult> GetUnregisteredPages([FromBody] GetUnregisteredFacebookPageListQuery query)
+		{
+			var response = await Mediator.Send(query);
+			return NewResult(response);
+		}
+	}
 }

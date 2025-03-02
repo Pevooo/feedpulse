@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Identity;
 namespace Api.Core.Features.Facebook.Queries.Handler
 {
     public class FacebookQueriesHandler : ResponseHandler, IRequestHandler<FacebookAuthQuery, Response<string>>,
-        IRequestHandler<GetFacebookPageListQuery,Response<List<SingleFacebookPageResponse>>>
+        IRequestHandler<GetFacebookPageListQuery,Response<List<SingleFacebookPageResponse>>>,
+		IRequestHandler<GetUnregisteredFacebookPageListQuery, Response<List<SingleFacebookPageResponse>>>
 
 	{
         #region Fields
@@ -53,6 +54,20 @@ namespace Api.Core.Features.Facebook.Queries.Handler
             var pages = await _facebookService.GetFacebookPages(request.AccessToken);
 
             var result = pages.Select(page => new SingleFacebookPageResponse
+			{
+				Id = page.Id,
+				Name = page.Name,
+				AccessToken = page.AccessToken
+			}).ToList();
+
+			return Success(result);
+		}
+
+		public async Task<Response<List<SingleFacebookPageResponse>>> Handle(GetUnregisteredFacebookPageListQuery request, CancellationToken cancellationToken)
+		{
+			var pages = await _facebookService.GetUnregisteredFacebookPages(request.AccessToken);
+
+			var result = pages.Select(page => new SingleFacebookPageResponse
 			{
 				Id = page.Id,
 				Name = page.Name,

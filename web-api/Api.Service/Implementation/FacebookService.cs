@@ -5,6 +5,7 @@ using Microsoft.Extensions.Http;
 using System.Text.Json;
 using Api.Data.DTOS;
 using System.Net.Http;
+using Api.Infrastructure.Data;
 
 namespace Api.Service.Implementation
 {
@@ -13,13 +14,15 @@ namespace Api.Service.Implementation
         #region Fields
         private readonly FacebookSettings _facebookSettings;
         private readonly HttpClient _httpClient;
-        #endregion
+		private readonly ApplicationDbContext _dbcontext;
+		#endregion
 
-        #region Constructor
-        public FacebookService(IOptions<FacebookSettings> facebookSettings, HttpClient httpClient)
+		#region Constructor
+		public FacebookService(IOptions<FacebookSettings> facebookSettings, HttpClient httpClient,ApplicationDbContext dbContext)
         {
             _facebookSettings = facebookSettings.Value;
             _httpClient = httpClient;
+            _dbcontext = dbContext;
         }
         #endregion
 
@@ -66,6 +69,31 @@ namespace Api.Service.Implementation
 			}).ToList();
 
 			return pages;
+		}
+		public async Task<List<FacebookPage>> GetUnregisteredFacebookPages(string accessToken)
+		{
+			string url = $"https://graph.facebook.com/me/accounts?access_token={accessToken}";
+
+			var response = await _httpClient.GetStringAsync(url);
+			var pagesData = JsonSerializer.Deserialize<JsonElement>(response);
+
+			var pages = pagesData.GetProperty("data").EnumerateArray().Select(p => new FacebookPage
+			{
+				Id = p.GetProperty("id").GetString(),
+				Name = p.GetProperty("name").GetString(),
+				AccessToken = p.TryGetProperty("access_token", out var token) ? token.GetString() : null
+			}).ToList();
+
+            var user = _dbcontext.AppUsers.Where(u => u.FacebookAccessToken == accessToken).SingleOrDefault();
+            if (user == null)
+            {
+                return new List<FacebookPage>();
+            }
+			var registeredPages = _dbcontext.Organizations.Where(o=>o.UserId==user.Id).Select(o=>o.PageAccessToken).ToList();
+
+			var unregisteredPages = pages.Where(page => !registeredPages.Contains(page.Id)).ToList();
+
+			return unregisteredPages;
 		}
 
 

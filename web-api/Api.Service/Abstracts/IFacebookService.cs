@@ -7,5 +7,6 @@ namespace Api.Service.Abstracts
         Task<bool> ValidateFacebookToken(string token);
         Task<string> GetLongLivedUserToken(string token);
 		Task<List<FacebookPage>> GetFacebookPages(string accessToken);
+        Task<List<FacebookPage>> GetUnregisteredFacebookPages(string accessToken);
 	}
 }
