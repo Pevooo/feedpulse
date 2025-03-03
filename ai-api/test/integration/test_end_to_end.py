@@ -20,7 +20,7 @@ class TestEndToEnd(unittest.TestCase):
         self.feed_pulse_app = FeedPulseAPI(
             FeedbackClassifier(Mock()),
             TopicDetector(GlobalModelProvider(providers)),
-            ReportHandler(GlobalModelProvider(providers)),
+            ReportHandler(GlobalModelProvider(providers), Mock(), Mock()),
             Mock(),
             Mock(),
             Mock(),
