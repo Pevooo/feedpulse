@@ -18,6 +18,7 @@ namespace Api.Service
             _ = services.AddTransient<IApplicationUserService, ApplicationUserService>();
             _ = services.AddTransient<IFileService, FileService>();
             _ = services.AddTransient<IFacebookService, FacebookService>();
+            _ = services.AddTransient<IOrganizationService, OrganizationService>();
             return services;
         }
     }

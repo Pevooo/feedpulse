@@ -48,5 +48,10 @@
             private const string Prefix = BaseRoute + "emails";
             public const string SendEmail = Prefix + "/send-email";
         }
+        public static class Organization
+        {
+            private const string Prefix = BaseRoute + "emails";
+            public const string Create = Prefix + "/create-organization";
+        }
     }
 }

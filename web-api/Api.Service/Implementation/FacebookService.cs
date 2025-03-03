@@ -1,11 +1,9 @@
-﻿using Api.Data.Helpers;
+﻿using Api.Data.DTOS;
+using Api.Data.Helpers;
+using Api.Infrastructure.Data;
 using Api.Service.Abstracts;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Http;
 using System.Text.Json;
-using Api.Data.DTOS;
-using System.Net.Http;
-using Api.Infrastructure.Data;
 
 namespace Api.Service.Implementation
 {
@@ -14,11 +12,11 @@ namespace Api.Service.Implementation
         #region Fields
         private readonly FacebookSettings _facebookSettings;
         private readonly HttpClient _httpClient;
-		private readonly ApplicationDbContext _dbcontext;
-		#endregion
+        private readonly ApplicationDbContext _dbcontext;
+        #endregion
 
-		#region Constructor
-		public FacebookService(IOptions<FacebookSettings> facebookSettings, HttpClient httpClient,ApplicationDbContext dbContext)
+        #region Constructor
+        public FacebookService(IOptions<FacebookSettings> facebookSettings, HttpClient httpClient, ApplicationDbContext dbContext)
         {
             _facebookSettings = facebookSettings.Value;
             _httpClient = httpClient;
@@ -54,49 +52,49 @@ namespace Api.Service.Implementation
             return json.GetProperty("data").GetProperty("is_valid").GetBoolean();
         }
 
-        public async Task<List<FacebookPage>> GetFacebookPages (string accessToken)
+        public async Task<List<FacebookPage>> GetFacebookPages(string accessToken)
         {
-			string url = $"https://graph.facebook.com/me/accounts?access_token={accessToken}";
+            string url = $"https://graph.facebook.com/me/accounts?access_token={accessToken}";
 
-			var response = await _httpClient.GetStringAsync(url);
-			var pagesData = JsonSerializer.Deserialize<JsonElement>(response);
+            var response = await _httpClient.GetStringAsync(url);
+            var pagesData = JsonSerializer.Deserialize<JsonElement>(response);
 
-			var pages = pagesData.GetProperty("data").EnumerateArray().Select(p => new FacebookPage
-			{
-				Id = p.GetProperty("id").GetString(),
-				Name = p.GetProperty("name").GetString(),
-				AccessToken = p.TryGetProperty("access_token", out var token) ? token.GetString() : null
-			}).ToList();
+            var pages = pagesData.GetProperty("data").EnumerateArray().Select(p => new FacebookPage
+            {
+                Id = p.GetProperty("id").GetString(),
+                Name = p.GetProperty("name").GetString(),
+                AccessToken = p.TryGetProperty("access_token", out var token) ? token.GetString() : null
+            }).ToList();
 
-			return pages;
-		}
-		public async Task<List<FacebookPage>> GetUnregisteredFacebookPages(string accessToken)
-		{
-			string url = $"https://graph.facebook.com/me/accounts?access_token={accessToken}";
+            return pages;
+        }
+        public async Task<List<FacebookPage>> GetUnregisteredFacebookPages(string accessToken)
+        {
+            string url = $"https://graph.facebook.com/me/accounts?access_token={accessToken}";
 
-			var response = await _httpClient.GetStringAsync(url);
-			var pagesData = JsonSerializer.Deserialize<JsonElement>(response);
+            var response = await _httpClient.GetStringAsync(url);
+            var pagesData = JsonSerializer.Deserialize<JsonElement>(response);
 
-			var pages = pagesData.GetProperty("data").EnumerateArray().Select(p => new FacebookPage
-			{
-				Id = p.GetProperty("id").GetString(),
-				Name = p.GetProperty("name").GetString(),
-				AccessToken = p.TryGetProperty("access_token", out var token) ? token.GetString() : null
-			}).ToList();
+            var pages = pagesData.GetProperty("data").EnumerateArray().Select(p => new FacebookPage
+            {
+                Id = p.GetProperty("id").GetString(),
+                Name = p.GetProperty("name").GetString(),
+                AccessToken = p.TryGetProperty("access_token", out var token) ? token.GetString() : null
+            }).ToList();
 
             var user = _dbcontext.AppUsers.Where(u => u.FacebookAccessToken == accessToken).SingleOrDefault();
             if (user == null)
             {
                 return new List<FacebookPage>();
             }
-			var registeredPages = _dbcontext.Organizations.Where(o=>o.UserId==user.Id).Select(o=>o.PageAccessToken).ToList();
+            var registeredPages = _dbcontext.Organizations.Where(o => o.UserId == user.Id).Select(o => o.FacebookId).ToList();
 
-			var unregisteredPages = pages.Where(page => !registeredPages.Contains(page.Id)).ToList();
+            var unregisteredPages = pages.Where(page => !registeredPages.Contains(page.Id)).ToList();
 
-			return unregisteredPages;
-		}
+            return unregisteredPages;
+        }
 
 
-		#endregion
-	}
+        #endregion
+    }
 }
