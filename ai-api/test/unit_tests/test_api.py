@@ -3,7 +3,7 @@ from datetime import datetime
 from unittest.mock import Mock, patch
 
 from api import FeedPulseAPI
-from flask import Flask, jsonify
+from flask import jsonify
 
 from src.config.response import Response
 
