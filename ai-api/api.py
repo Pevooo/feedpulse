@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import wraps
 
 from flask import Flask, request, jsonify
@@ -109,6 +110,19 @@ class FeedPulseAPI:
                 print(e)
                 return Response.failure()
 
+        @self.flask_app.route(Router.REPORT, methods=["GET", "POST"])
+        def get_report():
+            try:
+                data = request.json
+                page_id = data.get("page_id")
+                start_date = datetime.fromisoformat(data.get("start_date"))
+                end_date = datetime.fromisoformat(data.get("end_date"))
+                report = self.report_handler.create(page_id, start_date, end_date)
+                return Response.success(report)
+            except Exception as e:
+                print(e)
+                return Response.failure(str(e))
+
     @staticmethod
     def internal(func):
         """Mark this route as internal and hide it when the app is on production."""
@@ -149,7 +163,6 @@ if __name__ == "__main__":
         )
     )
     topic_detector = TopicDetector(model_provider)
-    report_handler = ReportHandler(model_provider)
 
     # Define Spark Singleton
     spark = Spark(
@@ -157,6 +170,12 @@ if __name__ == "__main__":
         stream_out=SparkTable.PROCESSED_COMMENTS,
         feedback_classification_batch_function=feedback_classifier.classify,
         topic_detection_batch_function=topic_detector.detect,
+    )
+
+    report_handler = ReportHandler(
+        provider=model_provider,
+        spark=spark,
+        comments_table=SparkTable.PROCESSED_COMMENTS,
     )
 
     # Define Streamer
