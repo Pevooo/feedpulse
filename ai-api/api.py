@@ -100,7 +100,12 @@ class FeedPulseAPI:
                 if not access_token or not page_id:
                     return Response.failure()
 
-                existing_entry = self.spark.get(SparkTable.PAGES, "page_id", page_id)
+                pages_df = self.spark.read(SparkTable.PAGES)
+                existing_entry = None
+                if pages_df is not None:
+                    existing_entry = pages_df.filter(
+                        pages_df.page_id == page_id
+                    ).first()
                 if existing_entry:
                     self.spark.update(
                         SparkTable.PAGES,
