@@ -47,7 +47,11 @@ class TestStreamingIntegration(unittest.TestCase):
                 {
                     "platform": "facebook",
                     "ac_token": os.getenv("TEST_AC_TOKEN"),
-                }
+                },
+                {
+                    "platform": "facebook",
+                    "ac_token": "fake_ac_token",  # Added to ensure an exception would cause no problem
+                },
             ]
         )
         pages_df.write.format("delta").mode("overwrite").save(FakeTable.PAGES_DIR.value)
@@ -66,7 +70,6 @@ class TestStreamingIntegration(unittest.TestCase):
         )
 
         data = [row.asDict() for row in result_df.collect()]
-        print(data)
         self.assertTrue(isinstance(data[0]["related_topics"], Iterable))
         self.assertTrue(isinstance(data[1]["related_topics"], Iterable))
         self.assertIn(data[0]["sentiment"], ["positive", "negative", "neutral"])

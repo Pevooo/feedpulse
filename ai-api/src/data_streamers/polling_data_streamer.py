@@ -45,15 +45,19 @@ class PollingDataStreamer(DataStreamer):
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         def process_page(row):
-            ac_token = row["ac_token"]
-            platform = row["platform"]
 
-            if platform == "facebook":
-                return FacebookDataProvider(ac_token).get_posts()
+            try:
+                ac_token = row["ac_token"]
+                platform = row["platform"]
+
+                if platform == "facebook":
+                    return FacebookDataProvider(ac_token).get_posts()
 
             # TODO: Integrate Instagram
             # elif platform == "instagram":
             #     return InstagramDataProvider(ac_token).get_posts()
+            except Exception:
+                return []
 
         results_rdd = df.rdd.flatMap(process_page)
         return self.spark.spark.createDataFrame(results_rdd)
