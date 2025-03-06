@@ -8,12 +8,8 @@ from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
 from src.data_streamers.data_streamer import DataStreamer
-from src.data_streamers.polling_data_streamer import PollingDataStreamer
 from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
-from src.models.global_model_provider import GlobalModelProvider
-from src.models.google_model_provider import GoogleModelProvider
-from src.models.hf_model_provider import HFModelProvider
 from src.reports.report_handler import ReportHandler
 from src.spark.spark import Spark, SparkTable
 from src.topics.topic_detector import TopicDetector
@@ -135,51 +131,4 @@ class FeedPulseAPI:
 
 
 if __name__ == "__main__":
-
-    # Define the global model provider (and load balancer)
-    model_provider = GlobalModelProvider(
-        providers=[GoogleModelProvider(), HFModelProvider()],
-        retry_delay=60,
-    )
-
-    # Define Processing Components
-    feedback_classifier = FeedbackClassifier(
-        classifier=pipeline(
-            "sentiment-analysis", "tabularisai/multilingual-sentiment-analysis"
-        )
-    )
-    topic_detector = TopicDetector(model_provider)
-    report_handler = ReportHandler(model_provider)
-
-    # Define Spark Singleton
-    spark = Spark(
-        stream_in=SparkTable.INPUT_COMMENTS,
-        stream_out=SparkTable.PROCESSED_COMMENTS,
-        feedback_classification_batch_function=feedback_classifier.classify,
-        topic_detection_batch_function=topic_detector.detect,
-    )
-
-    # Define Streamer
-    data_streamer = PollingDataStreamer(
-        spark=spark,
-        trigger_time=60,
-        streaming_in=SparkTable.INPUT_COMMENTS,
-        streaming_out=SparkTable.PROCESSED_COMMENTS,
-        pages_dir=SparkTable.PAGES,
-    )
-
-    # Define Exception Reporter
-    exception_reporter = ExceptionReporter(spark)
-
-    # Define the api class
-    app = FeedPulseAPI(
-        feedback_classifier=feedback_classifier,
-        topic_detector=topic_detector,
-        report_handler=report_handler,
-        exception_reporter=exception_reporter,
-        spark=spark,
-        data_streamer=data_streamer,
-    )
-
-    # Run the app
-    app.run()
+    main()

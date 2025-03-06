@@ -2,19 +2,19 @@ import os
 import unittest
 import time
 import shutil
+import threading
 
+from run_app import run_app
 from enum import Enum
 from typing import Iterable
 from unittest.mock import ANY
 
 from transformers import pipeline
 
-from src.data_streamers.polling_data_streamer import PollingDataStreamer
-from src.feedback_classification.feedback_classifier import FeedbackClassifier
-from src.models.global_model_provider import GlobalModelProvider
-from src.models.google_model_provider import GoogleModelProvider
+from delta import configure_spark_with_delta_pip
+from pyspark.sql import SparkSession
 from src.spark.spark import Spark
-from src.topics.topic_detector import TopicDetector
+
 
 base_path = os.path.dirname(__file__)
 
@@ -30,34 +30,19 @@ class FakeTable(Enum):
 
 
 class TestStreamingIntegration(unittest.TestCase):
-    def setUp(self):
-        self.feedback_classifier = FeedbackClassifier(
-            pipeline(
-                "sentiment-analysis", "tabularisai/multilingual-sentiment-analysis"
-            )
-        )
-        self.model_provider = GlobalModelProvider([GoogleModelProvider()])
-        self.topic_detector = TopicDetector(self.model_provider)
-        self.spark = Spark(
-            FakeTable.TEST_STREAMING_IN,
-            FakeTable.TEST_STREAMING_OUT,
-            self.feedback_classifier.classify,
-            self.topic_detector.detect,
-        )
-        self.streamer = PollingDataStreamer(
-            spark=self.spark,
-            trigger_time=30,
-            streaming_in=FakeTable.TEST_STREAMING_IN,
-            streaming_out=FakeTable.TEST_STREAMING_OUT,
-            pages_dir=FakeTable.PAGES_DIR,
-        )
-
+    def test_integration(self):
         os.makedirs(FakeTable.PAGES_DIR.value, exist_ok=True)
         os.makedirs(FakeTable.TEST_STREAMING_IN.value, exist_ok=True)
         os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
-
-    def test_integration(self):
-        pages_df = self.spark.spark.createDataFrame(
+        spark = configure_spark_with_delta_pip(
+            SparkSession.builder.appName("FeedPulse")
+            .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+            .config(
+                "spark.sql.catalog.spark_catalog",
+                "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+            )
+        ).getOrCreate()
+        pages_df = spark.createDataFrame(
             [
                 {
                     "platform": "facebook",
@@ -66,15 +51,17 @@ class TestStreamingIntegration(unittest.TestCase):
             ]
         )
         pages_df.write.format("delta").mode("overwrite").save(FakeTable.PAGES_DIR.value)
+        spark.stop()
 
-        self.spark.start_streaming_job()
-        time.sleep(5)
-        self.streamer.start_streaming()
+        thread = threading.Thread(target=run_app, args=(
+            FakeTable.TEST_STREAMING_IN,
+            FakeTable.TEST_STREAMING_OUT,
+            FakeTable.PAGES_DIR,))
+        
+        thread.start()
+        time.sleep(80)
 
-        # Sleeping until streamer streams data successfully and receiver receives data and process it and saves it successfully
-        time.sleep(60)
-
-        result_df = self.spark.spark.read.format("delta").load(
+        result_df = Spark.instance.spark.read.format("delta").load(
             FakeTable.TEST_STREAMING_OUT.value
         )
 
@@ -117,3 +104,4 @@ class TestStreamingIntegration(unittest.TestCase):
 
         if os.path.exists(os.path.join(base_path, "test_streaming_integration")):
             shutil.rmtree(os.path.join(base_path, "test_streaming_integration"))
+        
