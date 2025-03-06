@@ -98,7 +98,7 @@ class FeedPulseAPI:
                 page_id = data.get("page_id")
 
                 if not access_token or not page_id:
-                    return Response.failure()
+                    return Response.failure("Error occurred: " + str(e))
 
                 pages_df = self.spark.read(SparkTable.PAGES)
                 existing_entry = None
