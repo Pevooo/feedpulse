@@ -30,7 +30,6 @@ def run_app(
         )
     )
     topic_detector = TopicDetector(model_provider)
-    report_handler = ReportHandler(model_provider)
 
     # Define Spark Singleton
     spark = Spark(
@@ -39,6 +38,8 @@ def run_app(
         feedback_classification_batch_function=feedback_classifier.classify,
         topic_detection_batch_function=topic_detector.detect,
     )
+
+    report_handler = ReportHandler(model_provider, spark, stream_out)
 
     # Define Streamer
     data_streamer = PollingDataStreamer(
