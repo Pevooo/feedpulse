@@ -120,7 +120,7 @@ class FeedPulseAPI:
                 return Response.success()
             except Exception as e:
                 print(e)
-                return Response.failure()
+                return Response.failure("Error occurred: " + str(e))
 
     @staticmethod
     def internal(func):
