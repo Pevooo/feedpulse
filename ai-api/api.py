@@ -96,19 +96,32 @@ class FeedPulseAPI:
             try:
                 data = request.json
                 access_token = data.get("access_token")
-
-                if not access_token:
-                    return Response.failure()
-
                 page_id = data.get("page_id")
-                row = [{"page_id": page_id, "access_token": access_token}]
 
-                self.spark.add(SparkTable.PAGES, row)
+                if not access_token or not page_id:
+                    return Response.failure("Error occurred: ")
+
+                pages_df = self.spark.read(SparkTable.PAGES)
+                existing_entry = None
+                if pages_df is not None:
+                    existing_entry = pages_df.filter(
+                        pages_df.page_id == page_id
+                    ).first()
+                if existing_entry:
+                    self.spark.update(
+                        SparkTable.PAGES,
+                        "page_id",
+                        page_id,
+                        {"access_token": access_token},
+                    )
+                else:
+                    row = [{"page_id": page_id, "access_token": access_token}]
+                    self.spark.add(SparkTable.PAGES, row)
 
                 return Response.success()
             except Exception as e:
                 print(e)
-                return Response.failure()
+                return Response.failure("Error occurred: ")
 
         @self.flask_app.route(Router.REPORT, methods=["GET", "POST"])
         def get_report():
