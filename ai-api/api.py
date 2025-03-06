@@ -2,7 +2,6 @@ from datetime import datetime
 from functools import wraps
 
 from flask import Flask, request, jsonify
-from transformers import pipeline
 
 from src.config.environment import Environment
 from src.config.settings import Settings
