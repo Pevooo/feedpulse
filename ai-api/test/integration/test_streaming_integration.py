@@ -62,6 +62,7 @@ class TestStreamingIntegration(unittest.TestCase):
                 FakeTable.TEST_STREAMING_OUT,
                 FakeTable.PAGES_DIR,
             ),
+            daemon=True,
         )
 
         thread.start()
