@@ -9,8 +9,6 @@ from enum import Enum
 from typing import Iterable
 from unittest.mock import ANY
 
-from transformers import pipeline
-
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from src.spark.spark import Spark
@@ -57,11 +55,15 @@ class TestStreamingIntegration(unittest.TestCase):
         pages_df.write.format("delta").mode("overwrite").save(FakeTable.PAGES_DIR.value)
         spark.stop()
 
-        thread = threading.Thread(target=run_app, args=(
-            FakeTable.TEST_STREAMING_IN,
-            FakeTable.TEST_STREAMING_OUT,
-            FakeTable.PAGES_DIR,))
-        
+        thread = threading.Thread(
+            target=run_app,
+            args=(
+                FakeTable.TEST_STREAMING_IN,
+                FakeTable.TEST_STREAMING_OUT,
+                FakeTable.PAGES_DIR,
+            ),
+        )
+
         thread.start()
         time.sleep(80)
 
@@ -107,4 +109,3 @@ class TestStreamingIntegration(unittest.TestCase):
 
         if os.path.exists(os.path.join(base_path, "test_streaming_integration")):
             shutil.rmtree(os.path.join(base_path, "test_streaming_integration"))
-        
