@@ -1,6 +1,7 @@
 from transformers import pipeline
 
 from api import FeedPulseAPI
+from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.data_streamers.polling_data_streamer import PollingDataStreamer
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
@@ -31,12 +32,16 @@ def run_app(
     )
     topic_detector = TopicDetector(model_provider)
 
+    # Define Concurrency Manager
+    concurrency_manager = ConcurrencyManager()
+
     # Define Spark Singleton
     spark = Spark(
         stream_in=stream_in,
         stream_out=stream_out,
         feedback_classification_batch_function=feedback_classifier.classify,
         topic_detection_batch_function=topic_detector.detect,
+        concurrency_manager=concurrency_manager,
     )
 
     report_handler = ReportHandler(model_provider, spark, stream_out)
@@ -48,6 +53,7 @@ def run_app(
         streaming_in=stream_in,
         streaming_out=stream_out,
         pages_dir=paged_dir,
+        concurrency_manager=concurrency_manager,
     )
 
     # Define Exception Reporter

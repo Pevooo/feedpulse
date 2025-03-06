@@ -6,6 +6,7 @@ from tabulate import tabulate
 from enum import Enum
 from pathlib import Path
 
+from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.spark.spark import Spark
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,7 +20,7 @@ class FakeTable(Enum):
 def main():
 
     spark = Spark(
-        Mock(), Mock(), Mock(), Mock()
+        Mock(), Mock(), Mock(), Mock(), ConcurrencyManager()
     )  # Just create the instance so that we can use it later without the creation overhead
 
     tests = [

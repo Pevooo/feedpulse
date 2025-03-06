@@ -6,6 +6,7 @@ import datetime
 from unittest.mock import Mock
 from enum import Enum
 
+from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.reports.report_handler import ReportHandler
 from src.spark.spark import Spark
 
@@ -17,7 +18,7 @@ class FakeTable(Enum):
 
 class TestReportHandlerWithSpark(unittest.TestCase):
     def setUp(self):
-        self.spark = Spark(Mock(), Mock(), Mock(), Mock())
+        self.spark = Spark(Mock(), Mock(), Mock(), Mock(), ConcurrencyManager())
 
     def test_filter_exclude_wrong_page_id(self):
         self.report_handler = ReportHandler(
