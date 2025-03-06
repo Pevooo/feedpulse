@@ -95,14 +95,22 @@ class FeedPulseAPI:
             try:
                 data = request.json
                 access_token = data.get("access_token")
+                page_id = data.get("page_id")
 
-                if not access_token:
+                if not access_token or not page_id:
                     return Response.failure()
 
-                page_id = data.get("page_id")
-                row = [{"page_id": page_id, "access_token": access_token}]
-
-                self.spark.add(SparkTable.PAGES, row)
+                existing_entry = self.spark.get(SparkTable.PAGES, "page_id", page_id)
+                if existing_entry:
+                    self.spark.update(
+                        SparkTable.PAGES,
+                        "page_id",
+                        page_id,
+                        {"access_token": access_token},
+                    )
+                else:
+                    row = [{"page_id": page_id, "access_token": access_token}]
+                    self.spark.add(SparkTable.PAGES, row)
 
                 return Response.success()
             except Exception as e:
