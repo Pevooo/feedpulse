@@ -103,9 +103,5 @@ class TestStreamingIntegration(unittest.TestCase):
         )
 
     def tearDown(self):
-        for query in self.spark.spark.streams.active:
-            query.stop()
-        self.spark.spark.stop()
-
         if os.path.exists(os.path.join(base_path, "test_streaming_integration")):
             shutil.rmtree(os.path.join(base_path, "test_streaming_integration"))
