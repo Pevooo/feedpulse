@@ -5,6 +5,7 @@ import datetime
 from enum import Enum
 from time import sleep
 
+from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.spark.spark import Spark
 from src.topics.feedback_topic import FeedbackTopic
 
@@ -34,6 +35,7 @@ class TestSpark(unittest.TestCase):
             FakeTable.TEST_STREAMING_OUT,
             fake_classification_function,
             fake_topic_detection_function,
+            ConcurrencyManager(),
         )
 
         cls.spark.start_streaming_job()
