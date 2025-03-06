@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
+from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.data_streamers.polling_data_streamer import PollingDataStreamer
 from src.spark.spark import Spark
 
@@ -9,8 +10,11 @@ class TestPollingDataStreamer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.spark = Spark(Mock(), Mock(), Mock(), Mock())
-        cls.streamer = PollingDataStreamer(cls.spark, Mock(), Mock(), Mock(), Mock())
+        cls.concurrency_manager = ConcurrencyManager()
+        cls.spark = Spark(Mock(), Mock(), Mock(), Mock(), cls.concurrency_manager)
+        cls.streamer = PollingDataStreamer(
+            cls.spark, Mock(), Mock(), Mock(), Mock(), cls.concurrency_manager
+        )
 
     def test_unique(self):
         df1 = self.spark.spark.createDataFrame(
