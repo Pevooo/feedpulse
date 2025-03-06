@@ -12,6 +12,5 @@ class SparkTable(Enum):
     REPORTS = os.path.join(database_path, "reports")
     INPUT_COMMENTS = os.path.join(database_path, "comments_stream")
     PROCESSED_COMMENTS = os.path.join(database_path, "processed_comments")
-    PAGES = os.path.join(database_path, "pages")
+    PAGES = os.path.join(database_path, "pages") # including access token, platform, description and page ID
     EXCEPTIONS = os.path.join(database_path, "exceptions")
-    AC_TOKENS = os.path.join(database_path, "tokens")
