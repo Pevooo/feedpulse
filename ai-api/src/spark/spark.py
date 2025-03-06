@@ -1,5 +1,5 @@
 import os
-from concurrent.futures import ThreadPoolExecutor, Future
+from concurrent.futures import Future
 from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
 import pyspark
@@ -17,6 +17,7 @@ from pyspark.sql.types import (
     TimestampType,
 )
 
+from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.spark.spark_table import SparkTable
 from src.topics.feedback_topic import FeedbackTopic
 
@@ -39,6 +40,7 @@ class Spark:
         topic_detection_batch_function: Callable[
             [list[str]], list[list[FeedbackTopic]]
         ],
+        concurrency_manager: ConcurrencyManager,
     ):
         self.spark = configure_spark_with_delta_pip(
             SparkSession.builder.appName("FeedPulse")
@@ -54,7 +56,7 @@ class Spark:
         )
 
         self.topic_detection_batch_function = topic_detection_batch_function
-        self.executor = ThreadPoolExecutor(max_workers=5)
+        self.concurrency_manager = concurrency_manager
         self.stream_in = stream_in
         self.stream_out = stream_out
 
@@ -67,7 +69,9 @@ class Spark:
         row_data: Iterable[dict[str, Any]] | pyspark.sql.DataFrame,
         write_format: str = "delta",
     ) -> Future:
-        return self.executor.submit(self._add_worker, table, row_data, write_format)
+        return self.concurrency_manager.submit_job(
+            self._add_worker, table, row_data, write_format
+        )
 
     def delete(self, table: SparkTable, row_data: str):
         pass
@@ -133,31 +137,31 @@ class Spark:
 
         # Process each batch concurrently
         grouped_data = grouped_df.collect()
-        with ThreadPoolExecutor() as executor:
-            futures = [
-                executor.submit(self.process_batch, row.batch_rows)
-                for row in grouped_data
-            ]
 
-            # Collect results from each processed batch
-            for future in futures:
-                results.extend(future.result())
+        futures = [
+            self.concurrency_manager.submit_job(self.process_batch, row.batch_rows)
+            for row in grouped_data
+        ]
+
+        # Collect results from each processed batch
+        for future in futures:
+            results.extend(future.result())
         # Store processed data in Spark table
         self.add(self.stream_out, results)
 
     def process_batch(self, batch_rows):
         comments = [r.content for r in batch_rows]
         # Execute sentiment analysis and topic detection concurrently
-        with ThreadPoolExecutor() as executor:
-            sentiment_future = executor.submit(
-                self.feedback_classification_batch_function, comments
-            )
-            topics_future = executor.submit(
-                self.topic_detection_batch_function, comments
-            )
 
-            sentiments = sentiment_future.result()
-            topics = topics_future.result()
+        sentiment_future = self.concurrency_manager.submit_job(
+            self.feedback_classification_batch_function, comments
+        )
+        topics_future = self.concurrency_manager.submit_job(
+            self.topic_detection_batch_function, comments
+        )
+
+        sentiments = sentiment_future.result()
+        topics = topics_future.result()
 
         batch_results = []
         for original_row, sentiment, related_topics in zip(

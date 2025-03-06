@@ -1,9 +1,8 @@
 import time
 
-from concurrent.futures import ThreadPoolExecutor
-
 import pyspark
 
+from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.data_streamers.data_streamer import DataStreamer
 from src.spark.spark import SparkTable, Spark
@@ -17,16 +16,17 @@ class PollingDataStreamer(DataStreamer):
         streaming_in: SparkTable,
         streaming_out: SparkTable,
         pages_dir: SparkTable,
+        concurrency_manager: ConcurrencyManager,
     ):
         self.spark = spark
         self.trigger_time = trigger_time
         self.streaming_in = streaming_in
         self.streaming_out = streaming_out
         self.pages_dir = pages_dir
-        self.executor = ThreadPoolExecutor(max_workers=1)
+        self.concurrency_manager = concurrency_manager
 
     def start_streaming(self) -> None:
-        self.executor.submit(self.streaming_worker)
+        self.concurrency_manager.submit_job(self.streaming_worker)
 
     def streaming_worker(self):
         df = self.spark.read(self.pages_dir)
@@ -41,7 +41,7 @@ class PollingDataStreamer(DataStreamer):
             self.spark.add(self.streaming_in, flattened_df, "json").result()
 
         time.sleep(self.trigger_time)
-        self.executor.submit(self.streaming_worker)
+        self.concurrency_manager.submit_job(self.streaming_worker)
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         def process_page(row):
