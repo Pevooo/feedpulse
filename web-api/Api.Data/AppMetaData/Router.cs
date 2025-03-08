@@ -52,6 +52,7 @@
         {
             private const string Prefix = BaseRoute + "emails";
             public const string Create = Prefix + "/create-organization";
+            public const string Delete = Prefix + "/delete-organization/{id}";
         }
     }
 }

@@ -9,5 +9,6 @@ namespace Api.Service.Abstracts
         Task<Organization> GetOrganizationByFacebookidAsync(string id);
         Task<List<Organization>> GetOrganizationsByUseridAsync(string id);
         Task<string> AddOrganizationAsync(Organization organization);
+        Task<string> DeleteOrganizationAsync(int id);
     }
 }

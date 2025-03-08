@@ -9,6 +9,7 @@ namespace Api.Core.Features.Organizations.Commands.Models
         public string Description { get; set; }
         public string PageAccessToken { get; set; }
         public string FacebookId { get; set; }
+        public string UserId { get; set; }
 
     }
 }

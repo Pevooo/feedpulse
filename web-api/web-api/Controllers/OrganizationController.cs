@@ -15,5 +15,11 @@ namespace web_api.Controllers
             var response = await Mediator.Send(command);
             return NewResult(response);
         }
+        [HttpDelete(Router.Organization.Delete)]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var response = await Mediator.Send(new DeleteOrganizationCommand(id));
+            return NewResult(response);
+        }
     }
 }

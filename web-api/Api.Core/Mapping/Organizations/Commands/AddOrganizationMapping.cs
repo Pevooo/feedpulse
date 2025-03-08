@@ -12,6 +12,7 @@ namespace Api.Core.Mapping.Organizations
                 .ForMember(x => x.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(x => x.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(x => x.PageAccessToken, opt => opt.MapFrom(src => src.PageAccessToken))
+                .ForMember(x => x.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(x => x.FacebookId, opt => opt.MapFrom(src => src.FacebookId));
         }
     }

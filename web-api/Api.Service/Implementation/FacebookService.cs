@@ -83,6 +83,7 @@ namespace Api.Service.Implementation
             }).ToList();
 
             var user = _dbcontext.AppUsers.Where(u => u.FacebookAccessToken == accessToken).SingleOrDefault();
+
             if (user == null)
             {
                 return new List<FacebookPage>();
@@ -93,7 +94,18 @@ namespace Api.Service.Implementation
 
             return unregisteredPages;
         }
+        public async Task<string> ExchangeForLongLivedPageToken(string pageAccessToken)
+        {
+            string url = $"https://graph.facebook.com/v18.0/oauth/access_token" +
+                         $"?grant_type=fb_exchange_token" +
+                         $"&client_id={_facebookSettings.AppId}" +
+                         $"&client_secret={_facebookSettings.AppSecret}" +
+                         $"&fb_exchange_token={pageAccessToken}";
 
+            var response = await _httpClient.GetStringAsync(url);
+            var json = JsonSerializer.Deserialize<JsonElement>(response);
+            return json.GetProperty("access_token").GetString();
+        }
 
         #endregion
     }

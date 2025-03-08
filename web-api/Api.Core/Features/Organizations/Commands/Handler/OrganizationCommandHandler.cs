@@ -9,6 +9,7 @@ using MediatR;
 namespace Api.Core.Features.Organizations.Commands.Handler
 {
     public class OrganizationCommandHandler : ResponseHandler, IRequestHandler<AddOrganizationCommand, Response<string>>
+                            , IRequestHandler<DeleteOrganizationCommand, Response<string>>
     {
         #region Fields
         IOrganizationService _organizationService;
@@ -22,10 +23,29 @@ namespace Api.Core.Features.Organizations.Commands.Handler
         }
         #endregion
         #region HandleFunctions
-        public Task<Response<string>> Handle(AddOrganizationCommand request, CancellationToken cancellationToken)
+        public async Task<Response<string>> Handle(AddOrganizationCommand request, CancellationToken cancellationToken)
         {
-            _ = _mapper.Map<Organization>(request);
-            throw new NotImplementedException();
+            var organization = _mapper.Map<Organization>(request);
+            var res = await
+              _organizationService.AddOrganizationAsync(organization);
+            if (res == "Success")
+            {
+                return Success(res);
+            }
+            else
+            {
+                return BadRequest<string>(res);
+            }
+        }
+
+        public async Task<Response<string>> Handle(DeleteOrganizationCommand request, CancellationToken cancellationToken)
+        {
+            var res = await _organizationService.DeleteOrganizationAsync(request.id);
+            if (res == "Success")
+            {
+                return Success("Deleted");
+            }
+            return NotFound<string>(res);
         }
         #endregion
     }

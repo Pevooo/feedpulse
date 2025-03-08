@@ -1,29 +1,67 @@
 ﻿using Api.Data.Entities;
+using Api.Data.Helpers;
 using Api.Infrastructure.Abstracts;
+using Api.Infrastructure.Data;
 using Api.Service.Abstracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Api.Service.Implementation
 {
     public class OrganizationService : IOrganizationService
     {
         #region Fields
-        IOrganizationRepository _organizationRepository;
+        private readonly IOrganizationRepository _organizationRepository;
+        private readonly FacebookSettings _facebookSettings;
+        private readonly HttpClient _httpClient;
+        private readonly IFacebookService _facebookService;
+        private readonly ApplicationDbContext _applicationDbContext;
+
         #endregion
         #region Constructor
-        public OrganizationService(IOrganizationRepository organizationRepository)
+        public OrganizationService(IOrganizationRepository organizationRepository, ApplicationDbContext applicationDbContext,
+            HttpClient httpClient, IOptions<FacebookSettings> options, IFacebookService facebookService)
         {
             _organizationRepository = organizationRepository;
+            _facebookSettings = options.Value;
+            _httpClient = httpClient;
+            _facebookService = facebookService;
+            _applicationDbContext = applicationDbContext;
         }
 
-        public Task<string> AddOrganizationAsync(Organization organization)
+        public async Task<string> AddOrganizationAsync(Organization organization)
         {
-            // check on accesstoken 
-            // get long lived token
-            // send the description and accesstoken to ai api 
-            // add the organization
-            throw new NotImplementedException();
 
+            var trans = _applicationDbContext.Database.BeginTransaction();
+            try
+            {
+                // get long lived token
+                var longlivedtoken = await _facebookService.ExchangeForLongLivedPageToken(organization.PageAccessToken);
+                organization.PageAccessToken = longlivedtoken;
+
+                // send the facebookpageid ,description and accesstoken to ai api 
+
+                // add the organization
+                _ = _applicationDbContext.Organizations.Add(organization);
+
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                return ex.Message;
+            }
+            return "Success";
+
+
+        }
+
+        public async Task<string> DeleteOrganizationAsync(int id)
+        {
+            var orgnaizaton = await _organizationRepository.GetByIdAsync(id);
+            if (orgnaizaton == null) { return "NotFound"; }
+            await _organizationRepository.DeleteAsync(orgnaizaton);
+            return "Success";
         }
 
         #endregion
