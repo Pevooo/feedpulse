@@ -39,7 +39,13 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: '3.10.6'
-      
+
+      - name: Install Code Linter (Flake8)
+        run: pip install flake8
+
+      - name: Run Code Linter (Flake8)
+        run: flake8 --max-line-length=180 .
+
       - name: Cache Python packages
         uses: actions/cache@v3
         with:
@@ -47,12 +53,6 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      - name: Install Code Linter (Flake8)
-        run: pip install flake8
-
-      - name: Run Code Linter (Flake8)
-        run: flake8 --max-line-length=180 .
 
       - name: Install dependencies
         run: |
