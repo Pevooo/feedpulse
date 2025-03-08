@@ -13,7 +13,6 @@ class InstagramDataProvider(DataProvider):
     represents a data provider for the Facebook Graph API to fetch instagram data.
     """
 
-    @deprecated
     def get_instagram_account_id(self) -> str:
         """
         Retrieves the Instagram Business Account ID linked to the Facebook page.
@@ -36,12 +35,11 @@ class InstagramDataProvider(DataProvider):
 
         raise Exception("No Instagram Business Account linked to this page.")
 
-    # @deprecated
     def get_posts(self) -> tuple[dict, ...]:
         """
         Gets the Instagram posts from the linked Instagram Business Account along with
         all of their comments and replies.
-    
+
          Returns:
              tuple[dict, ...]: A tuple containing all the collected comments and replies as dictionaries.
         """
@@ -51,15 +49,15 @@ class InstagramDataProvider(DataProvider):
             "access_token": self.access_token,
             "fields": "posts.limit(100){id,caption,created_time,comments.limit(100){id,username,text,created_time,replies.limit(100){id,username,text,created_time}}",
         }
-    
+
         data = requests.get(url, params, timeout=3).json()
-    
+
         posts: list[dict] = []
         for post_data in data.get("data", []):
             post_id = post_data.get("id")
 
-            #comments
-            comments_edge = post_data.get("comments", {})   
+            # comments
+            comments_edge = post_data.get("comments", {})
             comments = comments_edge.get("data", [])
 
             if "paging" in comments_edge and "next" in comments_edge["paging"]:
@@ -78,7 +76,7 @@ class InstagramDataProvider(DataProvider):
                     }
                 )
 
-                #replies
+                # replies
                 if "replies" in comments:
 
                     replies_edge = comment_data.get("replies", {})
@@ -98,7 +96,7 @@ class InstagramDataProvider(DataProvider):
                                 ),
                                 "platform": "instagram",
                             }
-                        )     
+                        )
 
         return tuple(posts)
 
