@@ -1,9 +1,7 @@
 from datetime import datetime
-from functools import wraps
 
 from flask import Flask, request, jsonify
 
-from src.config.environment import Environment
 from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
@@ -37,10 +35,9 @@ class FeedPulseAPI:
         self.__setup_exception_reporter()
 
     def run(self):
-        self.spark.start_streaming_job() # Will run on another thread
-        self.data_streamer.start_streaming() # Will run on another thread
-        self.flask_app.run() # Will run on the main thread
-
+        self.spark.start_streaming_job()  # Will run on another thread
+        self.data_streamer.start_streaming()  # Will run on another thread
+        self.flask_app.run()  # Will run on the main thread
 
     def __setup_exception_reporter(self):
         @self.flask_app.errorhandler(Exception)

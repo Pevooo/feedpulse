@@ -47,15 +47,18 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      
+
+      - name: Install Code Linter (Flake8)
+        run: pip install flake8
+
+      - name: Run Code Linter (Flake8)
+        run: flake8 --max-line-length=180 .
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r ai-api/requirements.txt
-          pip install flake8 tabulate
-
-      - name: Run Code Linter (Flake8)
-        run: flake8 --max-line-length=180 .
+          pip install tabulate
 
       - name: Run Unit Tests
         run: |
@@ -89,9 +92,6 @@ jobs:
         run: |
           nohup python ai-api/run_app.py
           sleep 10
-
-      - name: Wait for API to start
-        run: sleep 5  # Adjust if needed
 
       - name: Run Load Tests
         id: benchmark
