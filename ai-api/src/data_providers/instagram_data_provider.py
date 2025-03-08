@@ -1,7 +1,6 @@
 import requests
 from datetime import datetime
 
-from typing_extensions import deprecated
 from src.data_providers.data_provider import DataProvider
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
