@@ -31,18 +31,6 @@ class TestAPI(unittest.TestCase):
         def deprecated_endpoint():
             return Response.success({"message": "This is a deprecated endpoint"})
 
-        @self.app.route("/internal-route")
-        @self.feed_pulse_app.internal
-        def internal_route():
-            return Response.success(
-                {"message": "Accessible only in non-production environments"}
-            )
-
-        @self.app.route("/inject-route", methods=["GET", "POST"])
-        @self.feed_pulse_app.inject
-        def inject_route(param1=None, param2=None):
-            return Response.success({"param1": param1, "param2": param2})
-
         @self.app.errorhandler(Exception)
         def handle_exception(e):
             self.mock_exception_reporter.report(e)
