@@ -79,3 +79,44 @@ jobs:
         with:
           message-path: ai-api/test/performance/performance_report.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install wrk
+        run: |
+          sudo apt update
+          sudo apt install -y wrk
+
+      - name: Start Flask App
+        run: |
+          nohup python ai-api/run_app.py
+          sleep 10
+
+      - name: Wait for API to start
+        run: sleep 5  # Adjust if needed
+
+      - name: Run Load Tests
+        id: benchmark
+        run: |
+          URL="http://127.0.0.1:5000/instagram_webhook"
+
+          # Define different test cases
+          TEST1=$(wrk -t2 -c10 -d10s $URL)
+          TEST2=$(wrk -t4 -c20 -d10s $URL)
+          
+          # Format results
+          echo "### Load Test Results" > wrk_results.md
+          echo "#### **Test 1**: 2 threads, 10 connections, 10s" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          echo "$TEST1" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          
+          echo "#### **Test 2**: 4 threads, 20 connections, 10s" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          echo "$TEST2" >> wrk_results.md
+          echo '```' >> wrk_results.md
+
+      - name: Comment on PR with Benchmark Results
+        if: github.event_name == 'pull_request' && success()
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-path: wrk_results.md
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
