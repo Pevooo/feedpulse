@@ -39,7 +39,13 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: '3.10.6'
-      
+
+      - name: Install Code Linter (Flake8)
+        run: pip install flake8
+
+      - name: Run Code Linter (Flake8)
+        run: flake8 --max-line-length=180 .
+
       - name: Cache Python packages
         uses: actions/cache@v3
         with:
@@ -47,15 +53,12 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r ai-api/requirements.txt
-          pip install flake8 tabulate
-
-      - name: Run Code Linter (Flake8)
-        run: flake8 --max-line-length=180 .
+          pip install tabulate
 
       - name: Run Unit Tests
         run: |
@@ -79,3 +82,45 @@ jobs:
         with:
           message-path: ai-api/test/performance/performance_report.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          message-id: 'performance_test_comment'
+
+      - name: Install wrk
+        run: |
+          sudo apt update
+          sudo apt install -y wrk
+
+      - name: Start Flask API
+        run: |
+          nohup python ai-api/run_app.py > api.log 2>&1 &  # Start API and redirect output
+          echo "Waiting for API to start..."
+          sleep 15
+          curl --retry 5 --retry-delay 3 --retry-connrefused http://127.0.0.1:5000/instagram_endpoint || (echo "API failed to start!" && cat api.log && exit 1)
+
+      - name: Run Load Tests
+        id: benchmark
+        run: |
+          URL="http://127.0.0.1:5000/instagram_webhook"
+
+          # Define different test cases
+          TEST1=$(wrk -t2 -c10 -d10s $URL)
+          TEST2=$(wrk -t4 -c20 -d10s $URL)
+          
+          # Format results
+          echo "### Load Test Results" > wrk_results.md
+          echo "#### **Test 1**: 2 threads, 10 connections, 10s" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          echo "$TEST1" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          
+          echo "#### **Test 2**: 4 threads, 20 connections, 10s" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          echo "$TEST2" >> wrk_results.md
+          echo '```' >> wrk_results.md
+
+      - name: Comment on PR with Benchmark Results
+        if: github.event_name == 'pull_request' && success()
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-path: wrk_results.md
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          message-id: 'load_test_comment'

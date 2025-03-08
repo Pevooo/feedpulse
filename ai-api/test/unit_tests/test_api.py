@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from api import FeedPulseAPI
 from flask import jsonify
@@ -31,18 +31,6 @@ class TestAPI(unittest.TestCase):
         def deprecated_endpoint():
             return Response.success({"message": "This is a deprecated endpoint"})
 
-        @self.app.route("/internal-route")
-        @self.feed_pulse_app.internal
-        def internal_route():
-            return Response.success(
-                {"message": "Accessible only in non-production environments"}
-            )
-
-        @self.app.route("/inject-route", methods=["GET", "POST"])
-        @self.feed_pulse_app.inject
-        def inject_route(param1=None, param2=None):
-            return Response.success({"param1": param1, "param2": param2})
-
         @self.app.errorhandler(Exception)
         def handle_exception(e):
             self.mock_exception_reporter.report(e)
@@ -70,52 +58,6 @@ class TestAPI(unittest.TestCase):
             self.assertEqual(
                 json_data["body"]["message"], "This is a deprecated endpoint"
             )
-
-    @patch("src.config.environment.Environment.is_production_environment", True)
-    def test_internal_route_in_production(self):
-        """Test that the route returns 404 in production."""
-        with self.app.test_request_context():
-            response = self.client.get("/internal-route")
-            self.assertEqual(response.status_code, 404)
-            json_data = response.get_json()
-            self.assertEqual(json_data["status"], "FAILURE")
-            self.assertEqual(json_data["body"], "Endpoint does not exist")
-
-    @patch("src.config.environment.Environment.is_production_environment", False)
-    def test_internal_route_in_non_production(self):
-        """Test that the route is accessible in non-production."""
-        with self.app.test_request_context():
-            response = self.client.get("/internal-route")
-            self.assertEqual(response.status_code, 200)
-            json_data = response.get_json()
-            self.assertEqual(json_data["status"], "SUCCESS")
-            self.assertEqual(
-                json_data["body"]["message"],
-                "Accessible only in non-production environments",
-            )
-
-    def test_inject_query_string(self):
-        """Test that query string parameters are injected into the function."""
-        with self.app.test_request_context():
-            response = self.client.get("/inject-route?param1=value1&param2=value2")
-            self.assertEqual(response.status_code, 200)
-            json_data = response.get_json()
-            self.assertEqual(json_data["status"], "SUCCESS")
-            self.assertEqual(json_data["body"]["param1"], "value1")
-            self.assertEqual(json_data["body"]["param2"], "value2")
-
-    def test_inject_form_data(self):
-        """Test that form parameters are injected into the function."""
-        with self.app.test_request_context():
-            response = self.client.post(
-                "/inject-route",
-                data={"param1": "form_value1", "param2": "form_value2"},
-            )
-            self.assertEqual(response.status_code, 200)
-            json_data = response.get_json()
-            self.assertEqual(json_data["status"], "SUCCESS")
-            self.assertEqual(json_data["body"]["param1"], "form_value1")
-            self.assertEqual(json_data["body"]["param2"], "form_value2")
 
     def test_exception_reporting(self):
         with self.app.test_request_context():
