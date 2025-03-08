@@ -90,9 +90,9 @@ jobs:
 
       - name: Start Flask API
         run: |
-          nohup python ai-api/run_api.py > api.log 2>&1 &  # Start API and redirect output
+          nohup python ai-api/run_app.py > api.log 2>&1 &  # Start API and redirect output
           echo "Waiting for API to start..."
-          sleep 10
+          sleep 15
           curl --retry 5 --retry-delay 3 --retry-connrefused http://127.0.0.1:5000/instagram_endpoint || (echo "API failed to start!" && cat api.log && exit 1)
 
       - name: Run Load Tests
