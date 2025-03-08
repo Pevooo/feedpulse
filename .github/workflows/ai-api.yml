@@ -82,6 +82,7 @@ jobs:
         with:
           message-path: ai-api/test/performance/performance_report.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          header: "### Load Performance Report"
 
       - name: Install wrk
         run: |
@@ -122,3 +123,4 @@ jobs:
         with:
           message-path: wrk_results.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          header: "### Load Test Report"

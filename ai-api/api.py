@@ -49,7 +49,7 @@ class FeedPulseAPI:
             return Response.server_error()
 
     def __setup_routes(self):
-        @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["POST"])
+        @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["GET", "POST"])
         def instagram_webhook():
             # TODO: Implement Instagram Webhook
 
