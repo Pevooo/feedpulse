@@ -33,7 +33,7 @@ def run_app(
     topic_detector = TopicDetector(model_provider)
 
     # Define Concurrency Manager
-    concurrency_manager = ConcurrencyManager()
+    concurrency_manager = ConcurrencyManager(exception_reporter)
 
     # Define Spark Singleton
     spark = Spark(
