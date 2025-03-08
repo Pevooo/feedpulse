@@ -17,14 +17,17 @@ class TestInstagramDataProvider(unittest.TestCase):
     def test_get_instagram_account_id_success(self, mock_get):
         # Mock successful response with account ID
         mock_response = MagicMock()
-        mock_response.json.return_value = {"id": "67890"}
+        mock_response.json.return_value = {
+            "data": [{"instagram_business_account": {"id": "67890"}}]
+        }
+
         mock_get.return_value = mock_response
 
         account_id = self.provider.get_instagram_account_id()
         self.assertEqual(account_id, "67890")
 
         mock_get.assert_called_with(
-            f"{FACEBOOK_GRAPH_URL}me",
+            f"{FACEBOOK_GRAPH_URL}me/accounts",
             {"access_token": "dummy_access_token"},
             timeout=3,
         )
@@ -77,7 +80,3 @@ class TestInstagramDataProvider(unittest.TestCase):
         )
         self.assertEqual(posts[0]["created_time"], expected_datetime)
         self.assertEqual(posts[0]["platform"], "instagram")
-
-
-if __name__ == "__main__":
-    unittest.main()
