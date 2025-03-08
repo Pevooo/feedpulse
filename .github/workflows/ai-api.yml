@@ -88,10 +88,12 @@ jobs:
           sudo apt update
           sudo apt install -y wrk
 
-      - name: Start Flask App
+      - name: Start Flask API
         run: |
-          nohup python ai-api/run_app.py
+          nohup python run_api.py > api.log 2>&1 &  # Start API and redirect output
+          echo "Waiting for API to start..."
           sleep 10
+          curl --retry 5 --retry-delay 3 --retry-connrefused http://127.0.0.1:5000/instagram_endpoint || (echo "API failed to start!" && cat api.log && exit 1)
 
       - name: Run Load Tests
         id: benchmark
