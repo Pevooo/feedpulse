@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class DataProvider(ABC):
     """
-    an interface for data providers (e.g. Facebook, Twitter, etc.)
+    an interface for data providers (e.g. Facebook, Instagram, etc.)
     """
 
     def __init__(self, access_token: str) -> None:
