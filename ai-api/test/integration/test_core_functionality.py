@@ -57,6 +57,8 @@ class TestCoreFunctionality(unittest.TestCase):
             )
         ).getOrCreate()
 
+        time.sleep(30)
+
     def test_01_add_valid_token(self):
         # Send a requesst to register a valid access token
         response = requests.post(
