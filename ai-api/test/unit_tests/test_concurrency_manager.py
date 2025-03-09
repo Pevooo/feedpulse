@@ -1,7 +1,6 @@
 import unittest
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
-from concurrent.futures import Future
 
 
 class TestConcurrencyManager(unittest.TestCase):
