@@ -33,7 +33,7 @@ def run_app(
     topic_detector = TopicDetector(model_provider)
 
     # Define Concurrency Manager
-    concurrency_manager = ConcurrencyManager(exception_reporter)
+    concurrency_manager = ConcurrencyManager()
 
     # Define Spark Singleton
     spark = Spark(
@@ -43,6 +43,9 @@ def run_app(
         topic_detection_batch_function=topic_detector.detect,
         concurrency_manager=concurrency_manager,
     )
+
+    # Define Concurrency Manager
+    concurrency_manager = ConcurrencyManager(spark)
 
     report_handler = ReportHandler(model_provider, spark, stream_out)
 
