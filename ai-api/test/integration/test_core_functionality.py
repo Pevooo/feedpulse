@@ -12,7 +12,6 @@ from unittest.mock import ANY
 
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
-from src.spark.spark import Spark
 from pyspark.sql import Row
 
 base_path = os.path.dirname(__file__)
@@ -130,7 +129,7 @@ class TestCoreFunctionality(unittest.TestCase):
 
     def test_04_processed_data(self):
         processed_comments = (
-            Spark.instance.spark.read.format("delta")
+            self.spark.read.format("delta")
             .load(FakeTable.TEST_STREAMING_OUT.value)
             .collect()
         )
