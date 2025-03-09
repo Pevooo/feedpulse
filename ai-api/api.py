@@ -1,9 +1,7 @@
 from datetime import datetime
-from functools import wraps
 
 from flask import Flask, request, jsonify
 
-from src.config.environment import Environment
 from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
@@ -36,11 +34,10 @@ class FeedPulseAPI:
         self.__setup_routes()
         self.__setup_exception_reporter()
 
-        spark.start_streaming_job()
-        data_streamer.start_streaming()
-
     def run(self):
-        self.flask_app.run()
+        self.spark.start_streaming_job()  # Will run on another thread
+        self.data_streamer.start_streaming()  # Will run on another thread
+        self.flask_app.run()  # Will run on the main thread
 
     def __setup_exception_reporter(self):
         @self.flask_app.errorhandler(Exception)
@@ -52,13 +49,13 @@ class FeedPulseAPI:
             return Response.server_error()
 
     def __setup_routes(self):
-        @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["POST"])
+        @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["GET", "POST"])
         def instagram_webhook():
             # TODO: Implement Instagram Webhook
 
             # 1) Get the data changes and process them into a unit format
             # 2) Save the data in the streaming folder
-            pass
+            return Response.success("Success")
 
         @self.flask_app.route(Router.FACEBOOK_WEBHOOK, methods=["POST"])
         def facebook_webhook():
@@ -94,7 +91,9 @@ class FeedPulseAPI:
                 page_id = data.get("page_id")
 
                 if not access_token or not page_id:
-                    return Response.failure("Error occurred: ")
+                    return Response.failure(
+                        "Error occurred: Please check your access token or page_id."
+                    )
 
                 pages_df = self.spark.read(SparkTable.PAGES)
                 existing_entry = None
@@ -113,10 +112,9 @@ class FeedPulseAPI:
                     row = [{"page_id": page_id, "access_token": access_token}]
                     self.spark.add(SparkTable.PAGES, row)
 
-                return Response.success()
+                return Response.success("Registered successfully")
             except Exception as e:
-                print(e)
-                return Response.failure("Error occurred: ")
+                return Response.failure(f"Error occurred: {str(e)}")
 
         @self.flask_app.route(Router.REPORT, methods=["GET", "POST"])
         def get_report():
@@ -130,27 +128,3 @@ class FeedPulseAPI:
             except Exception as e:
                 print(e)
                 return Response.failure(str(e))
-
-    @staticmethod
-    def internal(func):
-        """Mark this route as internal and hide it when the app is on production."""
-
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            if Environment.is_production_environment:
-                return Response.not_found()
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    @staticmethod
-    def inject(func):
-        """Injects form and string parameters into the function parameters"""
-
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            kwargs.update(request.args)  # For query string parameters
-            kwargs.update(request.form)  # For form data in POST requests
-            return func(*args, **kwargs)
-
-        return wrapper
