@@ -30,15 +30,15 @@ class PollingDataStreamer(DataStreamer):
 
     def streaming_worker(self):
         df = self.spark.read(self.pages_dir)
+        if df:
+            flattened_df = self._get_flattened(df)
 
-        flattened_df = self._get_flattened(df)
-
-        processed_comments = self.spark.read(self.streaming_out)
-        if processed_comments:
-            stream_df = self._get_unique(flattened_df, processed_comments)
-            self.spark.add(self.streaming_in, stream_df, "json").result()
-        else:
-            self.spark.add(self.streaming_in, flattened_df, "json").result()
+            processed_comments = self.spark.read(self.streaming_out)
+            if processed_comments:
+                stream_df = self._get_unique(flattened_df, processed_comments)
+                self.spark.add(self.streaming_in, stream_df, "json").result()
+            else:
+                self.spark.add(self.streaming_in, flattened_df, "json").result()
 
         time.sleep(self.trigger_time)
         self.concurrency_manager.submit_job(self.streaming_worker)
