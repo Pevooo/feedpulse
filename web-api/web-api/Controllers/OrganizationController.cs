@@ -1,4 +1,5 @@
 ﻿using Api.Core.Features.Organizations.Commands.Models;
+using Api.Core.Features.Organizations.Queries.Models;
 using Api.Data.AppMetaData;
 using Microsoft.AspNetCore.Mvc;
 using web_api.Base;
@@ -19,6 +20,18 @@ namespace web_api.Controllers
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var response = await Mediator.Send(new DeleteOrganizationCommand(id));
+            return NewResult(response);
+        }
+        [HttpPost(Router.Organization.GetById)]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var response = await Mediator.Send(new GetOrganizationQuery { OrganizationId = id });
+            return NewResult(response);
+        }
+        [HttpPost(Router.Organization.GetList)]
+        public async Task<IActionResult> GetList([FromForm] GetOrganizationListQuery query)
+        {
+            var response = await Mediator.Send(query);
             return NewResult(response);
         }
     }
