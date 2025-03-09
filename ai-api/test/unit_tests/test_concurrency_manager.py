@@ -28,6 +28,3 @@ class TestConcurrencyManager(unittest.TestCase):
 
         with self.assertRaises(Exception):
             self.manager.submit_job(raise_exc).result()
-
-
-unittest.main()
