@@ -70,7 +70,7 @@ class TestCoreFunctionality(unittest.TestCase):
 
         cls.spark.createDataFrame([], schema).write.format("delta").mode(
             "overwrite"
-        ).save(FakeTable.PAGES_DIR.value)
+        ).save(SparkTable.PAGES.value)
         time.sleep(35)
 
     def test_01_add_valid_token(self):
@@ -87,7 +87,7 @@ class TestCoreFunctionality(unittest.TestCase):
         time.sleep(10)
         data = (
             self.spark.read.format("delta")
-            .load(FakeTable.PAGES_DIR.value)
+            .load(SparkTable.PAGES.value)
             .coalesce(1)
             .collect()
         )
@@ -112,7 +112,7 @@ class TestCoreFunctionality(unittest.TestCase):
         time.sleep(5)
         data = (
             self.spark.read.format("delta")
-            .load(FakeTable.PAGES_DIR.value)
+            .load(SparkTable.PAGES.value)
             .coalesce(1)
             .collect()
         )
