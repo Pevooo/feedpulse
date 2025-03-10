@@ -4,7 +4,7 @@ import unittest
 import time
 import shutil
 import requests
-from pyspark.sql.types import StructField, IntegerType, StringType, StructType
+from pyspark.sql.types import StructField, StringType, StructType
 
 from run_app import run_app
 from enum import Enum
