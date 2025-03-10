@@ -1,4 +1,3 @@
-import logging
 import time
 
 import pyspark
@@ -46,7 +45,6 @@ class PollingDataStreamer(DataStreamer):
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         def process_page(row):
-            logging.error(f"Hi {row}")
             try:
                 ac_token = row["access_token"]
                 platform = row["platform"]
@@ -58,7 +56,6 @@ class PollingDataStreamer(DataStreamer):
             # elif platform == "instagram":
             #     return InstagramDataProvider(ac_token).get_posts()
             except Exception:
-                logging.error(f"Error getting posts from {row}")
                 return []
 
         results_rdd = df.rdd.flatMap(process_page)

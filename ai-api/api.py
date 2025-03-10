@@ -116,7 +116,7 @@ class FeedPulseAPI:
                             "platform": platform,
                         }
                     ]
-                    self.spark.add(SparkTable.PAGES, row)
+                    self.spark.add(SparkTable.PAGES, row).result()
 
                 return Response.success("Registered successfully")
             except Exception as e:

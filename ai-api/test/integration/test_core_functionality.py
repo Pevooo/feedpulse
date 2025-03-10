@@ -82,7 +82,7 @@ class TestCoreFunctionality(unittest.TestCase):
             },
         )
         print(response.json())
-        time.sleep(5)
+        time.sleep(10)
         data = (
             self.spark.read.format("delta")
             .load(FakeTable.PAGES_DIR.value)
