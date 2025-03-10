@@ -46,7 +46,7 @@ class TestCoreFunctionality(unittest.TestCase):
         )
 
         cls.app_process.start()
-        time.sleep(10)
+        time.sleep(15)
         cls.spark = configure_spark_with_delta_pip(
             SparkSession.builder.appName("TestFeedPulse")
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
@@ -61,7 +61,7 @@ class TestCoreFunctionality(unittest.TestCase):
     def test_01_add_valid_token(self):
         # Send a requesst to register a valid access token
         response = requests.post(
-            url="http://127.0.0.1:5000/register_token/",
+            url="http://127.0.0.1:5000/register_token",
             json={
                 "platform": "facebook",
                 "page_id": "p1",
@@ -85,7 +85,7 @@ class TestCoreFunctionality(unittest.TestCase):
     def test_02_add_invalid_token(self):
         # Send a requesst to register an invalid access token
         response = requests.post(
-            url="http://127.0.0.1:5000/register_token/",
+            url="http://127.0.0.1:5000/register_token",
             json={
                 "platform": "facebook",
                 "access_token": "fake_ac_token",
