@@ -46,7 +46,7 @@ class TestCoreFunctionality(unittest.TestCase):
         )
 
         cls.app_process.start()
-
+        time.sleep(10)
         cls.spark = configure_spark_with_delta_pip(
             SparkSession.builder.appName("TestFeedPulse")
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
