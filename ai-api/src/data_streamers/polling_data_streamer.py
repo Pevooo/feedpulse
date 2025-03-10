@@ -47,7 +47,7 @@ class PollingDataStreamer(DataStreamer):
         def process_page(row):
 
             try:
-                ac_token = row["ac_token"]
+                ac_token = row["access_token"]
                 platform = row["platform"]
 
                 if platform == "facebook":
