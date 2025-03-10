@@ -110,7 +110,13 @@ class FeedPulseAPI:
                         {"access_token": access_token},
                     )
                 else:
-                    row = [{"page_id": page_id, "access_token": access_token, "platform": platform}]
+                    row = [
+                        {
+                            "page_id": page_id,
+                            "access_token": access_token,
+                            "platform": platform,
+                        }
+                    ]
                     self.spark.add(SparkTable.PAGES, row)
 
                 return Response.success("Registered successfully")

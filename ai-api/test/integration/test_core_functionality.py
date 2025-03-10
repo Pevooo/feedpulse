@@ -4,6 +4,7 @@ import unittest
 import time
 import shutil
 import requests
+from pyspark.sql.types import StructField, IntegerType, StringType, StructType
 
 from run_app import run_app
 from enum import Enum
@@ -56,6 +57,18 @@ class TestCoreFunctionality(unittest.TestCase):
             )
         ).getOrCreate()
 
+        # Initiate pages table so no conflicts happen
+        schema = StructType(
+            [
+                StructField("page_id", StringType(), False),
+                StructField("access_token", StringType(), False),
+                StructField("platform", StringType(), False),
+            ]
+        )
+
+        cls.spark.createDataFrame([], schema).write.format("delta").mode(
+            "overwrite"
+        ).save(FakeTable.PAGES_DIR.value)
         time.sleep(35)
 
     def test_01_add_valid_token(self):
