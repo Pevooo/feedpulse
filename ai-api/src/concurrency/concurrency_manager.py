@@ -17,6 +17,6 @@ class ConcurrencyManager:
         exception = future.exception()
         if exception:
             logging.error("Concurrent Task Error: %s", exception)
-            logging.error(traceback.format_exc())
+            logging.error("Traceback: %s", traceback.format_exc())
         else:
             logging.info("Concurrent Task Result: %s", future.result())
