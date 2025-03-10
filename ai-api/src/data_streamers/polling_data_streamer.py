@@ -46,7 +46,7 @@ class PollingDataStreamer(DataStreamer):
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         def process_page(row):
-
+            logging.error(f"Hi {row}")
             try:
                 ac_token = row["access_token"]
                 platform = row["platform"]
