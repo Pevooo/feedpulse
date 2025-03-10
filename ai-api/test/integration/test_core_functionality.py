@@ -56,7 +56,7 @@ class TestCoreFunctionality(unittest.TestCase):
             )
         ).getOrCreate()
 
-        time.sleep(30)
+        time.sleep(35)
 
     def test_01_add_valid_token(self):
         # Send a requesst to register a valid access token
@@ -64,7 +64,7 @@ class TestCoreFunctionality(unittest.TestCase):
             url="http://127.0.0.1:5000/register_token/",
             json={
                 "platform": "facebook",
-                "ac_token": os.getenv("TEST_AC_TOKEN"),
+                "access_token": os.getenv("TEST_AC_TOKEN"),
             },
         )
 
@@ -86,7 +86,7 @@ class TestCoreFunctionality(unittest.TestCase):
             url="http://127.0.0.1:5000/register_token/",
             json={
                 "platform": "facebook",
-                "ac_token": "fake_ac_token",
+                "access_token": "fake_ac_token",
             },
         )
 
