@@ -27,7 +27,6 @@ class FakeTable(Enum):
     TEST_STREAMING_OUT = os.path.join(
         base_path, "test_streaming_integration", "test_streaming_out"
     )
-    PAGES_DIR = os.path.join(base_path, "test_streaming_integration", "pages")
 
 
 # Tests in this class have an order of execution that is sorted alphanumerically according to the test name
@@ -48,8 +47,6 @@ class TestCoreFunctionality(unittest.TestCase):
             ),
         )
 
-        cls.app_process.start()
-        time.sleep(15)
         cls.spark = configure_spark_with_delta_pip(
             SparkSession.builder.appName("TestFeedPulse")
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
@@ -58,7 +55,6 @@ class TestCoreFunctionality(unittest.TestCase):
                 "org.apache.spark.sql.delta.catalog.DeltaCatalog",
             )
         ).getOrCreate()
-
         # Initiate pages table so no conflicts happen
         schema = StructType(
             [
@@ -71,6 +67,9 @@ class TestCoreFunctionality(unittest.TestCase):
         cls.spark.createDataFrame([], schema).write.format("delta").mode(
             "overwrite"
         ).save(SparkTable.PAGES.value)
+
+        cls.app_process.start()
+
         time.sleep(35)
 
     def test_01_add_valid_token(self):
@@ -119,9 +118,16 @@ class TestCoreFunctionality(unittest.TestCase):
 
         self.assertTrue(response.ok)
         self.assertEqual(len(data), 2)
-        self.assertIn(Row(platform="facebook", access_token="fake_ac_token"), data)
         self.assertIn(
-            Row(platform="facebook", access_token=os.getenv("TEST_AC_TOKEN")), data
+            Row(platform="facebook", access_token="fake_ac_token", pageg_id="p1"), data
+        )
+        self.assertIn(
+            Row(
+                platform="facebook",
+                access_token=os.getenv("TEST_AC_TOKEN"),
+                page_id="p2",
+            ),
+            data,
         )
         self.assertEqual(data[0]["platform"], "facebook")
         self.assertEqual(data[0]["access_token"], os.getenv("TEST_AC_TOKEN"))
