@@ -82,6 +82,7 @@ class TestCoreFunctionality(unittest.TestCase):
             },
         )
         print(response.json())
+        time.sleep(5)
         data = (
             self.spark.read.format("delta")
             .load(FakeTable.PAGES_DIR.value)
@@ -106,6 +107,7 @@ class TestCoreFunctionality(unittest.TestCase):
             },
         )
         print(response.json())
+        time.sleep(5)
         data = (
             self.spark.read.format("delta")
             .load(FakeTable.PAGES_DIR.value)
@@ -115,9 +117,9 @@ class TestCoreFunctionality(unittest.TestCase):
 
         self.assertTrue(response.ok)
         self.assertEqual(len(data), 2)
-        self.assertIn(Row(platform="facebook", ac_token="fake_ac_token"), data)
+        self.assertIn(Row(platform="facebook", access_token="fake_ac_token"), data)
         self.assertIn(
-            Row(platform="facebook", ac_token=os.getenv("TEST_AC_TOKEN")), data
+            Row(platform="facebook", access_token=os.getenv("TEST_AC_TOKEN")), data
         )
         self.assertEqual(data[0]["platform"], "facebook")
         self.assertEqual(data[0]["access_token"], os.getenv("TEST_AC_TOKEN"))

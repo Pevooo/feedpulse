@@ -1,3 +1,4 @@
+import logging
 import time
 
 import pyspark
@@ -57,6 +58,7 @@ class PollingDataStreamer(DataStreamer):
             # elif platform == "instagram":
             #     return InstagramDataProvider(ac_token).get_posts()
             except Exception:
+                logging.error(f"Error getting posts from {row}")
                 return []
 
         results_rdd = df.rdd.flatMap(process_page)
