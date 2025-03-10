@@ -97,12 +97,11 @@ class FeedPulseAPI:
                     )
 
                 pages_df = self.spark.read(SparkTable.PAGES)
-                existing_entry = None
+                existing_entry_df = None
                 if pages_df is not None:
-                    existing_entry = pages_df.filter(
-                        pages_df.page_id == page_id
-                    ).first()
-                if existing_entry:
+                    existing_entry_df = pages_df.filter(pages_df.page_id == page_id)
+
+                if existing_entry_df and not existing_entry_df.isEmpty():
                     self.spark.update(
                         SparkTable.PAGES,
                         "page_id",
