@@ -67,7 +67,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 "access_token": os.getenv("TEST_AC_TOKEN"),
             },
         )
-
+        print(response.json())
         data = (
             self.spark.read.format("delta")
             .load(FakeTable.PAGES_DIR.value)
@@ -89,7 +89,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 "access_token": "fake_ac_token",
             },
         )
-
+        print(response.json())
         data = (
             self.spark.read.format("delta")
             .load(FakeTable.PAGES_DIR.value)
