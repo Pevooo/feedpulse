@@ -44,6 +44,9 @@ def run_app(
         concurrency_manager=concurrency_manager,
     )
 
+    # Define Concurrency Manager
+    concurrency_manager = ConcurrencyManager()
+
     report_handler = ReportHandler(model_provider, spark, stream_out)
 
     # Define Streamer
