@@ -64,6 +64,7 @@ class TestCoreFunctionality(unittest.TestCase):
             url="http://127.0.0.1:5000/register_token/",
             json={
                 "platform": "facebook",
+                "page_id": "p1",
                 "access_token": os.getenv("TEST_AC_TOKEN"),
             },
         )
@@ -78,7 +79,8 @@ class TestCoreFunctionality(unittest.TestCase):
         self.assertTrue(response.ok)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["platform"], "facebook")
-        self.assertEqual(data[0]["ac_token"], os.getenv("TEST_AC_TOKEN"))
+        self.assertEqual(data[0]["access_token"], os.getenv("TEST_AC_TOKEN"))
+        self.assertEqual(data[0]["page_id"], "p1")
 
     def test_02_add_invalid_token(self):
         # Send a requesst to register an invalid access token
@@ -87,6 +89,7 @@ class TestCoreFunctionality(unittest.TestCase):
             json={
                 "platform": "facebook",
                 "access_token": "fake_ac_token",
+                "page_id": "p2",
             },
         )
         print(response.json())
@@ -104,7 +107,8 @@ class TestCoreFunctionality(unittest.TestCase):
             Row(platform="facebook", ac_token=os.getenv("TEST_AC_TOKEN")), data
         )
         self.assertEqual(data[0]["platform"], "facebook")
-        self.assertEqual(data[0]["ac_token"], os.getenv("TEST_AC_TOKEN"))
+        self.assertEqual(data[0]["access_token"], os.getenv("TEST_AC_TOKEN"))
+        self.assertEqual(data[0]["page_id"], "p2")
 
     def test_03_streamed_data(self):
         # Sleep for 70 seconds so that we are sure that it pass a streaming cycle

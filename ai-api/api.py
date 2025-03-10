@@ -46,7 +46,7 @@ class FeedPulseAPI:
             Global exception handler for the Flask app.
             """
             self.reporter.report(e)
-            return Response.server_error()
+            return Response.server_error(e)
 
     def __setup_routes(self):
         @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["GET", "POST"])
@@ -89,6 +89,7 @@ class FeedPulseAPI:
                 data = request.json
                 access_token = data.get("access_token")
                 page_id = data.get("page_id")
+                platform = data.get("platform")
 
                 if not access_token or not page_id:
                     return Response.failure(
@@ -109,7 +110,7 @@ class FeedPulseAPI:
                         {"access_token": access_token},
                     )
                 else:
-                    row = [{"page_id": page_id, "access_token": access_token}]
+                    row = [{"page_id": page_id, "access_token": access_token, "platform": platform}]
                     self.spark.add(SparkTable.PAGES, row)
 
                 return Response.success("Registered successfully")
