@@ -15,6 +15,8 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pyspark.sql import Row
 
+from src.spark.spark_table import SparkTable
+
 base_path = os.path.dirname(__file__)
 
 
@@ -33,7 +35,7 @@ class TestCoreFunctionality(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        os.makedirs(FakeTable.PAGES_DIR.value, exist_ok=True)
+        os.makedirs(SparkTable.PAGES.value, exist_ok=True)
         os.makedirs(FakeTable.TEST_STREAMING_IN.value, exist_ok=True)
         os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
 
@@ -42,7 +44,7 @@ class TestCoreFunctionality(unittest.TestCase):
             args=(
                 FakeTable.TEST_STREAMING_IN,
                 FakeTable.TEST_STREAMING_OUT,
-                FakeTable.PAGES_DIR,
+                SparkTable.PAGES,
             ),
         )
 
