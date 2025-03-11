@@ -114,12 +114,12 @@ jobs:
           
           # Format results
           echo "### Load Test Results" > wrk_results.md
-          echo "#### **Test 1**: 2 threads, 10 connections, 10s" >> wrk_results.md
+          echo "#### **Test 1**: 2 threads, 10 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
           echo "$TEST1" >> wrk_results.md
           echo '```' >> wrk_results.md
           
-          echo "#### **Test 2**: 4 threads, 20 connections, 10s" >> wrk_results.md
+          echo "#### **Test 2**: 4 threads, 20 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
           echo "$TEST2" >> wrk_results.md
           echo '```' >> wrk_results.md
