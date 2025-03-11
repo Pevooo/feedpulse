@@ -143,6 +143,7 @@ class TestCoreFunctionality(unittest.TestCase):
             .coalesce(1)
             .collect()
         )
+        raw_comments = [row.asDict() for row in raw_comments]
         self.assertIn(
             Row(
                 comment_id=ANY,
@@ -150,7 +151,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 created_time=ANY,
                 platform="facebook",
                 post_id=ANY,
-            ),
+            ).asDict(),
             raw_comments,
         )
 
@@ -160,7 +161,7 @@ class TestCoreFunctionality(unittest.TestCase):
             .load(FakeTable.TEST_STREAMING_OUT.value)
             .collect()
         )
-
+        processed_comments = [row.asDict() for row in processed_comments]
         self.assertTrue(isinstance(processed_comments[0]["related_topics"], Iterable))
         self.assertTrue(isinstance(processed_comments[1]["related_topics"], Iterable))
         self.assertIn(
@@ -178,7 +179,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 post_id=ANY,
                 sentiment=ANY,
                 related_topics=ANY,
-            ),
+            ).asDict(),
             processed_comments,
         )
 
@@ -191,7 +192,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 post_id=ANY,
                 sentiment=ANY,
                 related_topics=ANY,
-            ),
+            ).asDict(),
             processed_comments,
         )
 
