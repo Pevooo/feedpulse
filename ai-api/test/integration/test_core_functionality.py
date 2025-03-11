@@ -119,13 +119,13 @@ class TestCoreFunctionality(unittest.TestCase):
         self.assertTrue(response.ok)
         self.assertEqual(len(data), 2)
         self.assertIn(
-            Row(platform="facebook", access_token="fake_ac_token", pageg_id="p1"), data
+            Row(platform="facebook", access_token="fake_ac_token", page_id="p2"), data
         )
         self.assertIn(
             Row(
                 platform="facebook",
                 access_token=os.getenv("TEST_AC_TOKEN"),
-                page_id="p2",
+                page_id="p1",
             ),
             data,
         )
@@ -172,10 +172,10 @@ class TestCoreFunctionality(unittest.TestCase):
         self.assertIn(
             Row(
                 comment_id=ANY,
-                post_id=ANY,
                 content="The service was really really bad :(",
                 created_time=ANY,
                 platform="facebook",
+                post_id=ANY,
                 sentiment=ANY,
                 related_topics=ANY,
             ),
@@ -185,10 +185,10 @@ class TestCoreFunctionality(unittest.TestCase):
         self.assertIn(
             Row(
                 comment_id=ANY,
-                post_id=ANY,
                 content="yes, it really was very bad, but the food was mid",
                 created_time=ANY,
                 platform="facebook",
+                post_id=ANY,
                 sentiment=ANY,
                 related_topics=ANY,
             ),
