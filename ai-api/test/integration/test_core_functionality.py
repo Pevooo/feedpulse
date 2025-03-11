@@ -138,7 +138,7 @@ class TestCoreFunctionality(unittest.TestCase):
         time.sleep(70)
 
         raw_comments = (
-            self.spark.read.format("delta")
+            self.spark.read.format("json")
             .load(FakeTable.TEST_STREAMING_IN.value)
             .coalesce(1)
             .collect()
