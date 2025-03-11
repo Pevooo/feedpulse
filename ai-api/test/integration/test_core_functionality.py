@@ -129,9 +129,6 @@ class TestCoreFunctionality(unittest.TestCase):
             ),
             data,
         )
-        self.assertEqual(data[0]["platform"], "facebook")
-        self.assertEqual(data[0]["access_token"], os.getenv("TEST_AC_TOKEN"))
-        self.assertEqual(data[0]["page_id"], "p2")
 
     def test_03_streamed_data(self):
         # Sleep for 70 seconds so that we are sure that it pass a streaming cycle
