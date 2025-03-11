@@ -46,7 +46,7 @@ class FeedPulseAPI:
             Global exception handler for the Flask app.
             """
             self.reporter.report(e)
-            return Response.server_error()
+            return Response.server_error(e)
 
     def __setup_routes(self):
         @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["GET", "POST"])
@@ -89,17 +89,19 @@ class FeedPulseAPI:
                 data = request.json
                 access_token = data.get("access_token")
                 page_id = data.get("page_id")
+                platform = data.get("platform")
 
                 if not access_token or not page_id:
-                    return Response.failure("Error occurred: ")
+                    return Response.failure(
+                        "Error occurred: Please check your access token or page_id."
+                    )
 
                 pages_df = self.spark.read(SparkTable.PAGES)
-                existing_entry = None
+                existing_entry_df = None
                 if pages_df is not None:
-                    existing_entry = pages_df.filter(
-                        pages_df.page_id == page_id
-                    ).first()
-                if existing_entry:
+                    existing_entry_df = pages_df.filter(pages_df.page_id == page_id)
+
+                if existing_entry_df and not existing_entry_df.isEmpty():
                     self.spark.update(
                         SparkTable.PAGES,
                         "page_id",
@@ -107,13 +109,18 @@ class FeedPulseAPI:
                         {"access_token": access_token},
                     )
                 else:
-                    row = [{"page_id": page_id, "access_token": access_token}]
-                    self.spark.add(SparkTable.PAGES, row)
+                    row = [
+                        {
+                            "page_id": page_id,
+                            "access_token": access_token,
+                            "platform": platform,
+                        }
+                    ]
+                    self.spark.add(SparkTable.PAGES, row).result()
 
-                return Response.success()
+                return Response.success("Registered successfully")
             except Exception as e:
-                print(e)
-                return Response.failure("Error occurred: ")
+                return Response.failure(f"Error occurred: {str(e)}")
 
         @self.flask_app.route(Router.REPORT, methods=["GET", "POST"])
         def get_report():

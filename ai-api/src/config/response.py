@@ -38,10 +38,10 @@ class Response:
         return make_response(jsonify(response), 102)
 
     @staticmethod
-    def server_error():
+    def server_error(error: Exception):
         response = {
             "status": "FAILURE",
-            "body": "Server error",
+            "body": f"Server error: {str(error)}",
         }
         return make_response(jsonify(response), 500)
 

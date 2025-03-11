@@ -1,4 +1,6 @@
+import logging
 import time
+import traceback
 
 import pyspark
 
@@ -29,25 +31,28 @@ class PollingDataStreamer(DataStreamer):
         self.concurrency_manager.submit_job(self.streaming_worker)
 
     def streaming_worker(self):
-        df = self.spark.read(self.pages_dir)
+        try:
+            df = self.spark.read(self.pages_dir)
+            if df:
+                flattened_df = self._get_flattened(df)
 
-        flattened_df = self._get_flattened(df)
-
-        processed_comments = self.spark.read(self.streaming_out)
-        if processed_comments:
-            stream_df = self._get_unique(flattened_df, processed_comments)
-            self.spark.add(self.streaming_in, stream_df, "json").result()
-        else:
-            self.spark.add(self.streaming_in, flattened_df, "json").result()
+                processed_comments = self.spark.read(self.streaming_out)
+                if processed_comments:
+                    stream_df = self._get_unique(flattened_df, processed_comments)
+                    self.spark.add(self.streaming_in, stream_df, "json").result()
+                else:
+                    self.spark.add(self.streaming_in, flattened_df, "json").result()
+        except Exception as e:
+            logging.error(e)
+            logging.error(traceback.format_exc())
 
         time.sleep(self.trigger_time)
         self.concurrency_manager.submit_job(self.streaming_worker)
 
     def _get_flattened(self, df) -> pyspark.sql.DataFrame:
         def process_page(row):
-
             try:
-                ac_token = row["ac_token"]
+                ac_token = row["access_token"]
                 platform = row["platform"]
 
                 if platform == "facebook":
