@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, substring_index
 
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
@@ -39,14 +39,16 @@ class ReportHandler:
         data_as_dict = [row.asDict() for row in filtered_data]
 
         return self.provider.generate_content(
-            self._generate_prompt(json.dumps(data_as_dict))
+            self._generate_prompt(
+                json.dumps(data_as_dict, default=lambda date: date.isoformat())
+            ),
         )
 
     def _get_filtered_page_data(
         self, page_id: str, start_date: datetime, end_date: datetime
     ) -> DataFrame:
         return self.spark.read(self.comments_table).filter(
-            (col("page_id") == page_id)
+            (substring_index(col("post_id"), "_", 1) == page_id)
             & (col("created_time") >= start_date)
             & (col("created_time") <= end_date)
         )

@@ -37,7 +37,7 @@ class FeedPulseAPI:
     def run(self):
         self.spark.start_streaming_job()  # Will run on another thread
         self.data_streamer.start_streaming()  # Will run on another thread
-        self.flask_app.run()  # Will run on the main thread
+        self.flask_app.run(threaded=True)  # Will run on the main thread
 
     def __setup_exception_reporter(self):
         @self.flask_app.errorhandler(Exception)

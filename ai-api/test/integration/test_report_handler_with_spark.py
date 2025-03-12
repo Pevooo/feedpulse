@@ -35,19 +35,19 @@ class TestReportHandlerWithSpark(unittest.TestCase):
         test_data = self.spark.spark.createDataFrame(
             [
                 {
-                    "page_id": "fake_id_1",
+                    "post_id": "123_111",
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
                 },
                 {
-                    "page_id": "fake_id_1",
+                    "post_id": "123_112",
                     "created_time": datetime.datetime(
                         2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
                 },
                 {
-                    "page_id": "fake_id_2",
+                    "post_id": "124_111",
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
@@ -58,29 +58,31 @@ class TestReportHandlerWithSpark(unittest.TestCase):
         test_data.write.format("delta").save(FakeTable.FILTER_PAGE_ID.value)
 
         filtered_df = self.report_handler._get_filtered_page_data(
-            "fake_id_1", start_time, end_time
+            "123", start_time, end_time
         )
 
         filtered_data = filtered_df.collect()
         data_as_dict = [row.asDict() for row in filtered_data]
 
-        self.assertListEqual(
+        self.assertIn(
+            {
+                "post_id": "123_112",
+                "created_time": datetime.datetime(
+                    2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                ).isoformat(),
+            },
             data_as_dict,
-            [
-                {
-                    "page_id": "fake_id_1",
-                    "created_time": datetime.datetime(
-                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
-                    ).isoformat(),
-                },
-                {
-                    "page_id": "fake_id_1",
-                    "created_time": datetime.datetime(
-                        2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
-                    ).isoformat(),
-                },
-            ],
         )
+        self.assertIn(
+            {
+                "post_id": "123_111",
+                "created_time": datetime.datetime(
+                    2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                ).isoformat(),
+            },
+            data_as_dict,
+        )
+        self.assertEqual(len(data_as_dict), 2)
 
     def test_filter_exclude_wrong_dates(self):
         self.report_handler = ReportHandler(Mock(), self.spark, FakeTable.FILTER_DATE)
@@ -95,19 +97,19 @@ class TestReportHandlerWithSpark(unittest.TestCase):
         test_data = self.spark.spark.createDataFrame(
             [
                 {
-                    "page_id": "fake_id_1",
+                    "post_id": "123_111",
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
                 },
                 {
-                    "page_id": "fake_id_1",
+                    "post_id": "123_112",
                     "created_time": datetime.datetime(
                         2026, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
                 },
                 {
-                    "page_id": "fake_id_1",
+                    "post_id": "123_113",
                     "created_time": datetime.datetime(
                         2021, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
@@ -118,7 +120,7 @@ class TestReportHandlerWithSpark(unittest.TestCase):
         test_data.write.format("delta").save(FakeTable.FILTER_DATE.value)
 
         filtered_df = self.report_handler._get_filtered_page_data(
-            "fake_id_1", start_time, end_time
+            "123", start_time, end_time
         )
 
         filtered_data = filtered_df.collect()
@@ -128,7 +130,7 @@ class TestReportHandlerWithSpark(unittest.TestCase):
             data_as_dict,
             [
                 {
-                    "page_id": "fake_id_1",
+                    "post_id": "123_111",
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),

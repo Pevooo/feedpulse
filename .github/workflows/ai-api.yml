@@ -94,25 +94,32 @@ jobs:
           nohup python ai-api/run_app.py > api.log 2>&1 &  # Start API and redirect output
           echo "Waiting for API to start..."
           sleep 15
-          curl --retry 5 --retry-delay 3 --retry-connrefused http://127.0.0.1:5000/instagram_endpoint || (echo "API failed to start!" && cat api.log && exit 1)
+          curl --retry 5 --retry-delay 3 --retry-connrefused http://127.0.0.1:5000/instagram_webhook || (echo "API failed to start!" && cat api.log && exit 1)
 
       - name: Run Load Tests
         id: benchmark
         run: |
-          URL="http://127.0.0.1:5000/instagram_webhook"
+          URL="http://127.0.0.1:5000/register_token"
+
+          # Create Lua script for wrk to send JSON payload
+          cat <<EOL > post.lua
+          wrk.method = "POST"
+          wrk.body   = '{"access_token": "test", "platform": "facebook", "page_id": "1251512561"}'
+          wrk.headers["Content-Type"] = "application/json"
+          EOL
 
           # Define different test cases
-          TEST1=$(wrk -t2 -c10 -d10s $URL)
-          TEST2=$(wrk -t4 -c20 -d10s $URL)
+          TEST1=$(wrk -t2 -c10 -d60s -s post.lua $URL)
+          TEST2=$(wrk -t4 -c20 -d60s -s post.lua $URL)
           
           # Format results
           echo "### Load Test Results" > wrk_results.md
-          echo "#### **Test 1**: 2 threads, 10 connections, 10s" >> wrk_results.md
+          echo "#### **Test 1**: 2 threads, 10 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
           echo "$TEST1" >> wrk_results.md
           echo '```' >> wrk_results.md
           
-          echo "#### **Test 2**: 4 threads, 20 connections, 10s" >> wrk_results.md
+          echo "#### **Test 2**: 4 threads, 20 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
           echo "$TEST2" >> wrk_results.md
           echo '```' >> wrk_results.md
