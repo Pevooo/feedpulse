@@ -1,6 +1,5 @@
 import logging
 import traceback
-import inspect
 from concurrent.futures import ThreadPoolExecutor, Future
 from typing import Callable
 
@@ -18,7 +17,12 @@ class ConcurrencyManager:
         def _on_thread_done(future: Future):
             exception = future.exception()
             if exception:
-                logging.error("Concurrent Task Error: Call Traceback: %s Thread Traceback: %s", tb, traceback.format_exc())
+                logging.error(
+                    "Concurrent Task Error: Call Traceback: %s Thread Traceback: %s",
+                    tb,
+                    traceback.format_exc(),
+                )
             else:
                 logging.info("Concurrent Task Result: %s", future.result())
+
         return _on_thread_done
