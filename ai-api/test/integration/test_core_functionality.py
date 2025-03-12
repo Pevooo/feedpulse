@@ -193,6 +193,20 @@ class TestCoreFunctionality(unittest.TestCase):
             processed_comments,
         )
 
+    def test_05_report_handling(self):
+        response = requests.post(
+            url="http://127.0.0.1:5000/report",
+            json={
+                "page_id": "facebook",
+                "start_date": "2024-03-04T15:30:00",
+                "end_date": "2025-07-10T08:15:45",
+            },
+        )
+
+        self.assertTrue(response.ok)
+        self.assertTrue(isinstance(response.json()["body"], str))
+        print(response.json())
+
     @classmethod
     def tearDownClass(cls):
         cls.app_process.terminate()
