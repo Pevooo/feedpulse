@@ -126,7 +126,10 @@ class Spark:
             self.process_data
         ).start()
 
-    def process_data(self, df, epoch_id):
+    def process_data(self, df: pyspark.sql.DataFrame, epoch_id):
+        if df.isEmpty():
+            return
+
         # Add a batch_id column to group every 32 rows
         df = df.withColumn("batch_id", floor(monotonically_increasing_id() / 32))
         grouped_df = df.groupBy("batch_id").agg(
