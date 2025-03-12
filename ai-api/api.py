@@ -34,6 +34,8 @@ class FeedPulseAPI:
         self.__setup_routes()
         self.__setup_exception_reporter()
 
+        self.pages_df = self.spark.read()
+
     def run(self):
         self.spark.start_streaming_job()  # Will run on another thread
         self.data_streamer.start_streaming()  # Will run on another thread
@@ -99,6 +101,7 @@ class FeedPulseAPI:
                 pages_df = self.spark.read(SparkTable.PAGES)
                 existing_entry_df = None
                 if pages_df is not None:
+                    pages_df.cache()
                     existing_entry_df = pages_df.filter(pages_df.page_id == page_id)
 
                 if existing_entry_df and not existing_entry_df.isEmpty():
