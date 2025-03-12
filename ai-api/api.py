@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 from src.config.settings import Settings
 from src.config.response import Response
@@ -64,6 +64,18 @@ class FeedPulseAPI:
             # 1) Get the data changes and process them into a unit format
             # 2) Save the data in the streaming folder
             pass
+
+        @self.flask_app.route("/register")
+        def register():
+            return render_template("registerForm.html")
+
+        @self.flask_app.route("/form")
+        def form():
+            return render_template("form.html")
+
+        @self.flask_app.route("/register")
+        def report():
+            return render_template("report.html")
 
         @self.flask_app.route(Router.REMOTE_CONFIG_ROUTE, methods=["GET", "POST"])
         def remote_config():

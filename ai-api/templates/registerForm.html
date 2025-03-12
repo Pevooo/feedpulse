@@ -136,8 +136,8 @@
                 page_id: document.getElementById('page-id').value,
                 platform: document.getElementById('platform').value,
             };
-
-            fetch('https://127.0.0.1:5000/register_token', {
+            console.log(formData);
+            fetch('http://127.0.0.1:5000/register_token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

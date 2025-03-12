@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Form</title>
+    <title>Report</title>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -80,71 +80,61 @@
             margin-top: 10px;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="form-container">
-        <h2>Generate Report</h2>
-        <form id="reportForm">
-            <div class="form-group">
-                <label for="page-id">Page ID:</label>
-                <input type="text" id="page-id" name="page_id" required>
-            </div>
-            <div class="form-group">
-                <label for="start-date">Start Date:</label>
-                <input type="date" id="start-date" name="start_date" required>
-            </div>
-            <div class="form-group">
-                <label for="end-date">End Date:</label>
-                <input type="date" id="end-date" name="end_date" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Generate</button>
-            </div>
-        </form>
+    <div class="report-container">
+        <h2>Generated Report</h2>
+        <div class="report-content" id="report-content">
+            Loading report...
+        </div>
         <p class="error-message" id="error-message"></p>
+        <button class="reload-btn" onclick="fetchReport()">Reload Report</button>
     </div>
 
     <script>
-        document.getElementById("reportForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            
-            const pageId = document.getElementById("page-id").value.trim();
-            const startDate = document.getElementById("start-date").value;
-            const endDate = document.getElementById("end-date").value;
-            const errorMessage = document.getElementById("error-message");
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                page_id: params.get("page_id"),
+                start_date: params.get("start_date"),
+                end_date: params.get("end_date")
+            };
+        }
 
-            errorMessage.textContent = ""; 
+        async function fetchReport() {
+            const { page_id, start_date, end_date } = getQueryParams();
+            document.getElementById("report-content").textContent = "Loading report...";
+            document.getElementById("error-message").textContent = "";
 
-            if (!pageId || !startDate || !endDate) {
-                errorMessage.textContent = "All fields are required.";
+            if (!page_id || !start_date || !end_date) {
+                document.getElementById("report-content").textContent = "Missing parameters.";
                 return;
             }
 
-            if (new Date(startDate) > new Date(endDate)) {
-                errorMessage.textContent = "Start date cannot be later than end date.";
-                return;
-            }
+            try {
+                const isoStartDate = new Date(start_date).toISOString();
+                const isoEndDate = new Date(end_date).toISOString();
 
-            fetch("https://127.0.0.1:5000/report", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ page_id: pageId, start_date: startDate, end_date: endDate })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    errorMessage.textContent = "Error: " + data.error;
-                } else if (!data.report) {
-                    errorMessage.textContent = "No report data received.";
-                } else {
-                    window.location.href = `report.html?report=${encodeURIComponent(data.report)}`;
+                const response = await fetch(`http://127.0.0.1:5000/report?page_id=${page_id}&start_date=${isoStartDate}&end_date=${isoEndDate}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch report");
                 }
-            })
-            .catch(error => {
-                errorMessage.textContent = "An error occurred. Please try again.";
-                console.error("Error:", error);
-            });
-        });
+                const data = await response.json();
+                
+                if (data.error) {
+                    document.getElementById("report-content").textContent = "Error: " + data.error;
+                } else {
+                    document.getElementById("report-content").textContent = data.report;
+                }
+            } catch (error) {
+                document.getElementById("report-content").textContent = "Error loading report.";
+                document.getElementById("error-message").textContent = "An error occurred. Please try again.";
+                console.error(error);
+            }
+        }
+        
+        fetchReport();
     </script>
 </body>
 </html>

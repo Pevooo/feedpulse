@@ -147,7 +147,9 @@ class Spark:
         for future in futures:
             results.extend(future.result())
         # Store processed data in Spark table
-        self.add(self.stream_out, results)
+
+        if results:
+            self.add(self.stream_out, results)
 
     def process_batch(self, batch_rows):
         comments = [r.content for r in batch_rows]
