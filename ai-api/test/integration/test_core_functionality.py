@@ -205,7 +205,6 @@ class TestCoreFunctionality(unittest.TestCase):
         print(response.json())
         self.assertTrue(response.ok)
         self.assertTrue(isinstance(response.json()["body"], str))
-        print(response.json())
 
     @classmethod
     def tearDownClass(cls):
