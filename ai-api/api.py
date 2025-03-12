@@ -124,13 +124,14 @@ class FeedPulseAPI:
 
         @self.flask_app.route(Router.REPORT, methods=["GET", "POST"])
         def get_report():
-            try:
-                data = request.json
-                page_id = data.get("page_id")
-                start_date = datetime.fromisoformat(data.get("start_date"))
-                end_date = datetime.fromisoformat(data.get("end_date"))
-                report = self.report_handler.create(page_id, start_date, end_date)
-                return Response.success(report)
-            except Exception as e:
-                print(e)
-                return Response.failure(str(e))
+            return Response.success("Testing")
+            # try:
+            #     data = request.json
+            #     page_id = data.get("page_id")
+            #     start_date = datetime.fromisoformat(data.get("start_date"))
+            #     end_date = datetime.fromisoformat(data.get("end_date"))
+            #     report = self.report_handler.create(page_id, start_date, end_date)
+            #     return Response.success(report)
+            # except Exception as e:
+            #     print(e)
+            #     return Response.failure(str(e))
