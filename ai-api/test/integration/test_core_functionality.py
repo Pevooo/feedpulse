@@ -197,7 +197,7 @@ class TestCoreFunctionality(unittest.TestCase):
         response = requests.post(
             url="http://127.0.0.1:5000/report",
             json={
-                "page_id": "facebook",
+                "page_id": "448242228374517",
                 "start_date": "2024-03-04T15:30:00",
                 "end_date": "2025-07-10T08:15:45",
             },

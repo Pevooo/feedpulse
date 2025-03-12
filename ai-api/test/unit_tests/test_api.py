@@ -73,7 +73,7 @@ class TestAPI(unittest.TestCase):
             response = self.client.post(
                 "/report",
                 json={
-                    "page_id": "448242228374517",
+                    "page_id": "fake_page_id",
                     "start_date": "2024-03-04T15:30:00",
                     "end_date": "2025-07-10T08:15:45",
                 },
