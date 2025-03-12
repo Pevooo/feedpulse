@@ -194,7 +194,7 @@ class TestCoreFunctionality(unittest.TestCase):
         )
 
     def test_05_report_handling(self):
-        response = requests.post(
+        response = requests.get(
             url="http://127.0.0.1:5000/report",
             json={
                 "page_id": "448242228374517",
