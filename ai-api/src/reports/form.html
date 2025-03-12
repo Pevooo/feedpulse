@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Form</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #6a11cb;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .form-group button:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Generate Report</h2>
+        <form id="reportForm">
+            <div class="form-group">
+                <label for="page-id">Page ID:</label>
+                <input type="text" id="page-id" name="page_id" required>
+            </div>
+            <div class="form-group">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" name="start_date" required>
+            </div>
+            <div class="form-group">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" name="end_date" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Generate</button>
+            </div>
+        </form>
+        <p class="error-message" id="error-message"></p>
+    </div>
+
+    <script>
+        document.getElementById("reportForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const pageId = document.getElementById("page-id").value.trim();
+            const startDate = document.getElementById("start-date").value;
+            const endDate = document.getElementById("end-date").value;
+            const errorMessage = document.getElementById("error-message");
+
+            errorMessage.textContent = ""; 
+
+            if (!pageId || !startDate || !endDate) {
+                errorMessage.textContent = "All fields are required.";
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                errorMessage.textContent = "Start date cannot be later than end date.";
+                return;
+            }
+
+            fetch("https://127.0.0.1:5000/report", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ page_id: pageId, start_date: startDate, end_date: endDate })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    errorMessage.textContent = "Error: " + data.error;
+                } else if (!data.report) {
+                    errorMessage.textContent = "No report data received.";
+                } else {
+                    window.location.href = `report.html?report=${encodeURIComponent(data.report)}`;
+                }
+            })
+            .catch(error => {
+                errorMessage.textContent = "An error occurred. Please try again.";
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>

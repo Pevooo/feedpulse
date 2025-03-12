@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #6a11cb;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .form-group button:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="report-container">
+        <h2>Generated Report</h2>
+        <div class="report-content" id="report-content">
+            Loading report...
+        </div>
+        <p class="error-message" id="error-message"></p>
+        <button class="reload-btn" onclick="fetchReport()">Reload Report</button>
+    </div>
+
+    <script>
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                page_id: params.get("page_id"),
+                start_date: params.get("start_date"),
+                end_date: params.get("end_date")
+            };
+        }
+
+        async function fetchReport() {
+            const { page_id, start_date, end_date } = getQueryParams();
+            document.getElementById("report-content").textContent = "Loading report...";
+            document.getElementById("error-message").textContent = "";
+
+            if (!page_id || !start_date || !end_date) {
+                document.getElementById("report-content").textContent = "Missing parameters.";
+                return;
+            }
+
+            try {
+                const isoStartDate = new Date(start_date).toISOString();
+                const isoEndDate = new Date(end_date).toISOString();
+
+                const response = await fetch(`https://127.0.0.1:5000/report?page_id=${page_id}&start_date=${isoStartDate}&end_date=${isoEndDate}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch report");
+                }
+                const data = await response.json();
+                
+                if (data.error) {
+                    document.getElementById("report-content").textContent = "Error: " + data.error;
+                } else {
+                    document.getElementById("report-content").textContent = data.report;
+                }
+            } catch (error) {
+                document.getElementById("report-content").textContent = "Error loading report.";
+                document.getElementById("error-message").textContent = "An error occurred. Please try again.";
+                console.error(error);
+            }
+        }
+        
+        fetchReport();
+    </script>
+</body>
+</html>
