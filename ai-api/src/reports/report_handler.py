@@ -39,7 +39,9 @@ class ReportHandler:
         data_as_dict = [row.asDict() for row in filtered_data]
 
         return self.provider.generate_content(
-            self._generate_prompt(json.dumps(data_as_dict))
+            self._generate_prompt(
+                json.dumps(data_as_dict, default=lambda date: date.isoformat())
+            ),
         )
 
     def _get_filtered_page_data(
