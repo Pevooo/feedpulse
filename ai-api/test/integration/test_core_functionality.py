@@ -202,7 +202,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 "end_date": "2025-07-10T08:15:45",
             },
         )
-
+        print(response)
         self.assertTrue(response.ok)
         self.assertTrue(isinstance(response.json()["body"], str))
         print(response.json())
