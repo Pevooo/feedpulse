@@ -109,8 +109,8 @@ jobs:
           EOL
 
           # Define different test cases
-          TEST1=$(wrk -t2 -c10 -d60s -s post.lua $URL)
-          TEST2=$(wrk -t4 -c20 -d60s -s post.lua $URL)
+          TEST1=$(wrk -t2 -c10 -d30s -T30s -s post.lua $URL)
+          TEST2=$(wrk -t4 -c20 -d30s -T30s -s post.lua $URL)
           
           # Format results
           echo "### Load Test Results" > wrk_results.md
