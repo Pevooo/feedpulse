@@ -83,34 +83,34 @@ class Spark:
             return None
 
 
-def update(
-    self,
-    table: SparkTable,
-    condition_column: str,
-    condition_value: Any,
-    updates: dict[str, Any],
-):
-    df = self.read(table)
-    if df is None:
-        return
+    def update(
+        self,
+        table: SparkTable,
+        condition_column: str,
+        condition_value: Any,
+        updates: dict[str, Any],
+    ):
+        df = self.read(table)
+        if df is None:
+            return
 
-    updates_expr = ", ".join(
-        [f"target.{col} = '{val}'" for col, val in updates.items()]
-    )
+        updates_expr = ", ".join(
+            [f"target.{col} = '{val}'" for col, val in updates.items()]
+        )
 
-    query = f"""
-        MERGE INTO delta.`{table.value}` AS target
-        USING (SELECT * FROM delta.`{table.value}` WHERE {condition_column} = '{condition_value}') AS source
-        ON target.{condition_column} = source.{condition_column}
-        WHEN MATCHED THEN
-        UPDATE SET {updates_expr}
-    """
+        query = f"""
+            MERGE INTO delta.`{table.value}` AS target
+            USING (SELECT * FROM delta.`{table.value}` WHERE {condition_column} = '{condition_value}') AS source
+            ON target.{condition_column} = source.{condition_column}
+            WHEN MATCHED THEN
+            UPDATE SET {updates_expr}
+        """
 
-    try:
-        self.spark.sql(query)
-        print(f"Update successful on {table.value}")
-    except Exception as e:
-        print(f"Error updating {table.value}: {str(e)}")
+        try:
+            self.spark.sql(query)
+            print(f"Update successful on {table.value}")
+        except Exception as e:
+            print(f"Error updating {table.value}: {str(e)}")
 
     # Modified _add_worker function to reduce Spark-level parallelism for small datasets
     def _add_worker(
