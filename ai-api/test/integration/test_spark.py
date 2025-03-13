@@ -17,6 +17,7 @@ class FakeTable(Enum):
     TEST_STREAMING_OUT = "test_spark/test_streaming_out"
     TEST_T1 = "test_spark/test_t1"
     TEST_T2 = "test_spark/test_t2"
+    TEST_UPDATE = "test_spark/test_update"
 
 
 class TestSpark(unittest.TestCase):
@@ -329,3 +330,30 @@ class TestSpark(unittest.TestCase):
         for query in cls.spark.spark.streams.active:
             query.stop()
         cls.spark.spark.stop()
+
+    def test_update(self):
+
+        initial_data = [
+            {"id": "1", "value": "old_value"},
+            {"id": "2", "value": "old_value"},
+        ]
+
+        self.spark.spark.createDataFrame(initial_data).write.mode("overwrite").format(
+            "delta"
+        ).save(FakeTable.TEST_UPDATE.value)
+
+        condition_column = "id"
+        condition_value = "1"
+
+        updates = {"value": "new_value"}
+
+        self.spark.update(
+            FakeTable.TEST_UPDATE, condition_column, condition_value, updates
+        )
+
+        df = self.spark.spark.read.format("delta").load(FakeTable.TEST_UPDATE.value)
+        data = [row.asDict() for row in df.collect()]
+
+        self.assertIn({"id": "1", "value": "new_value"}, data)
+
+        self.assertIn({"id": "2", "value": "old_value"}, data)
