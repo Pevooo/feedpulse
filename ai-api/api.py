@@ -99,6 +99,7 @@ class FeedPulseAPI:
                 pages_df = self.spark.read(SparkTable.PAGES)
                 existing_entry_df = None
                 if pages_df is not None:
+                    pages_df.cache()
                     existing_entry_df = pages_df.filter(pages_df.page_id == page_id)
 
                 if existing_entry_df and not existing_entry_df.isEmpty():
