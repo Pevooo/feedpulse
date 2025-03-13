@@ -14,11 +14,20 @@
       <a  routerLink="/contact-us">CONTACT US</a>
     </li>
     
-    <li routerLinkActive="active">
-      <a routerLink="/login">Login</a>
-    </li>
-    <li routerLinkActive="active">
-      <a routerLink="/signup">SignUp</a>
-    </li>
+<!-- Conditional rendering for Login/Logout and SignUp -->
+
+<ng-container *ngIf="isLoggedIn(); else notLoggedIn">
+  <li>
+    <a href="#" (click)="onLogout($event)">Logout</a>
+  </li>
+</ng-container>
+<ng-template #notLoggedIn>
+  <li routerLinkActive="active">
+    <a routerLink="/login">Login</a>
+  </li>
+  <li routerLinkActive="active">
+    <a routerLink="/signup">SignUp</a>
+  </li>
+</ng-template>
   </ul>
 </nav>
