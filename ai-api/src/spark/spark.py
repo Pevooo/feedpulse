@@ -82,7 +82,6 @@ class Spark:
         except Exception:
             return None
 
-
     def update(
         self,
         table: SparkTable,
