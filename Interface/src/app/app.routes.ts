@@ -6,6 +6,7 @@ import { SignupComponent } from '../Components/signup/signup.component';
 import { AboutComponent } from '../Components/about/about.component';
 import { ServicesComponent } from '../Components/services/services.component';
 import { ContactusComponent } from '../Components/contactus/contactus.component';
+import { DashboardComponent } from '../Components/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -14,5 +15,6 @@ export const routes: Routes = [
   { path: 'services', component: ServicesComponent },
   { path: 'contact-us', component: ContactusComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'dash-board', component: DashboardComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];

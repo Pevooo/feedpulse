@@ -1,1 +1,21 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+    <div class="header">
+      <button class="fb-connect-btn" 
+              [ngClass]="{'connected': isConnected}" 
+              [disabled]="isConnected" 
+              (click)="connectWithFacebook()">
+        {{ isConnected ? 'Connected' : 'Connect with Facebook' }}
+      </button>
+      <button class="fb-connect-btn" [disabled]="isConnected" 
+      (click)="logout()">
+      logout
+      </button>
+      <div class="status">{{ statusMessage }}</div>
+    </div>
+  
+    <div class="section" [ngClass]="{'active': isConnected}">
+      <h2>Connected Successfully!</h2>
+      <p>Check the console for user data or implement your pages list here.</p>
+    </div>
+   
+  </div>
