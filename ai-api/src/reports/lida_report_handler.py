@@ -2,7 +2,7 @@ import json
 import pandas as pd
 from datetime import datetime
 
-from src.models.hf_model_provider import HFModelProvider  # using our custom HF provider
+from src.models.hf_model_provider import HFModelProvider 
 from src.spark.spark import Spark
 from src.spark.spark_table import SparkTable
 from lida import Manager, TextGenerationConfig
