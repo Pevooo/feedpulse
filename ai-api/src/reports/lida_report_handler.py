@@ -2,16 +2,12 @@ import json
 import pandas as pd
 from datetime import datetime
 
-from src.models.hf_model_provider import HFModelProvider 
-from src.spark.spark import Spark
-from src.spark.spark_table import SparkTable
+from src.models.hf_model_provider import HFModelProvider
 from lida import Manager, TextGenerationConfig
 
-# from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, substring_index
 from src.spark.spark import Spark
 from src.spark.spark_table import SparkTable
-from lida import Manager, llm, TextGenerationConfig
 
 
 class LidaReportHandler:
@@ -137,7 +133,7 @@ class LidaReportHandler:
         summary = self.summarize(page_id, start_date, end_date)
         report = f"--- Report Generated with LIDA ---\n\n"
         report += (
-            "Data Summary:\n" + json.dumps(summary, indent=2, default=str) + "\n\n"
+            f"Data Summary:\n" + json.dumps(summary, indent=2, default=str) + "\n\n"
         )
         print("Summary complete.")
         print(report)

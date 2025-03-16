@@ -1,19 +1,13 @@
 import json
 from datetime import datetime, timezone
-from pyspark.sql.functions import col, substring_index
 
-# Import LIDA components and Spark dependencies.
 from src.spark.spark import Spark
 from src.spark.spark_table import SparkTable
-from lida import Manager, llm, TextGenerationConfig
-from src.models.prompt import Prompt
 from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.reports.lida_report_handler import LidaReportHandler
 
 from unittest.mock import Mock, MagicMock
 
-# --- Setup Rich Dummy Data for Summarization and Visualization ---
-# Each row now includes content and engagement metrics.
 dummy_data = [
     {
         "post_id": "123_111",
