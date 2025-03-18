@@ -44,6 +44,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 FakeTable.TEST_STREAMING_IN,
                 FakeTable.TEST_STREAMING_OUT,
                 SparkTable.PAGES,
+                5,
             ),
         )
 
@@ -70,7 +71,7 @@ class TestCoreFunctionality(unittest.TestCase):
 
         cls.app_process.start()
 
-        time.sleep(35)
+        time.sleep(25)
 
     def test_01_add_valid_token(self):
         # Send a requesst to register a valid access token
@@ -82,7 +83,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 "access_token": os.getenv("TEST_AC_TOKEN"),
             },
         )
-        time.sleep(10)
+        time.sleep(5)
         data = (
             self.spark.read.format("delta")
             .load(SparkTable.PAGES.value)
@@ -132,8 +133,8 @@ class TestCoreFunctionality(unittest.TestCase):
         )
 
     def test_03_streamed_data(self):
-        # Sleep for 70 seconds so that we are sure that it pass a streaming cycle
-        time.sleep(70)
+        # Sleep for 15 seconds so that we are sure that it pass a streaming cycle
+        time.sleep(15)
 
         raw_comments = (
             self.spark.read.format("json")

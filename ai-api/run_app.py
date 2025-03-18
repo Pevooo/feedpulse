@@ -17,6 +17,7 @@ def run_app(
     stream_in=SparkTable.INPUT_COMMENTS,
     stream_out=SparkTable.PROCESSED_COMMENTS,
     paged_dir=SparkTable.PAGES,
+    polling_streamer_trigger_time=60,
 ):
     # Define the global model provider (and load balancer)
     model_provider = GlobalModelProvider(
@@ -53,7 +54,7 @@ def run_app(
     # Define Streamer
     data_streamer = PollingDataStreamer(
         data_manager=data_manager,
-        trigger_time=60,
+        trigger_time=polling_streamer_trigger_time,
         concurrency_manager=concurrency_manager,
     )
 
