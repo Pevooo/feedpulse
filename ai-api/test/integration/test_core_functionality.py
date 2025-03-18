@@ -117,7 +117,10 @@ class TestCoreFunctionality(unittest.TestCase):
         self.assertTrue(response.ok)
         self.assertEqual(len(data), 2)
         self.assertIn(
-            Row(page_id="p2", access_token="fake_ac_token", platform="facebook").asDict(), data
+            Row(
+                page_id="p2", access_token="fake_ac_token", platform="facebook"
+            ).asDict(),
+            data,
         )
         self.assertIn(
             Row(

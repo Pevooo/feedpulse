@@ -13,7 +13,10 @@ from src.data.spark_table import SparkTable
 
 class ReportHandler:
     def __init__(
-        self, provider: GlobalModelProvider, spark: DataManager, comments_table: SparkTable
+        self,
+        provider: GlobalModelProvider,
+        spark: DataManager,
+        comments_table: SparkTable,
     ):
         self.provider = provider
         self.spark = spark

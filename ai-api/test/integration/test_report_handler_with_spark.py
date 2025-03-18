@@ -18,7 +18,9 @@ class FakeTable(Enum):
 
 class TestReportHandlerWithSpark(unittest.TestCase):
     def setUp(self):
-        self.data_manager = DataManager(Mock(), Mock(), Mock(), Mock(), ConcurrencyManager(), Mock())
+        self.data_manager = DataManager(
+            Mock(), Mock(), Mock(), Mock(), ConcurrencyManager(), Mock()
+        )
 
     def test_filter_exclude_wrong_page_id(self):
         self.report_handler = ReportHandler(
@@ -85,7 +87,9 @@ class TestReportHandlerWithSpark(unittest.TestCase):
         self.assertEqual(len(data_as_dict), 2)
 
     def test_filter_exclude_wrong_dates(self):
-        self.report_handler = ReportHandler(Mock(), self.data_manager, FakeTable.FILTER_DATE)
+        self.report_handler = ReportHandler(
+            Mock(), self.data_manager, FakeTable.FILTER_DATE
+        )
         start_time = datetime.datetime(
             2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
         )

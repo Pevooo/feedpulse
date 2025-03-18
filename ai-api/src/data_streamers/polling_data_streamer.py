@@ -4,7 +4,7 @@ import traceback
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.data_streamers.data_streamer import DataStreamer
-from src.data.data_manager import SparkTable, DataManager
+from src.data.data_manager import DataManager
 
 
 class PollingDataStreamer(DataStreamer):

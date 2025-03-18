@@ -36,7 +36,6 @@ class DataManager:
         ]
     )
 
-
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
             cls.instance = super(DataManager, cls).__new__(cls)
@@ -84,7 +83,9 @@ class DataManager:
 
             processed_comments = self.read(self.stream_out)
             if processed_comments:
-                stream_df = self._get_unique(flattened_df, processed_comments, "comment_id")
+                stream_df = self._get_unique(
+                    flattened_df, processed_comments, "comment_id"
+                )
                 self.add(self.stream_in, stream_df, "json").result()
             else:
                 self.add(self.stream_in, flattened_df, "json").result()
@@ -200,7 +201,9 @@ class DataManager:
 
         return batch_results
 
-    def _get_unique(self, new_df: pyspark.sql.DataFrame, old_df: pyspark.sql.DataFrame, on: str) -> pyspark.sql.DataFrame:
+    def _get_unique(
+        self, new_df: pyspark.sql.DataFrame, old_df: pyspark.sql.DataFrame, on: str
+    ) -> pyspark.sql.DataFrame:
         """
         Returns a new dataframe without duplicate rows based on an id.
         """

@@ -133,7 +133,9 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        df = self.data_manager._spark.read.format("delta").load("test_spark/test_streaming_out")
+        df = self.data_manager._spark.read.format("delta").load(
+            "test_spark/test_streaming_out"
+        )
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -192,7 +194,9 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        df = self.data_manager._spark.read.format("delta").load("test_spark/test_streaming_out")
+        df = self.data_manager._spark.read.format("delta").load(
+            "test_spark/test_streaming_out"
+        )
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -251,7 +255,9 @@ class TestSpark(unittest.TestCase):
 
         sleep(20)
 
-        df = self.data_manager._spark.read.format("delta").load("test_spark/test_streaming_out")
+        df = self.data_manager._spark.read.format("delta").load(
+            "test_spark/test_streaming_out"
+        )
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -273,9 +279,13 @@ class TestSpark(unittest.TestCase):
         self.empty_dir(FakeTable.TEST_STREAMING_OUT.value)
 
     def test_concurrency_multiple_tables(self):
-        future_t1 = self.data_manager.add(FakeTable.TEST_T1, [{"hi": "file1", "hello": 3}])
+        future_t1 = self.data_manager.add(
+            FakeTable.TEST_T1, [{"hi": "file1", "hello": 3}]
+        )
 
-        future_t2 = self.data_manager.add(FakeTable.TEST_T2, [{"hi": "file2", "hello": 3}])
+        future_t2 = self.data_manager.add(
+            FakeTable.TEST_T2, [{"hi": "file2", "hello": 3}]
+        )
 
         self.assert_concurrent_jobs(2)
 
@@ -328,7 +338,9 @@ class TestSpark(unittest.TestCase):
     def assert_concurrent_jobs(self, num_jobs: int):
         for _ in range(60):
             if (
-                len(self.data_manager._spark.sparkContext.statusTracker().getActiveJobsIds())
+                len(
+                    self.data_manager._spark.sparkContext.statusTracker().getActiveJobsIds()
+                )
                 == num_jobs
             ):
                 break
