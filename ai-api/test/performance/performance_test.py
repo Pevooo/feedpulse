@@ -57,12 +57,12 @@ def _get_folder_size(folder_path):
     return f"{int(sum(f.stat().st_size for f in Path(folder_path).rglob('*')) / 1024)} **KB**"
 
 
-def spark_read_1m(spark):
-    spark.spark.read.parquet(FakeTable.M.value).collect()
+def spark_read_1m(dm: DataManager):
+    dm._spark.read.parquet(FakeTable.M.value).collect()
 
 
-def spark_write_1k(spark: DataManager):
-    spark.add(
+def spark_write_1k(dm: DataManager):
+    dm.add(
         FakeTable.K,
         [
             {"col1": "val1", "col2": "val2"},
