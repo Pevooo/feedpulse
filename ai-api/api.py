@@ -9,7 +9,7 @@ from src.data_streamers.data_streamer import DataStreamer
 from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.spark.spark import Spark, SparkTable
+from src.data.data_manager import DataManager, SparkTable
 from src.topics.topic_detector import TopicDetector
 
 
@@ -20,7 +20,7 @@ class FeedPulseAPI:
         topic_detector: TopicDetector,
         report_handler: ReportHandler,
         exception_reporter: ExceptionReporter,
-        spark: Spark,
+        spark: DataManager,
         data_streamer: DataStreamer,
     ):
         self.flask_app = Flask(__name__)

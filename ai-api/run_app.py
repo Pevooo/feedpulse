@@ -8,7 +8,7 @@ from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
 from src.models.hf_model_provider import HFModelProvider
 from src.topics.topic_detector import TopicDetector
-from src.spark.spark import Spark, SparkTable
+from src.data.data_manager import DataManager, SparkTable
 from src.reports.report_handler import ReportHandler
 from src.exception_handling.exception_reporter import ExceptionReporter
 
@@ -35,32 +35,30 @@ def run_app(
     # Define Concurrency Manager
     concurrency_manager = ConcurrencyManager()
 
-    # Define Spark Singleton
-    spark = Spark(
+    # Define Data Manager Singleton
+    data_manager = DataManager(
         stream_in=stream_in,
         stream_out=stream_out,
         feedback_classification_batch_function=feedback_classifier.classify,
         topic_detection_batch_function=topic_detector.detect,
         concurrency_manager=concurrency_manager,
+        pages=paged_dir,
     )
 
     # Define Concurrency Manager
     concurrency_manager = ConcurrencyManager()
 
-    report_handler = ReportHandler(model_provider, spark, stream_out)
+    report_handler = ReportHandler(model_provider, data_manager, stream_out)
 
     # Define Streamer
     data_streamer = PollingDataStreamer(
-        spark=spark,
+        data_manager=data_manager,
         trigger_time=60,
-        streaming_in=stream_in,
-        streaming_out=stream_out,
-        pages_dir=paged_dir,
         concurrency_manager=concurrency_manager,
     )
 
     # Define Exception Reporter
-    exception_reporter = ExceptionReporter(spark)
+    exception_reporter = ExceptionReporter(data_manager)
 
     # Define the api class
     app = FeedPulseAPI(
@@ -68,7 +66,7 @@ def run_app(
         topic_detector=topic_detector,
         report_handler=report_handler,
         exception_reporter=exception_reporter,
-        spark=spark,
+        spark=data_manager,
         data_streamer=data_streamer,
     )
 

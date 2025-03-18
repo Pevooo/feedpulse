@@ -1,11 +1,11 @@
 import uuid
 from datetime import datetime
 
-from src.spark.spark import Spark, SparkTable
+from src.data.data_manager import DataManager, SparkTable
 
 
 class ExceptionReporter:
-    def __init__(self, spark: Spark):
+    def __init__(self, spark: DataManager):
         self.spark = spark
         self.exceptions = []
 

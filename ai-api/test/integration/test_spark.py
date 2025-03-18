@@ -6,7 +6,8 @@ from enum import Enum
 from time import sleep
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
-from src.spark.spark import Spark
+from src.data.data_manager import DataManager
+from src.data.spark_table import SparkTable
 from src.topics.feedback_topic import FeedbackTopic
 
 
@@ -30,24 +31,25 @@ class TestSpark(unittest.TestCase):
         ) -> list[list[FeedbackTopic]]:
             return [[FeedbackTopic.CLEANLINESS]] * len(batch)
 
-        cls.spark = Spark(
+        cls.data_manager = DataManager(
             FakeTable.TEST_STREAMING_IN,
             FakeTable.TEST_STREAMING_OUT,
             fake_classification_function,
             fake_topic_detection_function,
             ConcurrencyManager(),
+            SparkTable.PAGES,
         )
 
-        cls.spark.start_streaming_job()
+        cls.data_manager.start_streaming_job()
 
     def test_add(self):
         # Writing random data to test on
-        df = self.spark.spark.getActiveSession().createDataFrame(
+        df = self.data_manager._spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
         df.write.mode("overwrite").format("delta").save("test_spark/test_add")
 
-        future = self.spark.add(
+        future = self.data_manager.add(
             FakeTable.TEST_ADD, [{"hi": "random_data3", "hello": 3}]
         )
 
@@ -56,7 +58,7 @@ class TestSpark(unittest.TestCase):
         future.result()
 
         df = (
-            self.spark.spark.read.option("header", "true")
+            self.data_manager._spark.read.option("header", "true")
             .format("delta")
             .load("test_spark/test_add")
         )
@@ -68,19 +70,19 @@ class TestSpark(unittest.TestCase):
 
     def test_multiple_jobs_same_table(self):
         # Writing random data to test on
-        df = self.spark.spark.getActiveSession().createDataFrame(
+        df = self.data_manager._spark.getActiveSession().createDataFrame(
             [{"hi": "random_data", "hello": 2}, {"hi": "random_data2", "hello": 241}]
         )
         df.write.mode("overwrite").format("delta").save("test_spark/test_concurrent")
 
         # Adding 6 times so that it's over the number of maximum workers
         futures = [
-            self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "1", "hello": 1}]),
-            self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "2", "hello": 2}]),
-            self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "3", "hello": 3}]),
-            self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "4", "hello": 4}]),
-            self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "5", "hello": 5}]),
-            self.spark.add(FakeTable.TEST_CONCURRENT, [{"hi": "6", "hello": 6}]),
+            self.data_manager.add(FakeTable.TEST_CONCURRENT, [{"hi": "1", "hello": 1}]),
+            self.data_manager.add(FakeTable.TEST_CONCURRENT, [{"hi": "2", "hello": 2}]),
+            self.data_manager.add(FakeTable.TEST_CONCURRENT, [{"hi": "3", "hello": 3}]),
+            self.data_manager.add(FakeTable.TEST_CONCURRENT, [{"hi": "4", "hello": 4}]),
+            self.data_manager.add(FakeTable.TEST_CONCURRENT, [{"hi": "5", "hello": 5}]),
+            self.data_manager.add(FakeTable.TEST_CONCURRENT, [{"hi": "6", "hello": 6}]),
         ]
 
         self.assert_concurrent_jobs(5)
@@ -90,7 +92,7 @@ class TestSpark(unittest.TestCase):
             future.result()  # This will block until the individual job is done
 
         df = (
-            self.spark.spark.read.format("delta")
+            self.data_manager._spark.read.format("delta")
             .option("inferSchema", "true")
             .load("test_spark/test_concurrent")
         )
@@ -125,13 +127,13 @@ class TestSpark(unittest.TestCase):
             }
         ]
 
-        self.spark.spark.createDataFrame(data_in).write.mode("append").format(
+        self.data_manager._spark.createDataFrame(data_in).write.mode("append").format(
             "json"
         ).save(folder_path)
 
         sleep(20)
 
-        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
+        df = self.data_manager._spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -181,16 +183,16 @@ class TestSpark(unittest.TestCase):
             }
         ]
 
-        self.spark.spark.createDataFrame(data_in_1).write.mode("append").format(
+        self.data_manager._spark.createDataFrame(data_in_1).write.mode("append").format(
             "json"
         ).save("test_spark/test_streaming_in")
-        self.spark.spark.createDataFrame(data_in_2).write.mode("append").format(
+        self.data_manager._spark.createDataFrame(data_in_2).write.mode("append").format(
             "json"
         ).save("test_spark/test_streaming_in")
 
         sleep(20)
 
-        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
+        df = self.data_manager._spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -243,13 +245,13 @@ class TestSpark(unittest.TestCase):
             }
         ] * 32
 
-        self.spark.spark.createDataFrame(data_in).write.mode("append").format(
+        self.data_manager._spark.createDataFrame(data_in).write.mode("append").format(
             "json"
         ).save("test_spark/test_streaming_in")
 
         sleep(20)
 
-        df = self.spark.spark.read.format("delta").load("test_spark/test_streaming_out")
+        df = self.data_manager._spark.read.format("delta").load("test_spark/test_streaming_out")
 
         data = [row.asDict() for row in df.collect()]
         self.assertIn(
@@ -271,9 +273,9 @@ class TestSpark(unittest.TestCase):
         self.empty_dir(FakeTable.TEST_STREAMING_OUT.value)
 
     def test_concurrency_multiple_tables(self):
-        future_t1 = self.spark.add(FakeTable.TEST_T1, [{"hi": "file1", "hello": 3}])
+        future_t1 = self.data_manager.add(FakeTable.TEST_T1, [{"hi": "file1", "hello": 3}])
 
-        future_t2 = self.spark.add(FakeTable.TEST_T2, [{"hi": "file2", "hello": 3}])
+        future_t2 = self.data_manager.add(FakeTable.TEST_T2, [{"hi": "file2", "hello": 3}])
 
         self.assert_concurrent_jobs(2)
 
@@ -281,13 +283,13 @@ class TestSpark(unittest.TestCase):
         future_t2.result()
 
         df1 = (
-            self.spark.spark.read.format("delta")
+            self.data_manager._spark.read.format("delta")
             .option("inferSchema", "true")
             .load(FakeTable.TEST_T1.value)
         )
 
         df2 = (
-            self.spark.spark.read.format("delta")
+            self.data_manager._spark.read.format("delta")
             .option("inferSchema", "true")
             .load(FakeTable.TEST_T2.value)
         )
@@ -300,17 +302,40 @@ class TestSpark(unittest.TestCase):
         self.assertEqual(df1.count(), 1)
         self.assertEqual(df2.count(), 1)
 
+    def test_get_unique(self):
+        df1 = self.data_manager._spark.createDataFrame(
+            [
+                {"comment_id": "123", "content": "hi1"},
+                {"comment_id": "456", "content": "hi2"},
+                {"comment_id": "789", "content": "hi3"},
+            ]
+        )
+
+        df2 = self.data_manager._spark.createDataFrame(
+            [
+                {"comment_id": "123", "content": "fake"},
+                {"comment_id": "789", "content": "fake"},
+            ]
+        )
+
+        df_unique = self.data_manager._get_unique(df1, df2, "comment_id")
+
+        data = [row.asDict() for row in df_unique.collect()]
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["content"], "hi2")
+        self.assertEqual(data[0]["comment_id"], "456")
+
     def assert_concurrent_jobs(self, num_jobs: int):
         for _ in range(60):
             if (
-                len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds())
+                len(self.data_manager._spark.sparkContext.statusTracker().getActiveJobsIds())
                 == num_jobs
             ):
                 break
             sleep(0.05)
         else:
             self.fail(
-                f"Wrong Concurrent Jobs Found({len(self.spark.spark.sparkContext.statusTracker().getActiveJobsIds())} != {num_jobs})"
+                f"Wrong Concurrent Jobs Found({len(self.spark._spark.sparkContext.statusTracker().getActiveJobsIds())} != {num_jobs})"
             )
 
     def empty_dir(self, path_to_directory: str):
@@ -326,6 +351,6 @@ class TestSpark(unittest.TestCase):
         if os.path.exists("test_spark"):
             shutil.rmtree("test_spark")
 
-        for query in cls.spark.spark.streams.active:
+        for query in cls.data_manager._spark.streams.active:
             query.stop()
-        cls.spark.spark.stop()
+        cls.data_manager._spark.stop()

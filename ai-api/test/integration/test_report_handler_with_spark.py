@@ -8,7 +8,7 @@ from enum import Enum
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.reports.report_handler import ReportHandler
-from src.spark.spark import Spark
+from src.data.data_manager import DataManager
 
 
 class FakeTable(Enum):
@@ -18,11 +18,11 @@ class FakeTable(Enum):
 
 class TestReportHandlerWithSpark(unittest.TestCase):
     def setUp(self):
-        self.spark = Spark(Mock(), Mock(), Mock(), Mock(), ConcurrencyManager())
+        self.data_manager = DataManager(Mock(), Mock(), Mock(), Mock(), ConcurrencyManager(), Mock())
 
     def test_filter_exclude_wrong_page_id(self):
         self.report_handler = ReportHandler(
-            Mock(), self.spark, FakeTable.FILTER_PAGE_ID
+            Mock(), self.data_manager, FakeTable.FILTER_PAGE_ID
         )
         start_time = datetime.datetime(
             2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
@@ -32,7 +32,7 @@ class TestReportHandlerWithSpark(unittest.TestCase):
             2025, 2, 26, 20, 47, 43, tzinfo=datetime.timezone.utc
         )
 
-        test_data = self.spark.spark.createDataFrame(
+        test_data = self.data_manager._spark.createDataFrame(
             [
                 {
                     "post_id": "123_111",
@@ -85,7 +85,7 @@ class TestReportHandlerWithSpark(unittest.TestCase):
         self.assertEqual(len(data_as_dict), 2)
 
     def test_filter_exclude_wrong_dates(self):
-        self.report_handler = ReportHandler(Mock(), self.spark, FakeTable.FILTER_DATE)
+        self.report_handler = ReportHandler(Mock(), self.data_manager, FakeTable.FILTER_DATE)
         start_time = datetime.datetime(
             2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
         )
@@ -94,7 +94,7 @@ class TestReportHandlerWithSpark(unittest.TestCase):
             2025, 2, 26, 20, 47, 43, tzinfo=datetime.timezone.utc
         )
 
-        test_data = self.spark.spark.createDataFrame(
+        test_data = self.data_manager._spark.createDataFrame(
             [
                 {
                     "post_id": "123_111",

@@ -15,7 +15,7 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pyspark.sql import Row
 
-from src.spark.spark_table import SparkTable
+from src.data.spark_table import SparkTable
 
 base_path = os.path.dirname(__file__)
 
@@ -82,7 +82,6 @@ class TestCoreFunctionality(unittest.TestCase):
                 "access_token": os.getenv("TEST_AC_TOKEN"),
             },
         )
-        print(response.json())
         time.sleep(10)
         data = (
             self.spark.read.format("delta")
@@ -107,7 +106,6 @@ class TestCoreFunctionality(unittest.TestCase):
                 "page_id": "p2",
             },
         )
-        print(response.json())
         time.sleep(5)
         data = (
             self.spark.read.format("delta")
@@ -115,18 +113,18 @@ class TestCoreFunctionality(unittest.TestCase):
             .coalesce(1)
             .collect()
         )
-
+        data = [row.asDict() for row in data]
         self.assertTrue(response.ok)
         self.assertEqual(len(data), 2)
         self.assertIn(
-            Row(page_id="p2", access_token="fake_ac_token", platform="facebook"), data
+            Row(page_id="p2", access_token="fake_ac_token", platform="facebook").asDict(), data
         )
         self.assertIn(
             Row(
                 page_id="p1",
                 access_token=os.getenv("TEST_AC_TOKEN"),
                 platform="facebook",
-            ),
+            ).asDict(),
             data,
         )
 
@@ -202,7 +200,6 @@ class TestCoreFunctionality(unittest.TestCase):
                 "end_date": "2025-07-10T08:15:45",
             },
         )
-        print(response.json())
         self.assertTrue(response.ok)
         self.assertTrue(isinstance(response.json()["body"], str))
 
