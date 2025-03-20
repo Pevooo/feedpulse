@@ -69,6 +69,7 @@ jobs:
           PYTHONPATH=./ai-api python -m unittest discover -s "ai-api/test/integration" -p "test_*.py"
 
       - name: Run Performance Tests
+        if: github.event_name == 'pull_request' && success()
         run: |
           if [ -f "ai-api/test/performance/performance_test.py" ]; then
             PYTHONPATH=./ai-api python ai-api/test/performance/performance_test.py
@@ -85,11 +86,13 @@ jobs:
           message-id: 'performance_test_comment'
 
       - name: Install wrk
+        if: github.event_name == 'pull_request' && success()
         run: |
           sudo apt update
           sudo apt install -y wrk
 
       - name: Start Flask API
+        if: github.event_name == 'pull_request' && success()
         run: |
           nohup python ai-api/run_app.py > api.log 2>&1 &  # Start API and redirect output
           echo "Waiting for API to start..."
@@ -97,6 +100,7 @@ jobs:
           curl --retry 5 --retry-delay 3 --retry-connrefused http://127.0.0.1:5000/instagram_webhook || (echo "API failed to start!" && cat api.log && exit 1)
 
       - name: Run Load Tests
+        if: github.event_name == 'pull_request' && success()
         id: benchmark
         run: |
           URL="http://127.0.0.1:5000/register_token"
