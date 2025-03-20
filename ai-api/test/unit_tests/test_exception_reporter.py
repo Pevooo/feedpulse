@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock, ANY
 
 from src.exception_handling.exception_reporter import ExceptionReporter
-from src.spark.spark import SparkTable
+from src.data.data_manager import SparkTable
 
 
 class TestExceptionReporter(unittest.TestCase):

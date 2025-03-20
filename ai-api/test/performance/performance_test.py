@@ -7,7 +7,7 @@ from enum import Enum
 from pathlib import Path
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
-from src.spark.spark import Spark
+from src.data.data_manager import DataManager
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,17 +19,17 @@ class FakeTable(Enum):
 
 def main():
 
-    spark = Spark(
-        Mock(), Mock(), Mock(), Mock(), ConcurrencyManager()
+    data_manager = DataManager(
+        Mock(), Mock(), Mock(), Mock(), ConcurrencyManager(), Mock()
     )  # Just create the instance so that we can use it later without the creation overhead
 
     tests = [
         # Writes before read so we can read the pre-written data
-        ("Spark Write 1k Rows", _exec_time(spark_write_1k, spark)),
-        ("Spark Read 1k Rows", _exec_time(spark_read_1k, spark)),
+        ("Spark Write 1k Rows", _exec_time(spark_write_1k, data_manager)),
+        ("Spark Read 1k Rows", _exec_time(spark_read_1k, data_manager)),
         ("Spark Size of 1k Rows", _get_folder_size(FakeTable.K.value)),
-        ("Spark Write 1M Rows", _exec_time(spark_write_1m, spark)),
-        ("Spark Read 1M Rows", _exec_time(spark_read_1m, spark)),
+        ("Spark Write 1M Rows", _exec_time(spark_write_1m, data_manager)),
+        ("Spark Read 1M Rows", _exec_time(spark_read_1m, data_manager)),
         ("Spark Size of 1M Rows", _get_folder_size(FakeTable.M.value)),
     ]
 
@@ -57,12 +57,12 @@ def _get_folder_size(folder_path):
     return f"{int(sum(f.stat().st_size for f in Path(folder_path).rglob('*')) / 1024)} **KB**"
 
 
-def spark_read_1m(spark):
-    spark.spark.read.parquet(FakeTable.M.value).collect()
+def spark_read_1m(dm: DataManager):
+    dm._spark.read.parquet(FakeTable.M.value).collect()
 
 
-def spark_write_1k(spark: Spark):
-    spark.add(
+def spark_write_1k(dm: DataManager):
+    dm.add(
         FakeTable.K,
         [
             {"col1": "val1", "col2": "val2"},
@@ -71,11 +71,11 @@ def spark_write_1k(spark: Spark):
     ).result()
 
 
-def spark_read_1k(spark: Spark):
-    spark.spark.read.parquet(FakeTable.K.value).collect()
+def spark_read_1k(data_manager: DataManager):
+    data_manager._spark.read.parquet(FakeTable.K.value).collect()
 
 
-def spark_write_1m(spark: Spark):
+def spark_write_1m(spark: DataManager):
     spark.add(
         FakeTable.M,
         [

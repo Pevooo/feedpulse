@@ -7,13 +7,16 @@ from pyspark.sql.functions import col, substring_index
 
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
-from src.spark.spark import Spark
-from src.spark.spark_table import SparkTable
+from src.data.data_manager import DataManager
+from src.data.spark_table import SparkTable
 
 
 class ReportHandler:
     def __init__(
-        self, provider: GlobalModelProvider, spark: Spark, comments_table: SparkTable
+        self,
+        provider: GlobalModelProvider,
+        spark: DataManager,
+        comments_table: SparkTable,
     ):
         self.provider = provider
         self.spark = spark

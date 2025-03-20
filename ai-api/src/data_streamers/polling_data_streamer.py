@@ -2,29 +2,20 @@ import logging
 import time
 import traceback
 
-import pyspark
-
 from src.concurrency.concurrency_manager import ConcurrencyManager
-from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.data_streamers.data_streamer import DataStreamer
-from src.spark.spark import SparkTable, Spark
+from src.data.data_manager import DataManager
 
 
 class PollingDataStreamer(DataStreamer):
     def __init__(
         self,
-        spark: Spark,
+        data_manager: DataManager,
         trigger_time: int,
-        streaming_in: SparkTable,
-        streaming_out: SparkTable,
-        pages_dir: SparkTable,
         concurrency_manager: ConcurrencyManager,
     ):
-        self.spark = spark
+        self.data_manager = data_manager
         self.trigger_time = trigger_time
-        self.streaming_in = streaming_in
-        self.streaming_out = streaming_out
-        self.pages_dir = pages_dir
         self.concurrency_manager = concurrency_manager
 
     def start_streaming(self) -> None:
@@ -32,40 +23,10 @@ class PollingDataStreamer(DataStreamer):
 
     def streaming_worker(self):
         try:
-            df = self.spark.read(self.pages_dir)
-            if df:
-                flattened_df = self._get_flattened(df)
-
-                processed_comments = self.spark.read(self.streaming_out)
-                if processed_comments:
-                    stream_df = self._get_unique(flattened_df, processed_comments)
-                    self.spark.add(self.streaming_in, stream_df, "json").result()
-                else:
-                    self.spark.add(self.streaming_in, flattened_df, "json").result()
+            self.data_manager.stream_by_polling()
         except Exception as e:
             logging.error(e)
             logging.error(traceback.format_exc())
 
         time.sleep(self.trigger_time)
         self.concurrency_manager.submit_job(self.streaming_worker)
-
-    def _get_flattened(self, df) -> pyspark.sql.DataFrame:
-        def process_page(row):
-            try:
-                ac_token = row["access_token"]
-                platform = row["platform"]
-
-                if platform == "facebook":
-                    return FacebookDataProvider(ac_token).get_posts()
-
-            # TODO: Integrate Instagram
-            # elif platform == "instagram":
-            #     return InstagramDataProvider(ac_token).get_posts()
-            except Exception:
-                return []
-
-        results_rdd = df.rdd.flatMap(process_page)
-        return self.spark.spark.createDataFrame(results_rdd)
-
-    def _get_unique(self, new_df, old_df) -> pyspark.sql.DataFrame:
-        return new_df.join(old_df, on="comment_id", how="left_anti")

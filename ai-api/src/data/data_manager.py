@@ -18,16 +18,27 @@ from pyspark.sql.types import (
 )
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
-from src.spark.spark_table import SparkTable
+from src.data.spark_table import SparkTable
+from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.topics.feedback_topic import FeedbackTopic
 
 
-class Spark:
-    instance: "Spark"
+class DataManager:
+    instance: "DataManager"
+
+    INPUT_STREAM_SCHEMA = StructType(
+        [
+            StructField("comment_id", StringType(), False),
+            StructField("post_id", StringType(), False),
+            StructField("content", StringType(), False),
+            StructField("created_time", TimestampType(), False),
+            StructField("platform", StringType(), False),
+        ]
+    )
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
-            cls.instance = super(Spark, cls).__new__(cls)
+            cls.instance = super(DataManager, cls).__new__(cls)
         return cls.instance
 
     def __init__(
@@ -41,8 +52,9 @@ class Spark:
             [list[str]], list[list[FeedbackTopic]]
         ],
         concurrency_manager: ConcurrencyManager,
+        pages: SparkTable,
     ):
-        self.spark = configure_spark_with_delta_pip(
+        self._spark = configure_spark_with_delta_pip(
             SparkSession.builder.appName("FeedPulse")
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
             .config(
@@ -59,9 +71,24 @@ class Spark:
         self.concurrency_manager = concurrency_manager
         self.stream_in = stream_in
         self.stream_out = stream_out
+        self.pages = pages
 
     def start_streaming_job(self):
         self._streaming_worker()
+
+    def stream_by_polling(self):
+        df = self.read(self.pages)
+        if df:
+            flattened_df = self._get_flattened_polled_data(df)
+
+            processed_comments = self.read(self.stream_out)
+            if processed_comments:
+                stream_df = self._get_unique(
+                    flattened_df, processed_comments, "comment_id"
+                )
+                self.add(self.stream_in, stream_df, "json").result()
+            else:
+                self.add(self.stream_in, flattened_df, "json").result()
 
     def add(
         self,
@@ -78,7 +105,7 @@ class Spark:
 
     def read(self, table: SparkTable) -> pyspark.sql.DataFrame | None:
         try:
-            return self.spark.read.format("delta").load(table.value)
+            return self._spark.read.format("delta").load(table.value)
         except Exception:
             return None
 
@@ -96,7 +123,7 @@ class Spark:
             df = row_data
         else:
             data_list = list(row_data)  # Convert iterable to list for size checking
-            df = self.spark.createDataFrame(data_list)
+            df = self._spark.createDataFrame(data_list)
             if (
                 len(data_list) < 100
             ):  # For small datasets, reduce the number of partitions to lower Spark-level parallelism
@@ -104,22 +131,11 @@ class Spark:
         df.write.mode("append").format(write_format).save(table.value)
 
     def _streaming_worker(self):
-        # Define schema for input streaming data
-        input_stream_schema = StructType(
-            [
-                StructField("comment_id", StringType(), False),
-                StructField("post_id", StringType(), False),
-                StructField("content", StringType(), False),
-                StructField("created_time", TimestampType(), False),
-                StructField("platform", StringType(), False),
-            ]
-        )
-
         os.makedirs(self.stream_in.value, exist_ok=True)
         df = (
-            self.spark.readStream.format("json")
+            self._spark.readStream.format("json")
             .option("multiLine", False)
-            .schema(input_stream_schema)
+            .schema(self.INPUT_STREAM_SCHEMA)
             .load(self.stream_in.value)
         )
         df.writeStream.trigger(processingTime="5 seconds").foreachBatch(
@@ -184,3 +200,29 @@ class Spark:
             batch_results.append(row_dict)
 
         return batch_results
+
+    def _get_unique(
+        self, new_df: pyspark.sql.DataFrame, old_df: pyspark.sql.DataFrame, on: str
+    ) -> pyspark.sql.DataFrame:
+        """
+        Returns a new dataframe without duplicate rows based on an id.
+        """
+        return new_df.join(old_df, on=on, how="left_anti")
+
+    def _get_flattened_polled_data(self, df) -> pyspark.sql.DataFrame:
+        def process_page(row):
+            try:
+                ac_token = row["access_token"]
+                platform = row["platform"]
+
+                if platform == "facebook":
+                    return FacebookDataProvider(ac_token).get_posts()
+
+            # TODO: Integrate Instagram
+            # elif platform == "instagram":
+            #     return InstagramDataProvider(ac_token).get_posts()
+            except Exception:
+                return []
+
+        results_rdd = df.rdd.flatMap(process_page)
+        return self._spark.createDataFrame(results_rdd)
