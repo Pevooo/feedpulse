@@ -8,6 +8,7 @@ from src.config.environment import Environment
 class HFModelProvider(ModelProvider):
     def __init__(self):
         self.client = InferenceClient(token=Environment.hf_token)
+        self.provider = "hf"
 
     def generate_content(self, prompt: Prompt, model: HFModel = HFModel.DEFAULT) -> str:
         return self.client.text_generation(
