@@ -29,7 +29,7 @@ namespace Api.Core.Features.Users.Queries.Handlers
 
         public async Task<Response<GetUserByIdResponse>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            var user = _userManager.Users.SingleOrDefaultAsync(x => x.Id == request.Id);
+            var user = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == request.Id);
             if (user == null)
             {
                 return NotFound<GetUserByIdResponse>("User is not Exist");

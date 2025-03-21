@@ -48,7 +48,7 @@ namespace Api.Service.Implementation
                 JwtId = JwtToken.Id,
                 Token = Token,
                 RefreshToken = RefreshToken.Token,
-                AppUserId = user.UserName,
+                AppUserId = user.Id,
 
             };
             _ = await _userRefreshTokenRepository.AddAsync(UserRefreshToken);

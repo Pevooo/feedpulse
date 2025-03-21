@@ -8,7 +8,7 @@ namespace Api.Data.Entities
 {
 	public class Reports
 	{
-		public string Id { get; set; }
+		public int Id { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public string InsightsData { get; set; }
 	}

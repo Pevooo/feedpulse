@@ -1,0 +1,16 @@
+<div class="dashboard-container">
+  <div class="header">
+    <fb:login-button 
+      scope="pages_show_list,pages_read_engagement"
+      onlogin="checkLoginState();">
+    </fb:login-button>
+    
+    <button (click)="login()">Login with Facebook</button>
+  </div>
+
+  <div *ngIf="userData">
+    <h3>Welcome, {{ userData.name }}</h3>
+    <p>Email: {{ userData.email }}</p>
+    <img [src]="userData.picture?.data.url" alt="Profile Picture">
+  </div>
+</div>

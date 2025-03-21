@@ -74,7 +74,7 @@
               "buildTarget": "adminDashboard:build:production"
             },
             "development": {
-              "buildTarget": "adminDashboard:build:development"
+              "buildTarget": "adminDashboard:build:development"             
             }
           },
           "defaultConfiguration": "development"
