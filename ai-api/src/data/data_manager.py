@@ -18,12 +18,14 @@ from pyspark.sql.types import (
 )
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
+from src.config.settings import Settings
+from src.config.updatable import Updatable
 from src.data.spark_table import SparkTable
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.topics.feedback_topic import FeedbackTopic
 
 
-class DataManager:
+class DataManager(Updatable):
     instance: "DataManager"
 
     INPUT_STREAM_SCHEMA = StructType(
@@ -53,6 +55,7 @@ class DataManager:
         ],
         concurrency_manager: ConcurrencyManager,
         pages: SparkTable,
+        processing_batch_size: int = 32,
     ):
         self._spark = configure_spark_with_delta_pip(
             SparkSession.builder.appName("FeedPulse")
@@ -72,6 +75,7 @@ class DataManager:
         self.stream_in = stream_in
         self.stream_out = stream_out
         self.pages = pages
+        self.processing_batch_size = processing_batch_size
 
     def start_streaming_job(self):
         self._streaming_worker()
@@ -147,7 +151,10 @@ class DataManager:
             return
 
         # Add a batch_id column to group every 32 rows
-        df = df.withColumn("batch_id", floor(monotonically_increasing_id() / 32))
+        df = df.withColumn(
+            "batch_id",
+            floor(monotonically_increasing_id() / self.processing_batch_size),
+        )
         grouped_df = df.groupBy("batch_id").agg(
             collect_list(struct(*df.columns)).alias("batch_rows")
         )
@@ -226,3 +233,6 @@ class DataManager:
 
         results_rdd = df.rdd.flatMap(process_page)
         return self._spark.createDataFrame(results_rdd)
+
+    def update(self) -> None:
+        self.processing_batch_size = Settings.processing_batch_size

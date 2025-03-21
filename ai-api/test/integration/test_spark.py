@@ -347,7 +347,7 @@ class TestSpark(unittest.TestCase):
             sleep(0.05)
         else:
             self.fail(
-                f"Wrong Concurrent Jobs Found({len(self.spark._spark.sparkContext.statusTracker().getActiveJobsIds())} != {num_jobs})"
+                f"Wrong Concurrent Jobs Found({len(self.data_manager._spark.sparkContext.statusTracker().getActiveJobsIds())} != {num_jobs})"
             )
 
     def empty_dir(self, path_to_directory: str):
@@ -360,9 +360,9 @@ class TestSpark(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        if os.path.exists("test_spark"):
-            shutil.rmtree("test_spark")
-
         for query in cls.data_manager._spark.streams.active:
             query.stop()
         cls.data_manager._spark.stop()
+
+        if os.path.exists("test_spark"):
+            shutil.rmtree("test_spark")
