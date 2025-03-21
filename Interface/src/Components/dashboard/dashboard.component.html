@@ -1,21 +1,16 @@
 <div class="dashboard-container">
-    <div class="header">
-      <button class="fb-connect-btn" 
-              [ngClass]="{'connected': isConnected}" 
-              [disabled]="isConnected" 
-              (click)="connectWithFacebook()">
-        {{ isConnected ? 'Connected' : 'Connect with Facebook' }}
-      </button>
-      <button class="fb-connect-btn" [disabled]="isConnected" 
-      (click)="logout()">
-      logout
-      </button>
-      <div class="status">{{ statusMessage }}</div>
-    </div>
-  
-    <div class="section" [ngClass]="{'active': isConnected}">
-      <h2>Connected Successfully!</h2>
-      <p>Check the console for user data or implement your pages list here.</p>
-    </div>
-   
+  <div class="header">
+    <fb:login-button 
+      scope="pages_show_list,pages_read_engagement"
+      onlogin="checkLoginState();">
+    </fb:login-button>
+    
+    <button (click)="login()">Login with Facebook</button>
   </div>
+
+  <div *ngIf="userData">
+    <h3>Welcome, {{ userData.name }}</h3>
+    <p>Email: {{ userData.email }}</p>
+    <img [src]="userData.picture?.data.url" alt="Profile Picture">
+  </div>
+</div>

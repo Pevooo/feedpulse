@@ -5,6 +5,8 @@ using Api.Infrastructure.Data;
 using Api.Service.Abstracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Text;
+using System.Text.Json;
 
 namespace Api.Service.Implementation
 {
@@ -40,7 +42,27 @@ namespace Api.Service.Implementation
                 organization.PageAccessToken = longlivedtoken;
 
                 // send the facebookpageid ,description and accesstoken to ai api 
+                var url = "https://localhost:5000/register_token";
 
+                var requestBody = new
+                {
+                    page_id = organization.FacebookId,
+                    access_token = longlivedtoken,
+                    platform = "Facebook"
+                };
+
+                var jsonContent = new StringContent(
+                    JsonSerializer.Serialize(requestBody),
+                    Encoding.UTF8,
+                    "application/json"
+                );
+
+                var response = await _httpClient.PostAsync(url, jsonContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+                }
                 // add the organization
                 _ = _applicationDbContext.Organizations.Add(organization);
 
