@@ -8,8 +8,7 @@ from src.reports.report_handler import ReportHandler
 from src.topics.topic_detector import TopicDetector
 
 
-class TestEndToEnd(unittest.TestCase):
-
+class TestRemoteConfig(unittest.TestCase):
     def setUp(self):
         """Set up the Flask app and test client."""
 
