@@ -2,7 +2,7 @@ google-generativeai==0.8.3
 flask==3.0.3
 gunicorn==23.0.0
 torch==2.5.1
-transformers==4.46.2
+transformers==4.48.0
 accelerate==1.1.1
 openai==1.55.3
 pyspark==3.5.4
