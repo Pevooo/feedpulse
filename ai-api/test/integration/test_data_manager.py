@@ -1,7 +1,9 @@
+import json
 import os
 import unittest
 import shutil
 import datetime
+import uuid
 from enum import Enum
 from time import sleep
 
@@ -20,7 +22,7 @@ class FakeTable(Enum):
     TEST_T2 = "test_spark/test_t2"
 
 
-class TestSpark(unittest.TestCase):
+class TestDataManager(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         def fake_classification_function(batch: list[str]) -> list[bool | None]:
@@ -127,11 +129,10 @@ class TestSpark(unittest.TestCase):
             }
         ]
 
-        self.data_manager._spark.createDataFrame(data_in).write.mode("append").format(
-            "json"
-        ).save(folder_path)
+        with open(f"{folder_path}/{uuid.uuid4()}.json", "w") as f:
+            json.dump(data_in, f, indent=4)
 
-        sleep(20)
+        sleep(30)
 
         df = self.data_manager._spark.read.format("delta").load(
             "test_spark/test_streaming_out"
@@ -185,14 +186,12 @@ class TestSpark(unittest.TestCase):
             }
         ]
 
-        self.data_manager._spark.createDataFrame(data_in_1).write.mode("append").format(
-            "json"
-        ).save("test_spark/test_streaming_in")
-        self.data_manager._spark.createDataFrame(data_in_2).write.mode("append").format(
-            "json"
-        ).save("test_spark/test_streaming_in")
+        with open(f"{FakeTable.TEST_STREAMING_IN.value}/{uuid.uuid4()}.json", "w") as f:
+            json.dump(data_in_1, f, indent=4)
+        with open(f"{FakeTable.TEST_STREAMING_IN.value}/{uuid.uuid4()}.json", "w") as f:
+            json.dump(data_in_2, f, indent=4)
 
-        sleep(20)
+        sleep(30)
 
         df = self.data_manager._spark.read.format("delta").load(
             "test_spark/test_streaming_out"
@@ -249,11 +248,10 @@ class TestSpark(unittest.TestCase):
             }
         ] * 32
 
-        self.data_manager._spark.createDataFrame(data_in).write.mode("append").format(
-            "json"
-        ).save("test_spark/test_streaming_in")
+        with open(f"{FakeTable.TEST_STREAMING_IN.value}/{uuid.uuid4()}.json", "w") as f:
+            json.dump(data_in, f, indent=4)
 
-        sleep(20)
+        sleep(30)
 
         df = self.data_manager._spark.read.format("delta").load(
             "test_spark/test_streaming_out"
