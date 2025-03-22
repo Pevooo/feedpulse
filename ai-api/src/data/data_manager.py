@@ -1,4 +1,8 @@
+import json
 import os
+import shutil
+import tempfile
+import uuid
 from concurrent.futures import Future
 from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
@@ -15,6 +19,7 @@ from pyspark.sql.types import (
     StructType,
     StringType,
     TimestampType,
+    ArrayType,
 )
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
@@ -23,6 +28,7 @@ from src.config.updatable import Updatable
 from src.data.spark_table import SparkTable
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.topics.feedback_topic import FeedbackTopic
+from src.utlity.util import deprecated
 
 
 class DataManager(Updatable):
@@ -35,6 +41,20 @@ class DataManager(Updatable):
             StructField("content", StringType(), False),
             StructField("created_time", TimestampType(), False),
             StructField("platform", StringType(), False),
+        ]
+    )
+
+    OUTPUT_STREAM_SCHEMA = StructType(
+        [
+            StructField("comment_id", StringType(), False),
+            StructField("post_id", StringType(), False),
+            StructField("content", StringType(), False),
+            StructField("created_time", TimestampType(), False),  # ISO format string
+            StructField("platform", StringType(), False),
+            StructField("sentiment", StringType(), False),
+            StructField(
+                "related_topics", ArrayType(StringType()), False
+            ),  # Array of strings
         ]
     )
 
@@ -80,6 +100,22 @@ class DataManager(Updatable):
     def start_streaming_job(self):
         self._streaming_worker()
 
+    def stream_by_webhook(self, data: list[dict[str, Any]]) -> None:
+        # Generate a unique filename
+        filename = f"{uuid.uuid4()}.json"
+
+        # Create a temporary file in the system temp directory
+        with tempfile.NamedTemporaryFile("w", delete=False, suffix=".json") as tmp_file:
+            json.dump(data, tmp_file, indent=4, ensure_ascii=False)
+            temp_path = tmp_file.name  # Get the temporary file path
+
+        # Define the final destination path
+        final_path = os.path.join(self.stream_in.value, filename)
+
+        # Move the file to the real directory
+        shutil.move(temp_path, final_path)
+
+    @deprecated
     def stream_by_polling(self):
         df = self.read(self.pages)
         if df:
@@ -99,9 +135,10 @@ class DataManager(Updatable):
         table: SparkTable,
         row_data: Iterable[dict[str, Any]] | pyspark.sql.DataFrame,
         write_format: str = "delta",
+        schema: StructType = None,
     ) -> Future:
         return self.concurrency_manager.submit_job(
-            self._add_worker, table, row_data, write_format
+            self._add_worker, table, row_data, write_format, schema
         )
 
     def delete(self, table: SparkTable, row_data: str):
@@ -117,17 +154,24 @@ class DataManager(Updatable):
         pass
 
     # Modified _add_worker function to reduce Spark-level parallelism for small datasets
+    # noinspection PyTypeChecker
     def _add_worker(
         self,
         table: SparkTable,
         row_data: Iterable[dict[str, Any]] | pyspark.sql.DataFrame,
         write_format: str = "delta",
+        schema: StructType = None,
     ) -> None:
         if isinstance(row_data, pyspark.sql.DataFrame):
             df = row_data
         else:
             data_list = list(row_data)  # Convert iterable to list for size checking
-            df = self._spark.createDataFrame(data_list)
+
+            if schema:
+                df = self._spark.createDataFrame(data_list, schema=schema)
+            else:
+                df = self._spark.createDataFrame(data_list)
+
             if (
                 len(data_list) < 100
             ):  # For small datasets, reduce the number of partitions to lower Spark-level parallelism
@@ -138,7 +182,7 @@ class DataManager(Updatable):
         os.makedirs(self.stream_in.value, exist_ok=True)
         df = (
             self._spark.readStream.format("json")
-            .option("multiLine", False)
+            .option("multiLine", True)
             .schema(self.INPUT_STREAM_SCHEMA)
             .load(self.stream_in.value)
         )
@@ -173,7 +217,7 @@ class DataManager(Updatable):
         for future in futures:
             results.extend(future.result())
         # Store processed data in Spark table
-        self.add(self.stream_out, results)
+        self.add(self.stream_out, results, schema=self.OUTPUT_STREAM_SCHEMA)
 
     def process_batch(self, batch_rows):
         comments = [r.content for r in batch_rows]
@@ -208,6 +252,7 @@ class DataManager(Updatable):
 
         return batch_results
 
+    @deprecated
     def _get_unique(
         self, new_df: pyspark.sql.DataFrame, old_df: pyspark.sql.DataFrame, on: str
     ) -> pyspark.sql.DataFrame:
@@ -216,6 +261,7 @@ class DataManager(Updatable):
         """
         return new_df.join(old_df, on=on, how="left_anti")
 
+    @deprecated
     def _get_flattened_polled_data(self, df) -> pyspark.sql.DataFrame:
         def process_page(row):
             try:

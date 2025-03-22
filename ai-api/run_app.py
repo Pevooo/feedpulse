@@ -69,7 +69,7 @@ def run_app(
         topic_detector=topic_detector,
         report_handler=report_handler,
         exception_reporter=exception_reporter,
-        spark=data_manager,
+        data_manager=data_manager,
         data_streamer=data_streamer,
     )
 

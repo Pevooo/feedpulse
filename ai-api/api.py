@@ -11,6 +11,7 @@ from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.data.data_manager import DataManager, SparkTable
 from src.topics.topic_detector import TopicDetector
+from src.webhooks.facebook_webhook_handler import FacebookWebhookHandler
 
 
 class FeedPulseAPI:
@@ -20,7 +21,7 @@ class FeedPulseAPI:
         topic_detector: TopicDetector,
         report_handler: ReportHandler,
         exception_reporter: ExceptionReporter,
-        spark: DataManager,
+        data_manager: DataManager,
         data_streamer: DataStreamer,
     ):
         self.flask_app = Flask(__name__)
@@ -28,15 +29,14 @@ class FeedPulseAPI:
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
         self.reporter = exception_reporter
-        self.spark = spark
+        self.data_manager = data_manager
         self.data_streamer = data_streamer
 
         self.__setup_routes()
         self.__setup_exception_reporter()
 
     def run(self):
-        self.spark.start_streaming_job()  # Will run on another thread
-        self.data_streamer.start_streaming()  # Will run on another thread
+        self.data_manager.start_streaming_job()  # Will run on another thread
         self.flask_app.run(threaded=True)  # Will run on the main thread
 
     def __setup_exception_reporter(self):
@@ -57,13 +57,25 @@ class FeedPulseAPI:
             # 2) Save the data in the streaming folder
             return Response.success("Success")
 
-        @self.flask_app.route(Router.FACEBOOK_WEBHOOK, methods=["POST"])
+        @self.flask_app.route(Router.FACEBOOK_WEBHOOK, methods=["GET", "POST"])
         def facebook_webhook():
-            # TODO: Implement Facebook Webhook
+            # This method does not return responses from the `Response` class due to compatability issues with graph api
+            if request.method == "GET":
+                # Extract the query parameters sent by Facebook
+                mode = request.args.get("hub.mode")
+                token = request.args.get("hub.verify_token")
+                challenge = request.args.get("hub.challenge")
 
-            # 1) Get the data changes and process them into a unit format
-            # 2) Save the data in the streaming folder
-            pass
+                # Check if the mode is 'subscribe' and the verify token matches
+                if mode == "subscribe" and token == "test":
+                    # Respond with the challenge token from the request
+                    return challenge, 200
+                else:
+                    # Token mismatch or wrong mode; return an error
+                    return "Verification token mismatch", 403
+            elif request.method == "POST":
+                FacebookWebhookHandler(self.data_manager).handle(request.get_json())
+                return "Event received", 200
 
         @self.flask_app.route(Router.REMOTE_CONFIG_ROUTE, methods=["GET", "POST"])
         def remote_config():
@@ -96,14 +108,14 @@ class FeedPulseAPI:
                         "Error occurred: Please check your access token or page_id."
                     )
 
-                pages_df = self.spark.read(SparkTable.PAGES)
+                pages_df = self.data_manager.read(SparkTable.PAGES)
                 existing_entry_df = None
                 if pages_df is not None:
                     pages_df.cache()
                     existing_entry_df = pages_df.filter(pages_df.page_id == page_id)
 
                 if existing_entry_df and not existing_entry_df.isEmpty():
-                    self.spark.update(
+                    self.data_manager.update(
                         SparkTable.PAGES,
                         "page_id",
                         page_id,
@@ -117,7 +129,7 @@ class FeedPulseAPI:
                             "platform": platform,
                         }
                     ]
-                    self.spark.add(SparkTable.PAGES, row).result()
+                    self.data_manager.add(SparkTable.PAGES, row).result()
 
                 return Response.success("Registered successfully")
             except Exception as e:
