@@ -7,6 +7,7 @@ from src.config.settings import Settings
 from src.config.updatable import Updatable
 from src.data_streamers.data_streamer import DataStreamer
 from src.data.data_manager import DataManager
+from src.utlity.util import deprecated
 
 
 class PollingDataStreamer(DataStreamer, Updatable):
@@ -20,9 +21,11 @@ class PollingDataStreamer(DataStreamer, Updatable):
         self.trigger_time = trigger_time
         self.concurrency_manager = concurrency_manager
 
+    @deprecated
     def start_streaming(self) -> None:
         self.concurrency_manager.submit_job(self.streaming_worker)
 
+    @deprecated
     def streaming_worker(self):
         try:
             self.data_manager.stream_by_polling()
