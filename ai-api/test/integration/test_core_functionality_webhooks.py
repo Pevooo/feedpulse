@@ -93,7 +93,6 @@ class TestCoreFunctionality(unittest.TestCase):
                                         "status_type": "mobile_status_update",
                                         "is_published": True,
                                         "updated_time": "2025-03-22T18:20:04+0000",
-                                        "permalink_url": "https://www.facebook.com/permalink.php?story_fbid=pfbid0fDjUxFJkKW5oNJg3cpUeTEMcC9GoQBSAmfQvUsQDmJeUDZFbrxTanX3ai2KpKJBPl&id=61567848233940",
                                         "promotion_status": "inactive",
                                         "id": "448242228374517_122131676912594941",
                                     },
