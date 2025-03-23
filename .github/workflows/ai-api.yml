@@ -104,13 +104,35 @@ jobs:
         id: benchmark
         run: |
           URL_register="http://127.0.0.1:5000/register_token"
-          URL_webhook="http://127.0.0.1:5000/facebook_webhook"
+
           # Create Lua script for wrk to send JSON payload
           cat <<EOL > register_post.lua
-          cat <<EOL > webhook_post.lua
           wrk.method = "POST"
           wrk.body   = '{"access_token": "test", "platform": "facebook", "page_id": "1251512561"}'
-              wrk.body   = '{
+          wrk.headers["Content-Type"] = "application/json"
+          EOL
+
+          # Define different test cases
+          TEST1=$(wrk -t2 -c10 -d30s -T30s -s register_post.lua $URL_register)
+          TEST2=$(wrk -t4 -c20 -d30s -T30s -s register_post.lua $URL_register)
+          
+          # Format results
+          echo "### Load Test Results" > wrk_results.md
+          echo "#### **Test 1**: 2 threads, 10 connections, 60s" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          echo "$TEST1" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          
+          echo "#### **Test 2**: 4 threads, 20 connections, 60s" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          echo "$TEST2" >> wrk_results.md
+          echo '```' >> wrk_results.md
+
+          URL_webhook="http://127.0.0.1:5000/facebook_webhook"
+
+          cat <<EOL > webhook_post.lua
+          wrk.method = "POST"
+                        wrk.body   = '{
                 "entry": [{
                   "id": "448242228374517",
                   "time": 1742667607,
@@ -134,22 +156,10 @@ jobs:
           wrk.headers["Content-Type"] = "application/json"
           EOL
 
-          # Define different test cases
-          TEST1=$(wrk -t2 -c10 -d30s -T30s -s register_post.lua $URL_register)
-          TEST2=$(wrk -t4 -c20 -d30s -T30s -s register_post.lua $URL_register)
           WEBHOOK_TEST1=$(wrk -t2 -c10 -d30s -T30s -s webhook_post.lua $URL_webhook)
           WEBHOOK_TEST2=$(wrk -t4 -c20 -d30s -T30s -s webhook_post.lua $URL_webhook)
-          # Format results
+
           echo "### Load Test Results" > wrk_results.md
-          echo "#### **Test 1**: 2 threads, 10 connections, 60s" >> wrk_results.md
-          echo '```' >> wrk_results.md
-          echo "$TEST1" >> wrk_results.md
-          echo '```' >> wrk_results.md
-          
-          echo "#### **Test 2**: 4 threads, 20 connections, 60s" >> wrk_results.md
-          echo '```' >> wrk_results.md
-          echo "$TEST2" >> wrk_results.md
-          echo '```' >> wrk_results.md
           echo "#### **WEBHOOK_TEST 1 **: 2 threads, 10 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
           echo "$TEST1" >> wrk_results.md
