@@ -103,18 +103,18 @@ jobs:
         if: github.event_name == 'pull_request' && success()
         id: benchmark
         run: |
-          URL="http://127.0.0.1:5000/register_token"
+          URL_register="http://127.0.0.1:5000/register_token"
 
           # Create Lua script for wrk to send JSON payload
-          cat <<EOL > post.lua
+          cat <<EOL > register_post.lua
           wrk.method = "POST"
           wrk.body   = '{"access_token": "test", "platform": "facebook", "page_id": "1251512561"}'
           wrk.headers["Content-Type"] = "application/json"
           EOL
 
           # Define different test cases
-          TEST1=$(wrk -t2 -c10 -d30s -T30s -s post.lua $URL)
-          TEST2=$(wrk -t4 -c20 -d30s -T30s -s post.lua $URL)
+          TEST1=$(wrk -t2 -c10 -d30s -T30s -s register_post.lua $URL_register)
+          TEST2=$(wrk -t4 -c20 -d30s -T30s -s register_post.lua $URL_register)
           
           # Format results
           echo "### Load Test Results" > wrk_results.md
@@ -126,6 +126,47 @@ jobs:
           echo "#### **Test 2**: 4 threads, 20 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
           echo "$TEST2" >> wrk_results.md
+          echo '```' >> wrk_results.md
+
+          URL_webhook="http://127.0.0.1:5000/facebook_webhook"
+
+          cat <<EOL > webhook_post.lua
+          wrk.method = "POST"
+              wrk.body   = '{
+                "entry": [{
+                  "id": "448242228374517",
+                  "time": 1742667607,
+                  "changes": [{
+                    "value": {
+                      "from": {"id": "448242228374517", "name": "SuperTester"},
+                      "post": {"status_type": "mobile_status_update", "is_published": true, "updated_time": "2025-03-22T18:20:04+0000", "promotion_status": "inactive", "id": "448242228374517_122131676912594941"},
+                      "message": "test message",
+                      "post_id": "448242228374517_122131676912594941",
+                      "comment_id": "122131676912594941_1213590066982748",
+                      "created_time": 1742667604,
+                      "item": "comment",
+                      "parent_id": "122131676912594941_542072878449250",
+                      "verb": "add"
+                    },
+                    "field": "feed"
+                  }]
+                }],
+                "object": "page"
+              }'
+          wrk.headers["Content-Type"] = "application/json"
+          EOL
+
+          WEBHOOK_TEST1=$(wrk -t2 -c10 -d30s -T30s -s webhook_post.lua $URL_webhook)
+          WEBHOOK_TEST2=$(wrk -t4 -c20 -d30s -T30s -s webhook_post.lua $URL_webhook)
+
+          echo "#### **WEBHOOK_TEST1**: 2 threads, 10 connections, 60s" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          echo "$WEBHOOK_TEST1" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          
+          echo "#### **WEBHOOK_TEST2**: 4 threads, 20 connections, 60s" >> wrk_results.md
+          echo '```' >> wrk_results.md
+          echo "$WEBHOOK_TEST2" >> wrk_results.md
           echo '```' >> wrk_results.md
 
       - name: Comment on PR with Benchmark Results
