@@ -162,12 +162,12 @@ jobs:
           echo "### Load Test Results" > wrk_results.md
           echo "#### **WEBHOOK_TEST1 **: 2 threads, 10 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
-          echo "$WEBHOOK_TEST1 " >> wrk_results.md
+          echo "$WEBHOOK_TEST1" >> wrk_results.md
           echo '```' >> wrk_results.md
           
-          echo "#### **WEBHOOK_TEST 2**: 4 threads, 20 connections, 60s" >> wrk_results.md
+          echo "#### **WEBHOOK_TEST2**: 4 threads, 20 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
-          echo "$WEBHOOK_TEST1 " >> wrk_results.md
+          echo "$WEBHOOK_TEST2" >> wrk_results.md
           echo '```' >> wrk_results.md
 
       - name: Comment on PR with Benchmark Results
