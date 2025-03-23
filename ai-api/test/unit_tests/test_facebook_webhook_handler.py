@@ -69,6 +69,4 @@ class TestFacebookWebhookHandler(unittest.TestCase):
         self.assertTrue(result)
         self.mock_data_manager.stream_by_webhook.assert_called_once_with([])
 
-
-if __name__ == "__main__":
     unittest.main()
