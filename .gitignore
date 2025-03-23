@@ -82,3 +82,6 @@ bandit_report.html
 
 # Local Database
 /ai-api/database/
+
+#virtual environment
+/ai-api/venv
