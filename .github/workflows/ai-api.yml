@@ -132,7 +132,7 @@ jobs:
 
           cat <<EOL > webhook_post.lua
           wrk.method = "POST"
-                        wrk.body   = '{
+              wrk.body   = '{
                 "entry": [{
                   "id": "448242228374517",
                   "time": 1742667607,
@@ -159,8 +159,7 @@ jobs:
           WEBHOOK_TEST1=$(wrk -t2 -c10 -d30s -T30s -s webhook_post.lua $URL_webhook)
           WEBHOOK_TEST2=$(wrk -t4 -c20 -d30s -T30s -s webhook_post.lua $URL_webhook)
 
-          echo "### Load Test Results" > wrk_results.md
-          echo "#### **WEBHOOK_TEST1 **: 2 threads, 10 connections, 60s" >> wrk_results.md
+          echo "#### **WEBHOOK_TEST1**: 2 threads, 10 connections, 60s" >> wrk_results.md
           echo '```' >> wrk_results.md
           echo "$WEBHOOK_TEST1" >> wrk_results.md
           echo '```' >> wrk_results.md
