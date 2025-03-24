@@ -8,9 +8,9 @@ from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
 from src.models.hf_model_provider import HFModelProvider
+from src.reports.lida_report_handler import LidaReportHandler
 from src.topics.topic_detector import TopicDetector
 from src.data.data_manager import DataManager, SparkTable
-from src.reports.report_handler import ReportHandler
 from src.exception_handling.exception_reporter import ExceptionReporter
 
 
@@ -51,7 +51,7 @@ def run_app(
     # Define Concurrency Manager
     concurrency_manager = ConcurrencyManager()
 
-    report_handler = ReportHandler(model_provider, data_manager, stream_out)
+    report_handler = LidaReportHandler(data_manager, model_provider)
 
     # Define Streamer
     data_streamer = PollingDataStreamer(

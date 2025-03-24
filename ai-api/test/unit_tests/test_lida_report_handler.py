@@ -43,9 +43,7 @@ class TestLidaReportHandler(unittest.TestCase):
         result = self.report_handler.generate_report(Mock(), Mock(), Mock())
 
         self.assertEqual(len(result.goals), 1)
-        self.assertEqual(len(result.chart_raster), 1)
-        self.assertEqual(len(result.refined_chart_raster), 1)
+        self.assertEqual(len(result.chart_rasters), 1)
 
         self.assertEqual(result.goals[0], "Goal 1: q1")
-        self.assertEqual(result.chart_raster[0], "raster")
-        self.assertEqual(result.refined_chart_raster[0], "refined raster")
+        self.assertEqual(result.chart_rasters[0], "raster")

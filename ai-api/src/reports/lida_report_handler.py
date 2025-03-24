@@ -10,7 +10,9 @@ from lida import Manager, TextGenerationConfig
 
 class LidaReportHandler:
     def __init__(self, data_manager: DataManager, model_provider: GlobalModelProvider):
-        self.text_generator = CustomTextGenerator(model_provider)
+        self.text_generator = CustomTextGenerator(
+            lambda prompt: model_provider.generate_content(prompt)
+        )
         self.lida = Manager(text_gen=self.text_generator)
         self.config = TextGenerationConfig(n=1, temperature=0.5)
 
@@ -34,14 +36,14 @@ class LidaReportHandler:
         Generates visualization code using LIDA's visualize() method based on the data summary.
         The method reuses the first goal from the previously generated goals.
         """
-        chart = self.lida.visualize(
+        charts = self.lida.visualize(
             summary=summary,
             textgen_config=self.config,
             library="seaborn",
             goal=goal,
         )
 
-        return chart[0]
+        return charts
 
     def refine_chart(self, summary, chart_code):
         """
@@ -74,10 +76,8 @@ class LidaReportHandler:
         goals = self.goal(summary)
         for idx, goal in enumerate(goals):
             report.goals.append(f"Goal {idx+1}: {goal.question}")
-            chart_code = self.visualize(summary, goal)
-            report.chart_raster.append(chart_code.raster)
-            report.refined_chart_raster.append(
-                self.refine_chart(summary, chart_code.code)
-            )
+            charts_code = self.visualize(summary, goal)
+            for chart_code in charts_code:
+                report.chart_rasters.append(chart_code.raster)
 
         return report
