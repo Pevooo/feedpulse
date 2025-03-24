@@ -7,7 +7,9 @@ from src.config.environment import Environment
 
 class ORModelProvider(ModelProvider):
     def __init__(self):
-        self.client = OpenAI(api_key=Environment.or_api_key)
+        self.client = OpenAI(
+            base_url="https://openrouter.ai/api/v1", api_key=Environment.or_api_key
+        )
 
     def generate_content(self, prompt: Prompt, model: ORModel = ORModel.DEFAULT) -> str:
         return (
