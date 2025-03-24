@@ -26,13 +26,15 @@ from pyspark.sql.types import (
 )
 
 from src.concurrency.concurrency_manager import ConcurrencyManager
+from src.config.settings import Settings
+from src.config.updatable import Updatable
 from src.data.spark_table import SparkTable
 from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.topics.feedback_topic import FeedbackTopic
 from src.utlity.util import deprecated
 
 
-class DataManager:
+class DataManager(Updatable):
     instance: "DataManager"
 
     INPUT_STREAM_SCHEMA = StructType(
@@ -306,3 +308,6 @@ class DataManager:
         pandas_df = pd.DataFrame(data_as_dict)
 
         return pandas_df
+
+    def update(self) -> None:
+        self.processing_batch_size = Settings.processing_batch_size
