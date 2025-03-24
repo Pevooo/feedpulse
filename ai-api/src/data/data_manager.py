@@ -23,6 +23,12 @@ from src.data_providers.facebook_data_provider import FacebookDataProvider
 from src.topics.feedback_topic import FeedbackTopic
 
 
+import pandas as pd
+from datetime import datetime
+from pyspark.sql.functions import col, substring_index
+from src.data.spark_table import SparkTable
+
+
 class DataManager:
     instance: "DataManager"
 
@@ -226,3 +232,29 @@ class DataManager:
 
         results_rdd = df.rdd.flatMap(process_page)
         return self._spark.createDataFrame(results_rdd)
+
+    def prepare_data(
+        self, page_id: str, start_date: datetime, end_date: datetime
+    ) -> pd.DataFrame:
+        """
+        Prepare and filter the data.
+        Args:
+            page_id (str): The id of the page which the report belongs to.
+            start_date (datetime): The start date of the data to be included in the report.
+            end_date (datetime): The end date of the data to be included in the report.
+        Returns:
+            pd.DataFrame: The filtered data.
+        """
+        filtered_page_data_df = self.read(SparkTable.PROCESSED_COMMENTS).filter(
+            (substring_index(col("post_id"), "_", 1) == page_id)
+            & (col("created_time") >= start_date)
+            & (col("created_time") <= end_date)
+        )  # spark data frame
+
+        filtered_page_data_df = filtered_page_data_df.collect()
+
+        data_as_dict = [row.asDict() for row in filtered_page_data_df]
+
+        pandas_df = pd.DataFrame(data_as_dict)  # pandas data frame
+
+        return pandas_df
