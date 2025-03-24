@@ -71,8 +71,7 @@ class TestAPI(unittest.TestCase):
 
         fake_report = Report()
         fake_report.goals.append("Goal 1: g1")
-        fake_report.chart_raster.append("r1")
-        fake_report.refined_chart_raster.append("rr1")
+        fake_report.chart_rasters.append("r1")
 
         self.mock_report_handler.generate_report = Mock(return_value=fake_report)
 
@@ -97,7 +96,6 @@ class TestAPI(unittest.TestCase):
             response.get_json().get("body"),
             {
                 "goals": ["Goal 1: g1"],
-                "chart_raster": ["r1"],
-                "refined_chart_raster": ["rr1"],
+                "chart_rasters": ["r1"],
             },
         )

@@ -33,9 +33,9 @@ class TestLidaReportHandler(unittest.TestCase):
         )
 
         self.report_handler.visualize = Mock(
-            return_value=FakeChartExecutorResponse(
-                Mock(), Mock(), "raster", Mock(), Mock()
-            )
+            return_value=[
+                FakeChartExecutorResponse(Mock(), Mock(), "raster", Mock(), Mock())
+            ]
         )
 
         self.report_handler.refine_chart = Mock(return_value="refined raster")
