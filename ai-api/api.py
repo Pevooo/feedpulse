@@ -9,7 +9,7 @@ from src.data_streamers.data_streamer import DataStreamer
 from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.data.data_manager import DataManager, SparkTable
+from src.data.data_manager import DataManager
 from src.topics.topic_detector import TopicDetector
 from src.webhooks.facebook_webhook_handler import FacebookWebhookHandler
 
@@ -100,7 +100,9 @@ class FeedPulseAPI:
             data = request.json
             access_token = data.get("access_token")
             page_id = data.get("page_id")
-            registered = FacebookWebhookHandler(self.data_manager).register(page_id, access_token)
+            registered = FacebookWebhookHandler(self.data_manager).register(
+                page_id, access_token
+            )
             if registered:
                 return Response.success("Success")
             else:

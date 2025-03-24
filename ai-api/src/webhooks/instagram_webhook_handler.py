@@ -9,6 +9,7 @@ from src.webhooks.webhook_handler import WebhookHandler
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v22.0/"
 
+
 class InstagramWebhookHandler(WebhookHandler):
     def __init__(self, data_manager: DataManager):
         self.data_manager = data_manager
