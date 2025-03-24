@@ -133,7 +133,7 @@ class TestCoreFunctionality(unittest.TestCase):
         self.assertEqual(data["post_id"], "448242228374517_122131676912594941")
 
     def test_02_processed_data(self):
-        time.sleep(30)
+        time.sleep(40)
         processed_comments = (
             self.spark.read.format("delta")
             .load(FakeTable.TEST_STREAMING_OUT.value)
@@ -166,8 +166,11 @@ class TestCoreFunctionality(unittest.TestCase):
                 "end_date": "2025-07-10T08:15:45",
             },
         )
+
         self.assertTrue(response.ok)
-        self.assertTrue(isinstance(response.json()["body"], str))
+        self.assertTrue(isinstance(response.json()["body"], dict))
+        self.assertTrue(isinstance(response.json()["body"]["goals"], list))
+        self.assertTrue(isinstance(response.json()["body"]["chart_rasters"], list))
 
     @classmethod
     def tearDownClass(cls):
