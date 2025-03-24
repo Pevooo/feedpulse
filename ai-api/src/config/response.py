@@ -1,3 +1,4 @@
+import traceback
 from collections.abc import Callable
 from typing import Any
 
@@ -18,6 +19,7 @@ class Response:
         response = {
             "status": "FAILURE",
             "body": details,
+            "stacktrace": traceback.format_exc(),
         }
         return make_response(jsonify(response), status)
 

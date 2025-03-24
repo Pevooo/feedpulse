@@ -10,6 +10,12 @@ from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
 from src.data.data_manager import DataManager
+from src.reports.lida_report_handler import LidaReportHandler
+from src.models.global_model_provider import GlobalModelProvider
+from src.models.google_model_provider import GoogleModelProvider
+from src.models.groq_model_provider import GroqModelProvider
+from src.models.hf_model_provider import HFModelProvider
+from src.data.data_manager import DataManager, SparkTable
 from src.topics.topic_detector import TopicDetector
 from src.webhooks.facebook_webhook_handler import FacebookWebhookHandler
 
@@ -19,7 +25,7 @@ class FeedPulseAPI:
         self,
         feedback_classifier: FeedbackClassifier,
         topic_detector: TopicDetector,
-        report_handler: ReportHandler,
+        report_handler: LidaReportHandler,
         exception_reporter: ExceptionReporter,
         data_manager: DataManager,
         data_streamer: DataStreamer,
@@ -31,6 +37,12 @@ class FeedPulseAPI:
         self.reporter = exception_reporter
         self.data_manager = data_manager
         self.data_streamer = data_streamer
+        self.model_providers = [
+            GoogleModelProvider(),
+            HFModelProvider(),
+            GroqModelProvider(),
+        ]
+        self.global_model_provider = GlobalModelProvider(self.model_providers)
 
         self.__setup_routes()
         self.__setup_exception_reporter()
@@ -115,8 +127,10 @@ class FeedPulseAPI:
                 page_id = data.get("page_id")
                 start_date = datetime.fromisoformat(data.get("start_date"))
                 end_date = datetime.fromisoformat(data.get("end_date"))
-                report = self.report_handler.create(page_id, start_date, end_date)
-                return Response.success(report)
+                report = self.report_handler.generate_report(
+                    page_id, start_date, end_date
+                )
+                return Response.success(report.__dict__)
             except Exception as e:
                 print(e)
                 return Response.failure(str(e))

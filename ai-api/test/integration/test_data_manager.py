@@ -356,6 +356,135 @@ class TestDataManager(unittest.TestCase):
             else:
                 os.remove(file_path)  # Delete files
 
+    def test_filter_exclude_wrong_page_id(self):
+        start_time = datetime.datetime(
+            2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
+        )
+
+        end_time = datetime.datetime(
+            2025, 2, 26, 20, 47, 43, tzinfo=datetime.timezone.utc
+        )
+
+        test_data = self.data_manager._spark.createDataFrame(
+            [
+                {
+                    "post_id": "123_111",
+                    "created_time": datetime.datetime(
+                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                    "related_topics": ["cleanliness"],
+                },
+                {
+                    "post_id": "123_112",
+                    "created_time": datetime.datetime(
+                        2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                    "related_topics": [],
+                },
+                {
+                    "post_id": "124_111",
+                    "created_time": datetime.datetime(
+                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                    "related_topics": [],
+                },
+            ]
+        )
+
+        test_data.write.mode("overwrite").format("delta").save(
+            FakeTable.TEST_STREAMING_OUT.value
+        )
+
+        df = self.data_manager.filter_data("123", start_time, end_time)
+
+        data_as_dict = df.to_dict(orient="records")
+
+        self.assertIn(
+            {
+                "post_id": "123_112",
+                "created_time": datetime.datetime(
+                    2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                ).isoformat(),
+                "related_topics": "",
+            },
+            data_as_dict,
+        )
+        self.assertIn(
+            {
+                "post_id": "123_111",
+                "created_time": datetime.datetime(
+                    2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                ).isoformat(),
+                "related_topics": "cleanliness",
+            },
+            data_as_dict,
+        )
+        self.assertEqual(len(data_as_dict), 2)
+
+        if os.path.exists(FakeTable.TEST_STREAMING_OUT.value):
+            shutil.rmtree(FakeTable.TEST_STREAMING_OUT.value)
+            os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
+
+    def test_filter_exclude_wrong_dates(self):
+        start_time = datetime.datetime(
+            2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
+        )
+
+        end_time = datetime.datetime(
+            2025, 2, 26, 20, 47, 43, tzinfo=datetime.timezone.utc
+        )
+
+        test_data = self.data_manager._spark.createDataFrame(
+            [
+                {
+                    "post_id": "123_111",
+                    "created_time": datetime.datetime(
+                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                    "related_topics": ["hi", "hello"],
+                },
+                {
+                    "post_id": "123_112",
+                    "created_time": datetime.datetime(
+                        2026, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                    "related_topics": [],
+                },
+                {
+                    "post_id": "123_113",
+                    "created_time": datetime.datetime(
+                        2021, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                    "related_topics": [],
+                },
+            ]
+        )
+
+        test_data.write.mode("overwrite").format("delta").save(
+            FakeTable.TEST_STREAMING_OUT.value
+        )
+
+        df = self.data_manager.filter_data("123", start_time, end_time)
+
+        data_as_dict = df.to_dict(orient="records")
+
+        self.assertListEqual(
+            data_as_dict,
+            [
+                {
+                    "post_id": "123_111",
+                    "created_time": datetime.datetime(
+                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                    "related_topics": "hi, hello",
+                },
+            ],
+        )
+
+        if os.path.exists(FakeTable.TEST_STREAMING_OUT.value):
+            shutil.rmtree(FakeTable.TEST_STREAMING_OUT.value)
+            os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
+
     @classmethod
     def tearDownClass(cls):
         for query in cls.data_manager._spark.streams.active:
