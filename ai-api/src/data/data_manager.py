@@ -3,11 +3,14 @@ import os
 import shutil
 import tempfile
 import uuid
+import pandas as pd
+from datetime import datetime
 from concurrent.futures import Future
 from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
 import pyspark
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, substring_index
 from pyspark.sql.functions import (
     monotonically_increasing_id,
     collect_list,
@@ -279,6 +282,33 @@ class DataManager(Updatable):
 
         results_rdd = df.rdd.flatMap(process_page)
         return self._spark.createDataFrame(results_rdd)
+
+    def filter_data(
+        self, page_id: str, start_date: datetime, end_date: datetime
+    ) -> pd.DataFrame:
+        """
+        Prepare and filter the data.
+        Args:
+            page_id (str): The id of the page which the report belongs to.
+            start_date (datetime): The start date of the data to be included in the report.
+            end_date (datetime): The end date of the data to be included in the report.
+        Returns:
+            pd.DataFrame: The filtered data.
+        """
+        filtered_page_data_df = (
+            self.read(self.stream_out)
+            .filter(
+                (substring_index(col("post_id"), "_", 1) == page_id)
+                & (col("created_time") >= start_date)
+                & (col("created_time") <= end_date)
+            )
+            .collect()
+        )
+
+        data_as_dict = [row.asDict() for row in filtered_page_data_df]
+        df = pd.DataFrame(data_as_dict)
+        df["related_topics"] = df["related_topics"].apply(lambda x: ", ".join(x))
+        return df
 
     def update(self) -> None:
         self.processing_batch_size = Settings.processing_batch_size
