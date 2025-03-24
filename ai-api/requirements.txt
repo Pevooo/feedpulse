@@ -9,3 +9,4 @@ pyspark==3.5.4
 delta-spark==3.3.0
 lida==0.0.14
 pandas==2.2.3
+groq==0.18.0
