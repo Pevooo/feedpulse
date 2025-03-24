@@ -1,18 +1,17 @@
-import pandas as pd
 from datetime import datetime
+
 from src.reports.report import Report
-from src.models.global_model_provider import GlobalModelProvider
-from src.models.google_model_provider import GoogleModelProvider
-from lida import Manager, TextGenerationConfig
-
 from src.reports.custom_text_generator import CustomTextGenerator
-
+from src.models.global_model_provider import GlobalModelProvider
+from src.models.model_provider import ModelProvider
 from src.data.data_manager import DataManager
+
+from lida import Manager, TextGenerationConfig
 
 
 class LidaReportHandler:
-    def __init__(self, data_manager: DataManager):
-        model_provider = GlobalModelProvider([GoogleModelProvider()])
+    def __init__(self, data_manager: DataManager, model_providers: list[ModelProvider]):
+        model_provider = GlobalModelProvider(model_providers)
         self.text_generator = CustomTextGenerator(model_provider)
         self.lida = Manager(text_gen=self.text_generator)
         self.config = TextGenerationConfig(n=1, temperature=0.5)
@@ -23,7 +22,7 @@ class LidaReportHandler:
         """
         Generates a summary of the data by calling LIDA's summarize() method.
         """
-        data = self.data_manager.prepare_data(page_id, start_date, end_date)
+        data = self.data_manager.filter_data(page_id, start_date, end_date)
         return self.lida.summarize(data)
 
     def goal(self, summary):
@@ -32,7 +31,7 @@ class LidaReportHandler:
         """
         return self.lida.goals(summary=summary, n=2, textgen_config=self.config)
 
-    def visualize(self, summary, goal, idx):
+    def visualize(self, summary, goal):
         """
         Generates visualization code using LIDA's visualize() method based on the data summary.
         The method reuses the first goal from the previously generated goals.
@@ -46,7 +45,7 @@ class LidaReportHandler:
 
         return chart[0]
 
-    def refine_chart(self, summary, chart_code, idx):
+    def refine_chart(self, summary, chart_code):
         """
         Refines the generated visualization chart based on provided instructions.
         """
@@ -75,10 +74,10 @@ class LidaReportHandler:
         goals = self.goal(summary)
         for idx, goal in enumerate(goals):
             report.goals.append(f"Goal {idx+1}: {goal.question}")
-            chart_code = self.visualize(summary, goal, idx)
+            chart_code = self.visualize(summary, goal)
             report.chart_raster.append(chart_code.raster)
             report.refined_chart_raster.append(
-                self.refine_chart(summary, chart_code.code, idx)
+                self.refine_chart(summary, chart_code.code)
             )
 
         return report
