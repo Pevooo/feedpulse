@@ -372,7 +372,7 @@ class TestDataManager(unittest.TestCase):
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
-                    "related_topics": []
+                    "related_topics": ["cleanliness"]
                 },
                 {
                     "post_id": "123_112",
