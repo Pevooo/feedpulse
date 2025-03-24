@@ -1,26 +1,27 @@
 import json
 import pandas as pd
 from datetime import datetime
-
-from src.models.hf_model_provider import HFModelProvider
+import base64
+from src.models.global_model_provider import GlobalModelProvider
+from src.models.google_model_provider import GoogleModelProvider
 from lida import Manager, TextGenerationConfig
 
+from src.models.custom_text_generator import CustomTextGenerator
+
+
 from pyspark.sql.functions import col, substring_index
-from src.spark.spark import Spark
-from src.spark.spark_table import SparkTable
+from src.data.data_manager import DataManager
+from src.data.spark_table import SparkTable
 
 
 class LidaReportHandler:
-    def __init__(self, spark: Spark, comments_table: SparkTable):
-        # Instead of HFTextGenerator, we instantiate our HFModelProvider.
-        model_provider = HFModelProvider()
-        self.lida = Manager(model_provider)
+    def __init__(self, data_manager: DataManager, comments_table: SparkTable):
+        model_provider = GlobalModelProvider([GoogleModelProvider()])
+        self.text_generator = CustomTextGenerator(model_provider)
+        self.lida = Manager(text_gen=self.text_generator)
         self.config = TextGenerationConfig(n=1, temperature=0.5)
-        self.summary = None
-        self.chart_code = None
-        self.goals = None
 
-        self.spark = spark
+        self.data_manager = data_manager
         self.comments_table = comments_table
 
     def prepare_data(
@@ -35,117 +36,134 @@ class LidaReportHandler:
         Returns:
             pd.DataFrame: The filtered data.
         """
-        filtered_page_data_df = self.spark.read(self.comments_table).filter(
+        filtered_page_data_df = self.data_manager.read(self.comments_table).filter(
             (substring_index(col("post_id"), "_", 1) == page_id)
             & (col("created_time") >= start_date)
             & (col("created_time") <= end_date)
         )  # spark data frame
 
-        pandas_df = filtered_page_data_df.toPandas()  # pandas data frame
+        filtered_page_data_df = filtered_page_data_df.collect()
 
-        df = pd.DataFrame(pandas_df)
-        return df
+        data_as_dict = [row.asDict() for row in filtered_page_data_df]
+
+        pandas_df = pd.DataFrame(data_as_dict)  # pandas data frame
+
+        return pandas_df
 
     def summarize(self, page_id: str, start_date: datetime, end_date: datetime):
         """
         Generates a summary of the data by calling LIDA's summarize() method.
         """
         data = self.prepare_data(page_id, start_date, end_date)
-        self.summary = self.lida.summarize(data)
-        return self.summary
+        return self.lida.summarize(data)
 
-    def goal(self):
+    def goal(self, summary):
         """
         Generates and stores goals based on the summary.
         """
-        if self.summary is None:
-            raise ValueError("No summary available. Please run summarize() first.")
+        result = self.lida.goals(summary=summary, n=2, textgen_config=self.config)
 
-        self.goals = self.lida.goals(self.summary, n=2, textgen_config=self.config)
-        print("\n=== Generated Goals ===")
-        for idx, goal in enumerate(self.goals):
+        """        print("\n=== Generated Goals ===")
+        for idx, goal in enumerate(result):  # Ensure 'goals' key exists
             print(f"Goal {idx}:")
             print("  Question:", goal.question)
             print("  Suggested Visualization:", goal.visualization)
             print("  Rationale:", goal.rationale)
             print("---")
-        return self.goals
+        """
+        return result
 
-    def visualize(self):
+    def visualize(self, summary, goal, idx):
         """
         Generates visualization code using LIDA's visualize() method based on the data summary.
         The method reuses the first goal from the previously generated goals.
         """
-        if self.summary is None:
-            raise ValueError("No summary available. Please run summarize() first.")
-        if self.goals is None:
-            self.goal()
+
         chart = self.lida.visualize(
-            summary=self.summary,
+            summary=summary,
             textgen_config=self.config,
             library="seaborn",
-            goal=self.goals[0],
+            goal=goal,
         )
 
-        print("Generated Visualization Code:")
-        print(chart.code)
-        self.chart_code = chart.code
-        return chart.code
+        if "," in chart[0].raster:
+            base64_data = chart[0].raster.split(",")[1]
+        else:
+            base64_data = chart[0].raster
 
-    def explanation(self):
+        # Decode the base64 string to bytes
+        image_data = base64.b64decode(base64_data)
+
+        # Write the image data to a file
+        with open(
+            rf"D:\GP\graduation-project\ai-api\src\reports\charts\chart{idx+1}.jpg",
+            "wb",
+        ) as f:
+            f.write(image_data)
+
+        return chart[0].code
+
+    def explanation(self, chart_code):
         """
         Generates explanations for the visualization code.
         """
-        if self.chart_code is None:
-            self.visualize()
-        explanations = self.lida.explain(
-            code=self.chart_code, textgen_config=self.config
-        )
-        print("\n=== Chart Explanation ===")
-        for explanation in explanations[0]:
-            print(f"{explanation['section']}: {explanation['explanation']}")
 
-    def refine_chart(self):
+        explanations = self.lida.explain(code=chart_code, textgen_config=self.config)
+        print("\nExplaination for chart")
+        for explanation in explanations[0]:
+            print(f"{explanation['section']}: {explanation['explanation']}\n")
+
+    def refine_chart(self, summary, chart_code, idx):
         """
         Refines the generated visualization chart based on provided instructions.
         """
-        if self.summary is None:
-            raise ValueError("No summary available. Please run summarize() first.")
-        if self.chart_code is None:
-            self.visualize()
 
-        instructions = ["Change the title to 'Report: Positive vs Negative Feedback'"]
+        instructions = [
+            "Generate a feedback analysis report that clearly distinguishes positive and negative feedback. Highlight sentiment trends"
+        ]
 
         refined_chart = self.lida.edit(
-            code=self.chart_code,
-            summary=self.summary,
+            code=chart_code,
+            summary=summary,
             instructions=instructions,
             library="seaborn",
             textgen_config=self.config,
         )
 
-        return refined_chart
+        if "," in refined_chart[0].raster:
+            base64_data = refined_chart[0].raster.split(",")[1]
+        else:
+            base64_data = refined_chart[0].raster
+
+        image_data = base64.b64decode(base64_data)
+
+        with open(
+            rf"D:\GP\graduation-project\ai-api\src\reports\charts\refined_chart{idx+1}.jpg",
+            "wb",
+        ) as f:
+            f.write(image_data)
+
+        # return refined_chart[0].code
 
     def generate_report(self, page_id: str, start_date: datetime, end_date: datetime):
         """
         Generates a full report including summary, goals, and visualization.
         """
-        summary = self.summarize(page_id, start_date, end_date)
         report = f"--- Report Generated with LIDA ---\n\n"
+        summary = self.summarize(page_id, start_date, end_date)
         report += (
             f"Data Summary:\n" + json.dumps(summary, indent=2, default=str) + "\n\n"
         )
-        print("Summary complete.")
-        print(report)
 
-        goals = self.goal()
+        goals = self.goal(summary)
         for idx, goal in enumerate(goals):
             report += f"Goal {idx+1}: {goal.question}\n"
             report += f"Rationale: {goal.rationale}\n\n"
+            chart_code = self.visualize(summary, goal, idx)
+            report += f"Visualization Code (for Goal {idx+1}):\n" + chart_code + "\n"
+            # self.explanation(chart_code)
+            self.refine_chart(summary, chart_code, idx)
 
-        chart_code = self.visualize()
-        report += "Visualization Code (for Goal 1):\n" + chart_code + "\n"
-
-        print("\n=== Final Report ===")
+        report += f"--- Report Generated with LIDA END ---\n\n"
         print(report)
         return report
