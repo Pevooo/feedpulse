@@ -7,6 +7,8 @@ import uuid
 from enum import Enum
 from time import sleep
 
+import pandas as pd
+
 from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.data.data_manager import DataManager
 from src.data.spark_table import SparkTable
@@ -20,6 +22,8 @@ class FakeTable(Enum):
     TEST_STREAMING_OUT = "test_spark/test_streaming_out"
     TEST_T1 = "test_spark/test_t1"
     TEST_T2 = "test_spark/test_t2"
+    FILTER_DATE = "test_spark/test_filter_date"
+    FILTER_PAGE_ID = "test_spark/test_filter_page_id"
 
 
 class TestDataManager(unittest.TestCase):
@@ -355,6 +359,122 @@ class TestDataManager(unittest.TestCase):
                 shutil.rmtree(file_path)  # Recursively delete subdirectories
             else:
                 os.remove(file_path)  # Delete files
+
+    def test_filter_exclude_wrong_page_id(self):
+        start_time = datetime.datetime(
+            2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
+        )
+
+        end_time = datetime.datetime(
+            2025, 2, 26, 20, 47, 43, tzinfo=datetime.timezone.utc
+        )
+
+        test_data = self.data_manager._spark.createDataFrame(
+            [
+                {
+                    "post_id": "123_111",
+                    "created_time": datetime.datetime(
+                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                },
+                {
+                    "post_id": "123_112",
+                    "created_time": datetime.datetime(
+                        2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                },
+                {
+                    "post_id": "124_111",
+                    "created_time": datetime.datetime(
+                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                },
+            ]
+        )
+
+        test_data.write.format("delta").save(FakeTable.TEST_STREAMING_OUT.value)
+
+        df = self.data_manager.filter_data("123", start_time, end_time)
+
+        data_as_dict = df.to_dict(orient="records")
+
+        self.assertIn(
+            {
+                "post_id": "123_112",
+                "created_time": datetime.datetime(
+                    2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                ).isoformat(),
+            },
+            data_as_dict,
+        )
+        self.assertIn(
+            {
+                "post_id": "123_111",
+                "created_time": datetime.datetime(
+                    2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                ).isoformat(),
+            },
+            data_as_dict,
+        )
+        self.assertEqual(len(data_as_dict), 2)
+
+        if os.path.exists(FakeTable.TEST_STREAMING_OUT.value):
+            shutil.rmtree(FakeTable.TEST_STREAMING_OUT.value)
+            os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
+
+    def test_filter_exclude_wrong_dates(self):
+        start_time = datetime.datetime(
+            2025, 2, 21, 20, 47, 43, tzinfo=datetime.timezone.utc
+        )
+
+        end_time = datetime.datetime(
+            2025, 2, 26, 20, 47, 43, tzinfo=datetime.timezone.utc
+        )
+
+        test_data = self.data_manager._spark.createDataFrame(
+            [
+                {
+                    "post_id": "123_111",
+                    "created_time": datetime.datetime(
+                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                },
+                {
+                    "post_id": "123_112",
+                    "created_time": datetime.datetime(
+                        2026, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                },
+                {
+                    "post_id": "123_113",
+                    "created_time": datetime.datetime(
+                        2021, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                },
+            ]
+        )
+
+        test_data.write.format("delta").save(FakeTable.TEST_STREAMING_OUT.value)
+
+        df = self.data_manager.filter_data("123", start_time, end_time)
+
+        data_as_dict = df.to_dict(orient="records")
+
+        self.assertListEqual(
+            data_as_dict,
+            [
+                {
+                    "post_id": "123_111",
+                    "created_time": datetime.datetime(
+                        2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
+                    ).isoformat(),
+                },
+            ],
+        )
+
+        if os.path.exists(FakeTable.TEST_STREAMING_OUT.value):
+            shutil.rmtree(FakeTable.TEST_STREAMING_OUT.value)
+            os.makedirs(FakeTable.TEST_STREAMING_OUT.value, exist_ok=True)
 
     @classmethod
     def tearDownClass(cls):

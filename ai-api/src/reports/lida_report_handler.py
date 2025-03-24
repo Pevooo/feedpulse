@@ -62,7 +62,9 @@ class LidaReportHandler:
 
         return refined_chart[0].raster
 
-    def generate_report(self, page_id: str, start_date: datetime, end_date: datetime):
+    def generate_report(
+        self, page_id: str, start_date: datetime, end_date: datetime
+    ) -> Report:
         """
         Generates a full report including summary, goals, and visualization.
         """
