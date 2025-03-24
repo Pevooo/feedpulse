@@ -372,18 +372,21 @@ class TestDataManager(unittest.TestCase):
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
+                    "related_topics": []
                 },
                 {
                     "post_id": "123_112",
                     "created_time": datetime.datetime(
                         2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
+                    "related_topics": []
                 },
                 {
                     "post_id": "124_111",
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
+                    "related_topics": []
                 },
             ]
         )
@@ -436,18 +439,21 @@ class TestDataManager(unittest.TestCase):
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
+                    "related_topics": ["hi", "hello"],
                 },
                 {
                     "post_id": "123_112",
                     "created_time": datetime.datetime(
                         2026, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
+                    "related_topics": [],
                 },
                 {
                     "post_id": "123_113",
                     "created_time": datetime.datetime(
                         2021, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
+                    "related_topics": []
                 },
             ]
         )
