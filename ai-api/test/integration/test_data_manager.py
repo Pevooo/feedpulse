@@ -7,8 +7,6 @@ import uuid
 from enum import Enum
 from time import sleep
 
-import pandas as pd
-
 from src.concurrency.concurrency_manager import ConcurrencyManager
 from src.data.data_manager import DataManager
 from src.data.spark_table import SparkTable
