@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import requests
 from flask import Flask, request, jsonify
 
 from src.config.settings import Settings
@@ -11,7 +10,7 @@ from src.data_streamers.data_streamer import DataStreamer
 from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.reports.report_handler import ReportHandler
-from src.data.data_manager import DataManager, SparkTable
+from src.data.data_manager import DataManager
 from src.topics.topic_detector import TopicDetector
 from src.webhooks.facebook_webhook_handler import FacebookWebhookHandler
 
