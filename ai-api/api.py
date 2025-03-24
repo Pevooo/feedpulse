@@ -13,7 +13,6 @@ from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
 from src.models.groq_model_provider import GroqModelProvider
 from src.models.hf_model_provider import HFModelProvider
-from src.reports.report_handler import ReportHandler
 from src.data.data_manager import DataManager, SparkTable
 from src.topics.topic_detector import TopicDetector
 from src.webhooks.facebook_webhook_handler import FacebookWebhookHandler
@@ -24,7 +23,7 @@ class FeedPulseAPI:
         self,
         feedback_classifier: FeedbackClassifier,
         topic_detector: TopicDetector,
-        report_handler: ReportHandler,
+        report_handler: LidaReportHandler,
         exception_reporter: ExceptionReporter,
         data_manager: DataManager,
         data_streamer: DataStreamer,
@@ -42,9 +41,6 @@ class FeedPulseAPI:
             GroqModelProvider(),
         ]
         self.global_model_provider = GlobalModelProvider(self.model_providers)
-        self.lida_report_handler = LidaReportHandler(
-            self.data_manager, self.global_model_provider
-        )
 
         self.__setup_routes()
         self.__setup_exception_reporter()
@@ -156,7 +152,7 @@ class FeedPulseAPI:
                 page_id = data.get("page_id")
                 start_date = datetime.fromisoformat(data.get("start_date"))
                 end_date = datetime.fromisoformat(data.get("end_date"))
-                report = self.lida_report_handler.generate_report(
+                report = self.report_handler.generate_report(
                     page_id, start_date, end_date
                 )
                 return Response.success(report.__dict__)

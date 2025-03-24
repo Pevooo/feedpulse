@@ -6,6 +6,7 @@ from api import FeedPulseAPI
 from flask import jsonify
 
 from src.config.response import Response
+from src.reports.report import Report
 
 
 class TestAPI(unittest.TestCase):
@@ -67,7 +68,13 @@ class TestAPI(unittest.TestCase):
         self.mock_exception_reporter.report.assert_called_once()
 
     def test_report_handling_route(self):
-        self.mock_report_handler.create = Mock(return_value="fake_report")
+
+        fake_report = Report()
+        fake_report.goals.append("Goal 1: g1")
+        fake_report.chart_raster.append("r1")
+        fake_report.refined_chart_raster.append("rr1")
+
+        self.mock_report_handler.generate_report = Mock(return_value=fake_report)
 
         with self.app.test_request_context():
             response = self.client.post(
@@ -80,10 +87,17 @@ class TestAPI(unittest.TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        self.mock_report_handler.create.assert_called_once_with(
+        self.mock_report_handler.generate_report.assert_called_once_with(
             "fake_page_id",
             datetime(2024, 3, 4, 15, 30, 0),
             datetime(2025, 7, 10, 8, 15, 45),
         )
         self.assertEqual(response.get_json().get("status"), "SUCCESS")
-        self.assertEqual(response.get_json().get("body"), "fake_report")
+        self.assertEqual(
+            response.get_json().get("body"),
+            {
+                "goals": ["Goal 1: g1"],
+                "chart_raster": ["r1"],
+                "refined_chart_raster": ["rr1"],
+            },
+        )
