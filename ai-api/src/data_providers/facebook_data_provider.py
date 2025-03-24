@@ -12,6 +12,19 @@ class FacebookDataProvider(DataProvider):
     represents a data provider for the Facebook Graph API to fetch facebook data.
     """
 
+    def register_webhook(self, page_id: str) -> bool:
+        headers = {
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json",
+        }
+
+        data = {"subscribed_fields": ["feed"]}
+
+        response = requests.post(
+            f"{FACEBOOK_GRAPH_URL}{page_id}/subscribed_apps", headers=headers, json=data
+        )
+        return response.ok
+
     def get_page_id(self) -> str:
         """
         Retrieves the page ID associated with the provided page access token.
