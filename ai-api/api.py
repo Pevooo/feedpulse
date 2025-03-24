@@ -97,43 +97,14 @@ class FeedPulseAPI:
             """
             Register the access token
             """
-            try:
-                data = request.json
-                access_token = data.get("access_token")
-                page_id = data.get("page_id")
-                platform = data.get("platform")
-
-                if not access_token or not page_id:
-                    return Response.failure(
-                        "Error occurred: Please check your access token or page_id."
-                    )
-
-                pages_df = self.data_manager.read(SparkTable.PAGES)
-                existing_entry_df = None
-                if pages_df is not None:
-                    pages_df.cache()
-                    existing_entry_df = pages_df.filter(pages_df.page_id == page_id)
-
-                if existing_entry_df and not existing_entry_df.isEmpty():
-                    self.data_manager.update(
-                        SparkTable.PAGES,
-                        "page_id",
-                        page_id,
-                        {"access_token": access_token},
-                    )
-                else:
-                    row = [
-                        {
-                            "page_id": page_id,
-                            "access_token": access_token,
-                            "platform": platform,
-                        }
-                    ]
-                    self.data_manager.add(SparkTable.PAGES, row).result()
-
-                return Response.success("Registered successfully")
-            except Exception as e:
-                return Response.failure(f"Error occurred: {str(e)}")
+            data = request.json
+            access_token = data.get("access_token")
+            page_id = data.get("page_id")
+            registered = FacebookWebhookHandler(self.data_manager).register(page_id, access_token)
+            if registered:
+                return Response.success("Success")
+            else:
+                return Response.failure("Failure")
 
         @self.flask_app.route(Router.REPORT, methods=["GET", "POST"])
         def get_report():
