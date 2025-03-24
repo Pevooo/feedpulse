@@ -20,8 +20,6 @@ class FakeTable(Enum):
     TEST_STREAMING_OUT = "test_spark/test_streaming_out"
     TEST_T1 = "test_spark/test_t1"
     TEST_T2 = "test_spark/test_t2"
-    FILTER_DATE = "test_spark/test_filter_date"
-    FILTER_PAGE_ID = "test_spark/test_filter_page_id"
 
 
 class TestDataManager(unittest.TestCase):
@@ -390,7 +388,9 @@ class TestDataManager(unittest.TestCase):
             ]
         )
 
-        test_data.write.format("delta").save(FakeTable.TEST_STREAMING_OUT.value)
+        test_data.write.mode("overwrite").format("delta").save(
+            FakeTable.TEST_STREAMING_OUT.value
+        )
 
         df = self.data_manager.filter_data("123", start_time, end_time)
 
@@ -452,7 +452,9 @@ class TestDataManager(unittest.TestCase):
             ]
         )
 
-        test_data.write.format("delta").save(FakeTable.TEST_STREAMING_OUT.value)
+        test_data.write.mode("overwrite").format("delta").save(
+            FakeTable.TEST_STREAMING_OUT.value
+        )
 
         df = self.data_manager.filter_data("123", start_time, end_time)
 
