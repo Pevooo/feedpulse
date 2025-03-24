@@ -1,8 +1,13 @@
 from datetime import datetime, timezone
 from typing import Any
 
+import requests
+
 from src.data.data_manager import DataManager
 from src.webhooks.webhook_handler import WebhookHandler
+
+
+FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v22.0/"
 
 
 class FacebookWebhookHandler(WebhookHandler):
@@ -45,3 +50,16 @@ class FacebookWebhookHandler(WebhookHandler):
 
         self.data_manager.stream_by_webhook(comments)
         return True
+
+    def register(self, page_id: str, access_token: str) -> bool:
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+
+        data = {"subscribed_fields": ["feed"]}
+
+        response = requests.post(
+            f"{FACEBOOK_GRAPH_URL}{page_id}/subscribed_apps", headers=headers, json=data
+        )
+        return response.ok
