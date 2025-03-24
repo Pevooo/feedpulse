@@ -8,14 +8,12 @@ from src.config.router import Router
 from src.data_streamers.data_streamer import DataStreamer
 from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
-from src.reports.report_handler import ReportHandler
-from src.data.data_manager import DataManager
 from src.reports.lida_report_handler import LidaReportHandler
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
 from src.models.groq_model_provider import GroqModelProvider
 from src.models.hf_model_provider import HFModelProvider
-from src.data.data_manager import DataManager, SparkTable
+from src.data.data_manager import DataManager
 from src.topics.topic_detector import TopicDetector
 from src.webhooks.facebook_webhook_handler import FacebookWebhookHandler
 
