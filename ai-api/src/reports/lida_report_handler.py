@@ -149,10 +149,10 @@ class LidaReportHandler:
         """
         Generates a full report including summary, goals, and visualization.
         """
-        report = f"--- Report Generated with LIDA ---\n\n"
+        report = "--- Report Generated with LIDA ---\n\n"
         summary = self.summarize(page_id, start_date, end_date)
         report += (
-            f"Data Summary:\n" + json.dumps(summary, indent=2, default=str) + "\n\n"
+            "Data Summary:\n" + json.dumps(summary, indent=2, default=str) + "\n\n"
         )
 
         goals = self.goal(summary)
@@ -164,6 +164,6 @@ class LidaReportHandler:
             # self.explanation(chart_code)
             self.refine_chart(summary, chart_code, idx)
 
-        report += f"--- Report Generated with LIDA END ---\n\n"
+        report += "--- Report Generated with LIDA END ---\n\n"
         print(report)
         return report
