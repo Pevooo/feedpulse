@@ -159,7 +159,7 @@ class FeedPulseAPI:
                 report = self.lida_report_handler.generate_report(
                     page_id, start_date, end_date
                 )
-                return Response.success(report)
+                return Response.success(report.__dict__)
             except Exception as e:
                 print(e)
                 return Response.failure(str(e))
