@@ -23,6 +23,7 @@ class ConcurrencyManager:
                     traceback.format_exc(),
                 )
             else:
+                # Logs the result of the task
                 logging.info("Concurrent Task Result: %s", future.result())
 
         return _on_thread_done

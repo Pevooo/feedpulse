@@ -5,22 +5,22 @@ from src.config.settings import Settings
 
 class TestFeedPulseSettings(unittest.TestCase):
     def test_change_bool(self):
-        Settings._set_setting("enable_facebook_data_collection", "False")
+        Settings._update_setting("enable_facebook_data_collection", "False")
         self.assertEqual(Settings.enable_facebook_data_collection, False)
 
         # Backing to default so that it doesn't affect other tests
-        Settings._set_setting("enable_facebook_data_collection", "True")
+        Settings._update_setting("enable_facebook_data_collection", "True")
 
     def test_invalid_attribute(self):
         try:
-            Settings._set_setting("invalid_attr", "False")
+            Settings._update_setting("invalid_attr", "False")
         except Exception as e:
             self.fail(e)
 
     def test_invalid_bool_value(self):
         Settings.enable_x_data_collection = True
         try:
-            Settings._set_setting("enable_x_data_collection", "invalid_value")
+            Settings._update_setting("enable_x_data_collection", "invalid_value")
         except Exception as e:
             self.fail(e)
 
@@ -35,7 +35,7 @@ class TestFeedPulseSettings(unittest.TestCase):
                 "settingValue": True,
                 "prettyName": "Enable Facebook Data Collection",
                 "type": "bool",
-                "choices": ["true", "false"],
+                "choices": [True, False],
             },
             settings,
         )

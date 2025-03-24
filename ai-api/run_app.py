@@ -2,6 +2,7 @@ from transformers import pipeline
 
 from api import FeedPulseAPI
 from src.concurrency.concurrency_manager import ConcurrencyManager
+from src.config.settings import Settings
 from src.data_streamers.polling_data_streamer import PollingDataStreamer
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
@@ -18,11 +19,12 @@ def run_app(
     stream_out=SparkTable.PROCESSED_COMMENTS,
     paged_dir=SparkTable.PAGES,
     polling_streamer_trigger_time=60,
+    global_model_provider_retry_delay=60,
 ):
     # Define the global model provider (and load balancer)
     model_provider = GlobalModelProvider(
         providers=[GoogleModelProvider(), HFModelProvider()],
-        retry_delay=60,
+        retry_delay=global_model_provider_retry_delay,
     )
 
     # Define Processing Components
@@ -67,9 +69,13 @@ def run_app(
         topic_detector=topic_detector,
         report_handler=report_handler,
         exception_reporter=exception_reporter,
-        spark=data_manager,
+        data_manager=data_manager,
         data_streamer=data_streamer,
     )
+
+    Settings.register_observer(model_provider)
+    Settings.register_observer(data_manager)
+    Settings.register_observer(data_streamer)
 
     # Run the app
     app.run()
