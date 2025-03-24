@@ -3,15 +3,13 @@ from datetime import datetime
 from src.reports.report import Report
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
-from src.models.model_provider import ModelProvider
 from src.data.data_manager import DataManager
 
 from lida import Manager, TextGenerationConfig
 
 
 class LidaReportHandler:
-    def __init__(self, data_manager: DataManager, model_providers: list[ModelProvider]):
-        model_provider = GlobalModelProvider(model_providers)
+    def __init__(self, data_manager: DataManager, model_provider: GlobalModelProvider):
         self.text_generator = CustomTextGenerator(model_provider)
         self.lida = Manager(text_gen=self.text_generator)
         self.config = TextGenerationConfig(n=1, temperature=0.5)
