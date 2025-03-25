@@ -1,10 +1,11 @@
 import unittest
 from datetime import datetime
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from api import FeedPulseAPI
 from flask import jsonify
 
+from src.config.environment import Environment
 from src.config.response import Response
 from src.reports.report import Report
 
@@ -99,3 +100,85 @@ class TestAPI(unittest.TestCase):
                 "chart_rasters": ["r1"],
             },
         )
+
+    def test_facebook_webhook_get(self):
+        """Test GET request for Facebook webhook verification."""
+        valid_token = Environment.webhook_token
+        challenge_value = "123456"
+
+        response = self.client.get(
+            "/facebook_webhook",  # Ensure this matches `Router.FACEBOOK_WEBHOOK`
+            query_string={
+                "hub.mode": "subscribe",
+                "hub.verify_token": valid_token,
+                "hub.challenge": challenge_value,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.decode("utf-8"), challenge_value)
+
+    def test_facebook_webhook_get_invalid_token(self):
+        """Test GET request with an invalid verification token."""
+        response = self.client.get(
+            "/facebook_webhook",
+            query_string={
+                "hub.mode": "subscribe",
+                "hub.verify_token": "wrong_token",
+                "hub.challenge": "123456",
+            },
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data.decode("utf-8"), "Verification token mismatch")
+
+    @patch("src.webhooks.facebook_webhook_handler.FacebookWebhookHandler.handle")
+    def test_facebook_webhook_post(self, mock_handle):
+        """Test POST request handling an event."""
+
+        response = self.client.post("/facebook_webhook", json={"some": "event_data"})
+
+        mock_handle.assert_called_once_with({"some": "event_data"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.decode("utf-8"), "Event received")
+
+    def test_instagram_webhook_get(self):
+        """Test GET request for Instagram webhook verification."""
+        valid_token = Environment.webhook_token
+        challenge_value = "123456"
+
+        response = self.client.get(
+            "/instagram_webhook",
+            query_string={
+                "hub.mode": "subscribe",
+                "hub.verify_token": valid_token,
+                "hub.challenge": challenge_value,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.decode("utf-8"), challenge_value)
+
+    def test_instagram_webhook_get_invalid_token(self):
+        """Test GET request with an invalid verification token."""
+        response = self.client.get(
+            "/instagram_webhook",
+            query_string={
+                "hub.mode": "subscribe",
+                "hub.verify_token": "wrong_token",
+                "hub.challenge": "123456",
+            },
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data.decode("utf-8"), "Verification token mismatch")
+
+    @patch("src.webhooks.instagram_webhook_handler.InstagramWebhookHandler.handle")
+    def test_instagram_webhook_post(self, mock_handle):
+        """Test POST request handling an event."""
+
+        response = self.client.post("/instagram_webhook", json={"some": "event_data"})
+
+        mock_handle.assert_called_once_with({"some": "event_data"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.decode("utf-8"), "Event received")

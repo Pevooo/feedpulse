@@ -12,3 +12,4 @@ class Environment:
     groq_token: str = os.environ.get("GROQ_API_KEY")
     or_api_key: str = os.getenv("OR_API_KEY")
     is_production_environment: bool = os.getenv("PROD") is not None
+    webhook_token: str = os.getenv("WEBHOOK_TOKEN")
