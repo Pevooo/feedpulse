@@ -24,7 +24,7 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build web-api/web-api --configuration Release
 
       - name: dotnet publish
         run: dotnet publish web-api/web-api -c Release -o ${{env.DOTNET_ROOT}}/myapp
