@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask import Flask, request, jsonify
 
+from src.config.environment import Environment
 from src.config.settings import Settings
 from src.config.response import Response
 from src.config.router import Router
@@ -16,6 +17,7 @@ from src.models.hf_model_provider import HFModelProvider
 from src.data.data_manager import DataManager
 from src.topics.topic_detector import TopicDetector
 from src.webhooks.facebook_webhook_handler import FacebookWebhookHandler
+from src.webhooks.instagram_webhook_handler import InstagramWebhookHandler
 
 
 class FeedPulseAPI:
@@ -59,14 +61,6 @@ class FeedPulseAPI:
             return Response.server_error(e)
 
     def __setup_routes(self):
-        @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["GET", "POST"])
-        def instagram_webhook():
-            # TODO: Implement Instagram Webhook
-
-            # 1) Get the data changes and process them into a unit format
-            # 2) Save the data in the streaming folder
-            return Response.success("Success")
-
         @self.flask_app.route(Router.FACEBOOK_WEBHOOK, methods=["GET", "POST"])
         def facebook_webhook():
             # This method does not return responses from the `Response` class due to compatability issues with graph api
@@ -77,7 +71,7 @@ class FeedPulseAPI:
                 challenge = request.args.get("hub.challenge")
 
                 # Check if the mode is 'subscribe' and the verify token matches
-                if mode == "subscribe" and token == "test":
+                if mode == "subscribe" and token == Environment.webhook_token:
                     # Respond with the challenge token from the request
                     return challenge, 200
                 else:
@@ -85,6 +79,26 @@ class FeedPulseAPI:
                     return "Verification token mismatch", 403
             elif request.method == "POST":
                 FacebookWebhookHandler(self.data_manager).handle(request.get_json())
+                return "Event received", 200
+
+        @self.flask_app.route(Router.INSTAGRAM_WEBHOOK, methods=["GET", "POST"])
+        def instagram_webhook():
+            # This method does not return responses from the `Response` class due to compatability issues with graph api
+            if request.method == "GET":
+                # Extract the query parameters sent by Facebook
+                mode = request.args.get("hub.mode")
+                token = request.args.get("hub.verify_token")
+                challenge = request.args.get("hub.challenge")
+
+                # Check if the mode is 'subscribe' and the verify token matches
+                if mode == "subscribe" and token == Environment.webhook_token:
+                    # Respond with the challenge token from the request
+                    return challenge, 200
+                else:
+                    # Token mismatch or wrong mode; return an error
+                    return "Verification token mismatch", 403
+            elif request.method == "POST":
+                InstagramWebhookHandler(self.data_manager).handle(request.get_json())
                 return "Event received", 200
 
         @self.flask_app.route(Router.REMOTE_CONFIG_ROUTE, methods=["GET", "POST"])
@@ -110,9 +124,18 @@ class FeedPulseAPI:
             data = request.json
             access_token = data.get("access_token")
             page_id = data.get("page_id")
-            registered = FacebookWebhookHandler(self.data_manager).register(
-                page_id, access_token
-            )
+            platform = data.get("platform")
+            if platform == "facebook":
+                registered = FacebookWebhookHandler(self.data_manager).register(
+                    page_id, access_token
+                )
+            elif platform == "instagram":
+                registered = InstagramWebhookHandler(self.data_manager).register(
+                    page_id, access_token
+                )
+            else:
+                return Response.failure("Unsupported platform")
+
             if registered:
                 return Response.success("Success")
             else:
