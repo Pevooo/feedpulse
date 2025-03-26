@@ -49,7 +49,7 @@ class FeedPulseAPI:
 
     def run(self):
         self.data_manager.start_streaming_job()  # Will run on another thread
-        self.flask_app.run(host="0.0.0.0", threaded=True)  # Will run on the main thread
+        self.flask_app.run(host="0.0.0.0", port=443, ssl_context='adhoc', threaded=True)  # Will run on the main thread
 
     def __setup_exception_reporter(self):
         @self.flask_app.errorhandler(Exception)
