@@ -203,3 +203,4 @@ jobs:
             pip install -r requirements.txt
         
             sudo systemctl restart feedpulse.service  # Restart the app if it's running as a service
+          EOF
