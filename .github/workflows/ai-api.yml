@@ -189,14 +189,13 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H "${{ secrets.VM_HOST }}" >> ~/.ssh/known_hosts
+          echo "${{ secrets.VM_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
 
       - name: Deploy to VM
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
-            cd graduation-project/
+          ssh -i key.pem ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+            cd ../pevodrift/graduation-project/
             git pull origin main
             cd ai-api/
             source venv/bin/activate
