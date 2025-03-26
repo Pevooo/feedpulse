@@ -177,3 +177,29 @@ jobs:
           message-path: wrk_results.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message-id: 'load_test_comment'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "${{ secrets.VM_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy to VM
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+            cd graduation-project/
+            git pull origin main
+            cd ai-api/
+            source venv/bin/activate
+            pip install -r requirements.txt
+        
+            sudo systemctl restart feedpulse.service  # Restart the app if it's running as a service
