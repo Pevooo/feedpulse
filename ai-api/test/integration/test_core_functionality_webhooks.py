@@ -76,7 +76,7 @@ class TestCoreFunctionality(unittest.TestCase):
 
     def test_01_push_to_webhook(self):
         response = requests.post(
-            url="http://127.0.0.1:443/facebook_webhook",
+            url="http://127.0.0.1:5000/facebook_webhook",
             json={
                 "entry": [
                     {
@@ -159,7 +159,7 @@ class TestCoreFunctionality(unittest.TestCase):
 
     def test_03_report_handling(self):
         response = requests.get(
-            url="http://127.0.0.1:443/report",
+            url="http://127.0.0.1:5000/report",
             json={
                 "page_id": "448242228374517",
                 "start_date": "2024-03-04T15:30:00",
