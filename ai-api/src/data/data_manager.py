@@ -220,7 +220,17 @@ class DataManager(Updatable):
         for future in futures:
             results.extend(future.result())
         # Store processed data in Spark table
-        self.add(self.stream_out, results, schema=self.OUTPUT_STREAM_SCHEMA)
+        processed_df = self._spark.createDataFrame(
+            results, schema=self.OUTPUT_STREAM_SCHEMA
+        )
+
+        if len(results) < 100:
+            # Reduce parallelism in case of small data to avoid parallelism overhead
+            processed_df = processed_df.coalesce(1)
+
+        processed_df.write.format("delta").mode("append").partitionBy("page_id").save(
+            self.stream_out.value
+        )
 
     def process_batch(self, batch_rows):
         comments = [r.content for r in batch_rows]
