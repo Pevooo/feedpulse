@@ -10,7 +10,7 @@ namespace web_api.Controllers
     public class ApplicationUserController : AppControllerBase
     {
         [HttpPost(Router.ApplicationUser.Create)]
-        public async Task<IActionResult> CreateUser([FromBody] AddUserCommand model)
+        public async Task<IActionResult> CreateUser([FromForm] AddUserCommand model)
         {
             var response = await Mediator.Send(model);
             return NewResult(response);

@@ -1,5 +1,6 @@
 ﻿using Api.Core.Bases;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Api.Core.Features.Users.Commands.Models
 {
@@ -13,6 +14,6 @@ namespace Api.Core.Features.Users.Commands.Models
         public string? Country { get; set; }
         public string? Address { get; set; }
         public string PhoneNumber { get; set; }
-        public string Photo { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }

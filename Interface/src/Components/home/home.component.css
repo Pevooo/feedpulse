@@ -1,0 +1,126 @@
+.hero-section {
+    position: relative;
+    height: 100vh;
+    background-image: url('../../assets/Home.png'); /* Hardcoded image path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 5rem;
+    overflow: hidden;
+  }
+  
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Slightly darker overlay for better text contrast */
+    z-index: 1;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: left;
+    color: white;
+    max-width: 50%; /* Prevent text from stretching too wide */
+  }
+  
+  .hero-content h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem); /* Responsive font size */
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+  
+  .hero-content h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem); /* Responsive font size */
+    font-weight: 300;
+    margin-bottom: 2rem;
+  }
+  
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .btn {
+    padding: 0.75rem 2rem;
+    font-size: clamp(1rem, 1.5vw, 1.2rem); /* Responsive button text */
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .btn-primary {
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #357ABD;
+    transform: translateY(-2px);
+  }
+  
+  .btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .hero-section {
+      padding: 0 2rem;
+      justify-content: center;
+      text-align: center;
+    }
+  
+    .hero-content {
+      max-width: 100%;
+    }
+  
+    .hero-content h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+  
+    .hero-content h2 {
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    }
+  
+    .hero-buttons {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .btn {
+      padding: 0.5rem 1.5rem;
+      font-size: clamp(0.9rem, 1.2vw, 1rem);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .hero-section {
+      padding: 0 1rem;
+    }
+  
+    .hero-content h1 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    }
+  
+    .hero-content h2 {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+  }

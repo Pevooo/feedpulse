@@ -1,20 +1,42 @@
-.gradient-custom {
-  /* fallback for old browsers */
-  background: #4A90E2;
-  
-  /* Chrome 10-25, Safari 5.1-6 */
-  background: -webkit-linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));
-  
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background: linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1))
-  }
-  
-  .card-registration .select-input.form-control[readonly]:not([disabled]) {
-  font-size: 1rem;
-  line-height: 2.15;
-  padding-left: .75em;
-  padding-right: .75em;
-  }
-  .card-registration .select-arrow {
-  top: 13px;
-  }
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #333; /* Dark background similar to your screenshot */
+  color: white;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li {
+  display: inline-block;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding-bottom: 5px; /* Space for the underline */
+}
+
+.navbar-links a:hover {
+  color: #f5576c; /* Optional hover color */
+}
+
+/* Style for active link */
+.navbar-links a.active {
+  color: white; /* Keep the text white */
+  border-bottom: 2px solid #4A90E2; /* Blue underline for active link, matching your screenshot */
+}

@@ -1,47 +1,46 @@
-import { Component } from '@angular/core';
-import {  Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, OnDestroy } from '@angular/core';
 import { AuthService } from '../../app/services/auth.service';
-import Swal from 'sweetalert2';
+import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ChangeDetectorRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLinkActive,RouterLink,CommonModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
-  menuOpen: boolean;
-  constructor(private authService:AuthService,private router:Router){
-    this.menuOpen=false;
+export class NavbarComponent implements OnDestroy {
+  isLoggedIn = this.authService.isLoggedIn(); // Initialize with current state
+  private routerSubscription: Subscription;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {
+    // Subscribe to router events to update isLoggedIn on navigation
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.isLoggedIn = this.authService.isLoggedIn();
+        this.cdr.detectChanges();
+        console.log('Navigation occurred, isLoggedIn:', this.isLoggedIn); // Debug log
+      }
+    });
   }
-  isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
+
+  ngOnDestroy(): void {
+    this.routerSubscription.unsubscribe();
   }
 
   onLogout(event: Event): void {
     event.preventDefault();
-    Swal.fire({
-      icon: 'warning',
-      title: 'Are you sure?',
-      text: 'You will be logged out.',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Logout',
-      cancelButtonText: 'Cancel'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.authService.logout();
-        this.router.navigate(['/login']);
-        Swal.fire({
-          icon: 'success',
-          title: 'Logged Out',
-          text: 'You have been logged out successfully.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      }
-    });
-    
+    this.authService.logout();
+    this.isLoggedIn = this.authService.isLoggedIn(); // Manually update after logout
+    this.cdr.detectChanges();
+    this.router.navigate(['/login']);
   }
 }

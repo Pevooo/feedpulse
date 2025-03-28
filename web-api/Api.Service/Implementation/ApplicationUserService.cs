@@ -14,6 +14,7 @@ namespace Api.Service.Implementation
         private readonly IEmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ApplicationDbContext _dbcontext;
+        private readonly IFileService _fileService;
         private readonly IUrlHelper _urlHelper;
         #endregion
         #region Constructor
@@ -21,6 +22,7 @@ namespace Api.Service.Implementation
                                      IHttpContextAccessor httpContextAccessor,
                                      IEmailService emailsService,
                                      ApplicationDbContext applicationDBContext,
+                                     IFileService fileService,
                                      IUrlHelper urlHelper)
         {
             _userManager = userManager;
@@ -28,12 +30,13 @@ namespace Api.Service.Implementation
             _emailService = emailsService;
             _dbcontext = applicationDBContext;
             _urlHelper = urlHelper;
+            _fileService = fileService;
         }
 
 
         #endregion
         #region HandleFunctions
-        public async Task<string> AddUser(AppUser user, string password)
+        public async Task<string> AddUser(AppUser user, string password, IFormFile photo)
         {
             var trans = _dbcontext.Database.BeginTransaction();
             try
@@ -46,6 +49,13 @@ namespace Api.Service.Implementation
                 var userByUserName = await _userManager.FindByNameAsync(user.UserName);
                 //username is Exist
                 if (userByUserName != null) return "UserNameIsExist";
+
+
+                // add photo
+                var context = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = context.Scheme + "://" + context.Host;
+                var imageUrl = await _fileService.UploadImage("Users", photo);
+                user.Photo = baseUrl + imageUrl;
                 //Create
                 var createResult = await _userManager.CreateAsync(user, password);
                 //Failed

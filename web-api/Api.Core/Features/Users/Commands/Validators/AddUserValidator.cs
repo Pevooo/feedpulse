@@ -40,10 +40,7 @@ namespace Api.Core.Features.Users.Commands.Validators
            .NotNull().WithMessage("{PropertyName} Must Be Null")
            .Equal(c => c.Password).WithMessage("The Confirm Password dosent match the password");
 
-            _ = RuleFor(x => x.Photo)
-            .NotEmpty().WithMessage("Base64Data is required.")
-            .MaximumLength(10485760).WithMessage("Base64Data cannot exceed 10 MB.")
-            .Must(BeAValidBase64String).WithMessage("Invalid Base64 string.");
+
 
 
 
