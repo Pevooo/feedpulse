@@ -10,7 +10,7 @@ from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
 import pyspark
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, substring_index, expr, split
+from pyspark.sql.functions import col, substring_index, split
 from pyspark.sql.functions import (
     monotonically_increasing_id,
     collect_list,
