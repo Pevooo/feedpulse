@@ -31,8 +31,17 @@ namespace Api.Core.Features.Users.Commands.Handlers
         #region HandlesFunctions
         public async Task<Response<string>> Handle(AddUserCommand request, CancellationToken cancellationToken)
         {
-            var identityUser = _mapper.Map<AppUser>(request);
-            var result = await _applicationUserService.AddUser(identityUser, request.Password);
+            var identityUser = new AppUser()
+            {
+                FullName = request.FullName,
+                Email = request.Email,
+                Address = request.Address,
+                Country = request.Country,
+                UserName = request.UserName,
+                PhoneNumber = request.PhoneNumber,
+
+            };
+            var result = await _applicationUserService.AddUser(identityUser, request.Password, request.Photo);
             switch (result)
             {
                 case "EmailIsExist":
