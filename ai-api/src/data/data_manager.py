@@ -10,7 +10,7 @@ from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
 import pyspark
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, substring_index, expr
+from pyspark.sql.functions import col, substring_index, expr, split
 from pyspark.sql.functions import (
     monotonically_increasing_id,
     collect_list,
@@ -228,9 +228,12 @@ class DataManager(Updatable):
             # Reduce parallelism in case of small data to avoid parallelism overhead
             processed_df = processed_df.coalesce(1)
 
-        processed_df.write.format("delta").mode("append").partitionBy(expr("split(post_id, '_')[0]")).save(
-            self.stream_out.value
+        processed_df = processed_df.withColumn(
+            "partition_key", split(processed_df["post_id"], "_")[0]
         )
+        processed_df.write.format("delta").mode("append").partitionBy(
+            "partition_key"
+        ).save(self.stream_out.value)
 
     def process_batch(self, batch_rows):
         comments = [r.content for r in batch_rows]
