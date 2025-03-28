@@ -7,10 +7,18 @@
     
     <button (click)="login()">Login with Facebook</button>
   </div>
-
   <div *ngIf="userData">
     <h3>Welcome, {{ userData.name }}</h3>
-    <p>Email: {{ userData.email }}</p>
     <img [src]="userData.picture?.data.url" alt="Profile Picture">
   </div>
+
+  <div *ngIf="pages.length > 0">
+    <h4>Your Pages:</h4>
+    <ul>
+      <li *ngFor="let page of pages">
+        {{ page.name }} (ID: {{ page.id }})
+      </li>
+    </ul>
+  </div>
+  
 </div>

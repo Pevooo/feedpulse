@@ -14,14 +14,14 @@ namespace web_api.Controllers
             var response = await Mediator.Send(query);
             return NewResult(response);
         }
-        [HttpPost("pages")]
-        public async Task<IActionResult> GetPages([FromBody] GetFacebookPageListQuery query)
+        [HttpGet("pages")]
+        public async Task<IActionResult> GetPages([FromQuery] GetFacebookPageListQuery query)
         {
             var response = await Mediator.Send(query);
             return NewResult(response);
         }
         [HttpPost("unregisteredpages")]
-        public async Task<IActionResult> GetUnregisteredPages([FromBody] GetUnregisteredFacebookPageListQuery query)
+        public async Task<IActionResult> GetUnregisteredPages([FromQuery] GetUnregisteredFacebookPageListQuery query)
         {
             var response = await Mediator.Send(query);
             return NewResult(response);
