@@ -153,6 +153,7 @@ class TestCoreFunctionality(unittest.TestCase):
                 post_id="448242228374517_122131676912594941",
                 sentiment=ANY,
                 related_topics=ANY,
+                page_id="448242228374517",
             ).asDict(),
             processed_comments,
         )

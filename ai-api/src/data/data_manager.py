@@ -229,11 +229,11 @@ class DataManager(Updatable):
             processed_df = processed_df.coalesce(1)
 
         processed_df = processed_df.withColumn(
-            "partition_key", split(processed_df["post_id"], "_")[0]
+            "page_id", split(processed_df["post_id"], "_")[0]
         )
-        processed_df.write.format("delta").mode("append").partitionBy(
-            "partition_key"
-        ).save(self.stream_out.value)
+        processed_df.write.format("delta").mode("append").partitionBy("page_id").save(
+            self.stream_out.value
+        )
 
     def process_batch(self, batch_rows):
         comments = [r.content for r in batch_rows]
