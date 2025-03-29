@@ -11,6 +11,7 @@ on:
     paths:
       - 'ai-api/**'
       - '.github/workflows/ai-api.yml'
+  workflow_dispatch:
 
 env:
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
