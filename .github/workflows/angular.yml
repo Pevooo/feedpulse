@@ -5,6 +5,7 @@ on:
     paths:
       - 'Interface/**'
       - '.github/workflows/angular.yml'
+  workflow_dispatch:
 
 jobs:
   lint:

@@ -5,6 +5,7 @@ on:
     paths:
       - 'twister/**'
       - '.github/workflows/twister.yml'
+  workflow_dispatch:
 
 jobs:
   test:
