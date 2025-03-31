@@ -24,10 +24,16 @@ jobs:
           dotnet-version: '8.0'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build web-api/web-api --configuration Release
+
+      - name: Run linting
+        run: dotnet format web-api/web-api/web-api.csproj --verify-no-changes
+
+      - name: Test
+        run: dotnet test web-api/web-api/web-api.csproj --no-build --verbosity normal
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish web-api/web-api -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
