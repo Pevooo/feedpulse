@@ -1,4 +1,4 @@
-import { File } from "buffer";
+
 
 export interface IRegistrationModel {
     fullName: string;
