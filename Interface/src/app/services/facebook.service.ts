@@ -54,7 +54,7 @@ export class FacebookService {
           } else {
             reject('User cancelled login or permission denied');
           }
-        }, { scope: 'pages_show_list,pages_read_engagement' });
+        }, { scope: 'pages_show_list,pages_read_engagement,pages_read_user_content,pages_manage_metadata' });
       } else {
         reject('Not running in browser');
       }
@@ -87,5 +87,9 @@ export class FacebookService {
         accessToken: accessToken
       }
     });
+  }
+  logout(){
+    localStorage.removeItem('fb_access_token');
+    localStorage.removeItem('fb_user_profile');
   }
 }

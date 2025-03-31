@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Api.Core.Features.Facebook.Queries.Models
 {
-	public class GetFacebookPageListQuery:IRequest<Response<List<SingleFacebookPageResponse>>>
-	{
-		public string AccessToken { get; set; }
-	}
+    public class GetFacebookPageListQuery : IRequest<Response<List<SingleFacebookPageResponse>>>
+    {
+        public string AccessToken { get; set; }
+    }
 }

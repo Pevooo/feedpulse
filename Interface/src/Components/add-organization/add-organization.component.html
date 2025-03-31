@@ -1,0 +1,32 @@
+<div class="form-container">
+    <h2>Add Organization</h2>
+    <form (submit)="submitForm()">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" [(ngModel)]="organization.name" name="name" id="name" readonly />
+      </div>
+  
+      <div>
+        <label for="description">Description:</label>
+        <input type="text" [(ngModel)]="organization.description" name="description" id="description" placeholder="Enter description" required />
+      </div>
+  
+      <div>
+        <label for="facebookId">Facebook ID:</label>
+        <input type="text" [(ngModel)]="organization.facebookId" name="facebookId" id="facebookId" readonly disabled />
+      </div>
+  
+      <div>
+        <label for="pageAccessToken">Page Access Token:</label>
+        <input type="text" [(ngModel)]="organization.pageAccessToken" name="pageAccessToken" id="pageAccessToken" readonly disabled />
+      </div>
+  
+      <div>
+        <label for="userId">User ID:</label>
+        <input type="text" [(ngModel)]="organization.userId" name="userId" id="userId"  />
+      </div>
+  
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  

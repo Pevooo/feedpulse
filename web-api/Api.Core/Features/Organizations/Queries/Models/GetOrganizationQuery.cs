@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Api.Core.Features.Organizations.Queries.Models
 {
-	public class GetOrganizationQuery:IRequest<Response<GetOrganizationResponse>>
-	{
-		public int OrganizationId { get; set; }
-	}
+    public class GetOrganizationQuery : IRequest<Response<GetOrganizationResponse>>
+    {
+        public int OrganizationId { get; set; }
+    }
 }

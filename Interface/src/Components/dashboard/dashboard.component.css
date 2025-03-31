@@ -1,39 +1,35 @@
 .dashboard-container {
-  max-width: 600px;
-  margin: 50px auto;
-  background-color: #fefefe;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .header {
+  text-align: center;
   margin-bottom: 20px;
 }
 
 button {
-  background-color: #1877f2;
-  color: #fff;
+  padding: 10px;
   border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #165cdb;
+  background: #4267B2;
+  color: white;
 }
 
-h3 {
-  margin-top: 20px;
-  color: #333;
+.connected-button {
+  background: green;
+  color: white;
 }
 
 img {
-  margin-top: 10px;
   border-radius: 50%;
   width: 80px;
   height: 80px;
@@ -42,14 +38,14 @@ img {
 ul {
   list-style: none;
   padding: 0;
-  margin-top: 20px;
 }
 
 li {
-  background-color: #f1f3f5;
-  margin: 10px 0;
-  padding: 12px;
-  border-radius: 8px;
-  color: #333;
-  text-align: left;
+  background: #f1f1f1;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

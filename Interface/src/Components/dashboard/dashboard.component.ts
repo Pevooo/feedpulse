@@ -2,6 +2,8 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, Inject, OnInit, PLATFORM_ID } from '
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FacebookService } from '../../app/services/facebook.service';
 import { FacebookPage } from '../../app/interfaces/Facebook_Page';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +20,9 @@ export class DashboardComponent  implements OnInit{
   loading = false;
   errorMessage = '';
   isBrowser: boolean;
+  isConnected = false;
   constructor(private facebookService: FacebookService,
+    private router: Router, 
     @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -26,19 +30,36 @@ export class DashboardComponent  implements OnInit{
   async ngOnInit(): Promise<void> {
     const token = localStorage.getItem('fb_access_token');
     const user = localStorage.getItem('fb_user_profile');
+    if(token&&user){
+      this.isConnected=true;
+    }
     console.log(token);
     console.log(user);
 
     if (token && user) {
       this.userData = JSON.parse(user);
       await this.fetchPages(token);
+    }else {
+      // 🔄 Check login status again in case session exists
+      this.facebookService.checkLoginStatus().then(response => {
+        if (response.authResponse) {
+          localStorage.setItem('fb_access_token', response.authResponse.accessToken);
+          this.facebookService.getUserProfile().then(profile => {
+            localStorage.setItem('fb_user_profile', JSON.stringify(profile));
+            this.userData = profile;
+            this.fetchPages(response.authResponse.accessToken);
+          });
+        }
+      }).catch(() => {
+        console.warn('User is not logged in.');
+      });
     }
   }
   async login() {
     this.loading = true;
     try {
       const authData = await this.facebookService.loginWithFacebook();
-      localStorage.setItem('fb_access_token', authData.accessToken);
+      localStorage.setItem('fb_access_token', authData.authResponse.accessToken);
       console.log('✅ Auth Data:', authData);
 
       if (authData.authResponse) {
@@ -53,7 +74,7 @@ export class DashboardComponent  implements OnInit{
                   next: (res) => {
                     if (res.succeeded&& res.data) {
                       this.pages = res.data;
-                      
+                      this.isConnected = true;
                       console.log('✅ Pages:', this.pages);
                     }
                   },
@@ -83,5 +104,23 @@ export class DashboardComponent  implements OnInit{
       this.errorMessage = 'Error fetching pages';
       console.error(error);
     }
+  }
+  goToForm(page: FacebookPage) {
+    const userId = this.userData?.id;  // Get the logged-in user ID
+  
+    this.router.navigate(['/add-organization'], {
+      queryParams: {
+        name: page.name,
+        pageAccessToken: page.accessToken, // Assuming this exists
+        facebookId: page.id,
+        userId: userId
+      }
+    });
+  }
+  logout() {
+    this.facebookService.logout();
+    this.pages=[];
+    this.isConnected=false;
+    
   }
 }

@@ -12,14 +12,14 @@ using Microsoft.AspNetCore.Identity;
 namespace Api.Core.Features.Facebook.Queries.Handler
 {
     public class FacebookQueriesHandler : ResponseHandler, IRequestHandler<FacebookAuthQuery, Response<string>>,
-        IRequestHandler<GetFacebookPageListQuery,Response<List<SingleFacebookPageResponse>>>,
-		IRequestHandler<GetUnregisteredFacebookPageListQuery, Response<List<SingleFacebookPageResponse>>>
+        IRequestHandler<GetFacebookPageListQuery, Response<List<SingleFacebookPageResponse>>>,
+        IRequestHandler<GetUnregisteredFacebookPageListQuery, Response<List<SingleFacebookPageResponse>>>
 
-	{
+    {
         #region Fields
         IFacebookService _facebookService;
-		private readonly IMapper _mapper;
-		UserManager<AppUser> _userManager;
+        private readonly IMapper _mapper;
+        UserManager<AppUser> _userManager;
         #endregion
         #region Constructor
         public FacebookQueriesHandler(IFacebookService facebookService, UserManager<AppUser> userManager, IMapper mapper)
@@ -54,30 +54,30 @@ namespace Api.Core.Features.Facebook.Queries.Handler
             var pages = await _facebookService.GetFacebookPages(request.AccessToken);
 
             var result = pages.Select(page => new SingleFacebookPageResponse
-			{
-				Id = page.Id,
-				Name = page.Name,
-				AccessToken = page.AccessToken
-			}).ToList();
+            {
+                Id = page.Id,
+                Name = page.Name,
+                AccessToken = page.AccessToken
+            }).ToList();
 
-			return Success(result);
-		}
+            return Success(result);
+        }
 
-		public async Task<Response<List<SingleFacebookPageResponse>>> Handle(GetUnregisteredFacebookPageListQuery request, CancellationToken cancellationToken)
-		{
-			var pages = await _facebookService.GetUnregisteredFacebookPages(request.AccessToken);
+        public async Task<Response<List<SingleFacebookPageResponse>>> Handle(GetUnregisteredFacebookPageListQuery request, CancellationToken cancellationToken)
+        {
+            var pages = await _facebookService.GetUnregisteredFacebookPages(request.AccessToken);
 
-			var result = pages.Select(page => new SingleFacebookPageResponse
-			{
-				Id = page.Id,
-				Name = page.Name,
-				AccessToken = page.AccessToken
-			}).ToList();
+            var result = pages.Select(page => new SingleFacebookPageResponse
+            {
+                Id = page.Id,
+                Name = page.Name,
+                AccessToken = page.AccessToken
+            }).ToList();
 
-			return Success(result);
-		}
+            return Success(result);
+        }
 
 
-		#endregion
-	}
+        #endregion
+    }
 }

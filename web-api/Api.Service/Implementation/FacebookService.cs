@@ -82,15 +82,9 @@ namespace Api.Service.Implementation
                 AccessToken = p.TryGetProperty("access_token", out var token) ? token.GetString() : null
             }).ToList();
 
-            var user = _dbcontext.AppUsers.Where(u => u.FacebookAccessToken == accessToken).SingleOrDefault();
+            var registeredPages = _dbcontext.Organizations.ToList();
 
-            if (user == null)
-            {
-                return new List<FacebookPage>();
-            }
-            var registeredPages = _dbcontext.Organizations.Where(o => o.UserId == user.Id).Select(o => o.FacebookId).ToList();
-
-            var unregisteredPages = pages.Where(page => !registeredPages.Contains(page.Id)).ToList();
+            var unregisteredPages = pages.Where(page => registeredPages.Any(x => x.FacebookId == page.Id)).ToList();
 
             return unregisteredPages;
         }

@@ -53,9 +53,9 @@
             private const string Prefix = BaseRoute + "organization";
             public const string Create = Prefix + "/create";
             public const string Delete = Prefix + "/delete/{id}";
-			public const string GetById = Prefix + "/{id}";
-			public const string GetList = Prefix + "/list";
+            public const string GetById = Prefix + "/{id}";
+            public const string GetList = Prefix + "/list";
 
-		}
-	}
+        }
+    }
 }
