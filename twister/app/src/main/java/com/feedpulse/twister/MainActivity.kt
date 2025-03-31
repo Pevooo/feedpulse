@@ -11,7 +11,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TwisterTheme {
-                Menu(ConfigManager(URL("http://10.0.2.2:5000/config")))
+                Menu(
+                    ConfigManager(
+                        URL("https://feedpulse.francecentral.cloudapp.azure.com/config")
+                    )
+                )
             }
         }
     }

@@ -122,7 +122,7 @@ class TestDataManager(unittest.TestCase):
         data_in = [
             {
                 "comment_id": "1251",
-                "post_id": "123",
+                "post_id": "123_111",
                 "content": "hello, world!",
                 "created_time": created_time_str,
                 "platform": "facebook",
@@ -142,12 +142,13 @@ class TestDataManager(unittest.TestCase):
         self.assertIn(
             {
                 "comment_id": "1251",
-                "post_id": "123",
+                "post_id": "123_111",
                 "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
                 "related_topics": ["cleanliness"],
+                "page_id": "123",
             },
             data,
         )
@@ -169,7 +170,7 @@ class TestDataManager(unittest.TestCase):
         data_in_1 = [
             {
                 "comment_id": "1",
-                "post_id": "123",
+                "post_id": "123_111",
                 "created_time": created_time_str,
                 "platform": "facebook",
                 "content": "hello, world!",
@@ -179,7 +180,7 @@ class TestDataManager(unittest.TestCase):
         data_in_2 = [
             {
                 "comment_id": "2",
-                "post_id": "123",
+                "post_id": "123_111",
                 "created_time": created_time_str,
                 "platform": "facebook",
                 "content": "hello, world!",
@@ -201,12 +202,13 @@ class TestDataManager(unittest.TestCase):
         self.assertIn(
             {
                 "comment_id": "1",
-                "post_id": "123",
+                "post_id": "123_111",
                 "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
                 "related_topics": ["cleanliness"],
+                "page_id": "123",
             },
             data,
         )
@@ -214,12 +216,13 @@ class TestDataManager(unittest.TestCase):
         self.assertIn(
             {
                 "comment_id": "2",
-                "post_id": "123",
+                "post_id": "123_111",
                 "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
                 "related_topics": ["cleanliness"],
+                "page_id": "123",
             },
             data,
         )
@@ -241,7 +244,7 @@ class TestDataManager(unittest.TestCase):
         data_in = [
             {
                 "comment_id": "34",
-                "post_id": "123",
+                "post_id": "123_111",
                 "created_time": created_time_str,
                 "platform": "facebook",
                 "content": "hello, world!",
@@ -261,12 +264,13 @@ class TestDataManager(unittest.TestCase):
         self.assertIn(
             {
                 "comment_id": "34",
-                "post_id": "123",
+                "post_id": "123_111",
                 "created_time": datetime.datetime(2025, 2, 21, 20, 47, 43),
                 "platform": "facebook",
                 "content": "hello, world!",
                 "sentiment": "neutral",
                 "related_topics": ["cleanliness"],
+                "page_id": "123",
             },
             data,
         )

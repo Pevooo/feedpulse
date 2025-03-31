@@ -11,6 +11,7 @@ on:
     paths:
       - 'ai-api/**'
       - '.github/workflows/ai-api.yml'
+  workflow_dispatch:
 
 env:
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -177,3 +178,29 @@ jobs:
           message-path: wrk_results.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message-id: 'load_test_comment'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Deploy to VM
+        run: |
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i key.pem ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+            cd ../pevodrift/graduation-project/
+            git pull origin main
+            cd ai-api/
+            source venv/bin/activate
+            pip install -r requirements.txt
+        
+            sudo systemctl restart feedpulse.service  # Restart the app if it's running as a service
+          EOF
