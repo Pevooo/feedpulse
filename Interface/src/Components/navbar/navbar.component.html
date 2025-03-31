@@ -1,33 +1,36 @@
 <nav class="navbar">
   <div class="navbar-brand">FEEDPULSE</div>
   <ul class="navbar-links">
-    <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-      <a routerLink="/home">HOME</a>
+    <li>
+      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">HOME</a>
     </li>
-    <li routerLinkActive="active">
-      <a routerLink="/services">SERVICES</a>
+    <li>
+      <a routerLink="/services" routerLinkActive="active">SERVICES</a>
     </li>
-    <li routerLinkActive="active">
-      <a routerLink="/about">ABOUT US</a>
+    <li>
+      <a routerLink="/about" routerLinkActive="active">ABOUT US</a>
     </li>
-    <li routerLinkActive="active">
-      <a  routerLink="/contact-us">CONTACT US</a>
+    <li>
+      <a routerLink="/contact-us" routerLinkActive="active">CONTACT US</a>
     </li>
-    
-<!-- Conditional rendering for Login/Logout and SignUp -->
 
-<ng-container *ngIf="isLoggedIn(); else notLoggedIn">
-  <li>
-    <a href="#" (click)="onLogout($event)">Logout</a>
-  </li>
-</ng-container>
-<ng-template #notLoggedIn>
-  <li routerLinkActive="active">
-    <a routerLink="/login">Login</a>
-  </li>
-  <li routerLinkActive="active">
-    <a routerLink="/signup">SignUp</a>
-  </li>
-</ng-template>
+    <!-- Single conditional block for logged-in/not logged-in state -->
+    <ng-container *ngIf="isLoggedIn; else notLoggedIn">
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="active">DASHBOARD</a>
+      </li>
+      <li>
+        <a href="#" (click)="onLogout($event)">LOGOUT</a>
+      </li>
+    </ng-container>
+
+    <ng-template #notLoggedIn>
+      <li>
+        <a routerLink="/login" routerLinkActive="active">LOGIN</a>
+      </li>
+      <li>
+        <a routerLink="/signup" routerLinkActive="active">SIGNUP</a>
+      </li>
+    </ng-template>
   </ul>
 </nav>

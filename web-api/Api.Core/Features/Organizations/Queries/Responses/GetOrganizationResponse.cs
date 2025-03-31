@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Api.Core.Features.Organizations.Queries.Responses
 {
-	public class GetOrganizationResponse
-	{
-		public string Name { get; set; }
-		public string FacebookId { get; set; }
-		public string Description { get; set; }
-		public string? PageAccessToken { get; set; }
-	}
+    public class GetOrganizationResponse
+    {
+        public string Name { get; set; }
+        public string FacebookId { get; set; }
+        public string Description { get; set; }
+        public string? PageAccessToken { get; set; }
+    }
 }

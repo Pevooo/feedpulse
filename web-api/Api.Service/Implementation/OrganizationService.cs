@@ -33,7 +33,11 @@ namespace Api.Service.Implementation
 
         public async Task<string> AddOrganizationAsync(Organization organization)
         {
-
+            var tmp = await _organizationRepository.GetTableNoTracking().Where(x => x.FacebookId == organization.FacebookId).FirstOrDefaultAsync();
+            if (tmp != null)
+            {
+                return "The Organization is registerd Before";
+            }
             var trans = _applicationDbContext.Database.BeginTransaction();
             try
             {
@@ -42,13 +46,16 @@ namespace Api.Service.Implementation
                 organization.PageAccessToken = longlivedtoken;
 
                 // send the facebookpageid ,description and accesstoken to ai api 
-                var url = "https://localhost:5000/register_token";
+                var url = "https://feedpulse.francecentral.cloudapp.azure.com/register_token";
 
                 var requestBody = new
                 {
                     page_id = organization.FacebookId,
                     access_token = longlivedtoken,
-                    platform = "Facebook"
+                    platform = "facebook",
+                    description = organization.Description
+
+
                 };
 
                 var jsonContent = new StringContent(
@@ -64,7 +71,7 @@ namespace Api.Service.Implementation
                     throw new Exception($"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
                 }
                 // add the organization
-                _ = _applicationDbContext.Organizations.Add(organization);
+                _ = await _organizationRepository.AddAsync(organization);
 
                 trans.Commit();
             }

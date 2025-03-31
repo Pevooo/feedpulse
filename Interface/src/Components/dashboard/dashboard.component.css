@@ -1,51 +1,51 @@
 .dashboard-container {
-    max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
-  }
-  
-  .header {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
-  }
-  
-  .fb-connect-btn {
-    background-color: #1877f2;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
-  
-  .fb-connect-btn:hover:not(.connected) {
-    background-color: #166fe5;
-  }
-  
-  .fb-connect-btn.connected {
-    background-color: #28a745;
-    cursor: default;
-  }
-  
-  .section {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-top: 20px;
-    display: none;
-  }
-  
-  .section.active {
-    display: block;
-  }
-  
-  .status {
-    margin-top: 15px;
-    color: #333;
-  }
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #4267B2;
+  color: white;
+}
+
+.connected-button {
+  background: green;
+  color: white;
+}
+
+img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #f1f1f1;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

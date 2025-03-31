@@ -1,0 +1,70 @@
+/* Centering the form */
+.form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styling */
+.form-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Form field container */
+.form-container div {
+    margin-bottom: 15px;
+}
+
+/* Label styling */
+.form-container label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Input fields */
+.form-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border 0.3s ease;
+}
+
+/* Readonly and disabled fields */
+.form-container input[readonly],
+.form-container input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+/* Input focus effect */
+.form-container input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Submit button */
+.form-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.form-container button:hover {
+    background-color: #0056b3;
+}

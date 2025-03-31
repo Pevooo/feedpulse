@@ -1,20 +1,21 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import {  NgForm,ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { IRegistrationModel } from '../../app/interfaces/IRegisterModel';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../app/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [RouterLink,RouterOutlet,CommonModule,HttpClientModule,ReactiveFormsModule,FormsModule],
+  imports: [RouterLink,RouterOutlet,CommonModule,ReactiveFormsModule,FormsModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
 export class SignupComponent  {
-  registration:IRegistrationModel=
-  {
+  registration: IRegistrationModel = {
     fullName: '',
     userName: '',
     email: '',
@@ -23,47 +24,75 @@ export class SignupComponent  {
     country: '',
     address: '',
     phoneNumber: '',
+    photo: undefined // Initialize as undefined instead of null
   };
-  constructor(private http: HttpClient){
+  constructor(private http: HttpClient,private service:AuthService,private router:Router){
    
   }
 
-  onSubmit(form:NgForm):void {
+  onSubmit(form: NgForm): void {
+    console.log(this.registration);
     if (form.valid) {
-      console.log('Form Data:', this.registration);
-      // You can now send this.registration to your backend or handle it as needed
+      if (this.registration.password !== this.registration.confirmPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Passwords do not match!'
+        });
+        return;
+      }
+
+      this.service.Register(this.registration).subscribe({
+        next: (response) => {
+          console.log(response);
+          Swal.fire({
+            icon: 'success',
+            title: 'Registration Successful',
+            text: 'Welcome! :) Confirm Your Account Via Email',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            this.router.navigate(['/login']);
+          });
+        },
+        error: (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: error.message || 'Something went wrong!'
+          });
+        }
+      });
     } else {
-      console.log('Form is invalid');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Form',
+        text: 'Please fill all required fields correctly!'
+      });
     }
   }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onFileChange(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      // Check if the file is an image
-      if (this.isImageFile(file)) {
-        this.convertToBase64(file).then((base64) => {
-          this.registration.photo = base64; // Store Base64 string
-           // Store the file object
-        }).catch((error) => {
-          console.error('Error converting file to Base64:', error);
-        });
-      } else {
-        alert('Please upload a valid image file (JPEG, PNG, etc.).');
-        this.registration.photo = "";
-      }
+    if (file && this.isImageFile(file)) {
+      this.registration.photo = file;
+      console.log('File assigned:', this.registration.photo);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid File',
+        text: 'Please upload a valid image file (jpeg, png, gif, webp)'
+      });
+      this.registration.photo = undefined; // Reset to undefined instead of null
     }
+    console.log(this.registration);
   }
+
   isImageFile(file: File): boolean {
     const acceptedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     return file && acceptedImageTypes.includes(file.type);
   }
-  convertToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  }
+
+  
 }

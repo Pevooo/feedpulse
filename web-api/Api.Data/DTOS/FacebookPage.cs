@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Api.Data.DTOS
 {
-	public class FacebookPage
-	{
-		public string Id { get; set; }
-		public string Name { get; set; }
-		public string AccessToken { get; set; }
-	}
+    public class FacebookPage
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string AccessToken { get; set; }
+    }
 }

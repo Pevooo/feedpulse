@@ -54,7 +54,7 @@
     margin-top: 0.25rem;
   }
 </style>
-<!-- <h2>{{registration|json}}</h2> -->
+
 <section class="vh-100 gradient-custom">
  
   <div class="container py-5 h-100">
@@ -104,7 +104,7 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <input type="tel" name="phoneNumber" [(ngModel)]="registration.phoneNumber" required pattern="[0-9]{10}" #phoneNumber="ngModel" />
+                    <input type="tel" name="phoneNumber" [(ngModel)]="registration.phoneNumber" required pattern="[0-9]{11}" #phoneNumber="ngModel" />
                     <label for="phoneNumber">Phone Number*</label>
                     <div *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)">
                       <small class="text-danger" *ngIf="phoneNumber.errors!['required']">Phone Number is required.</small>
