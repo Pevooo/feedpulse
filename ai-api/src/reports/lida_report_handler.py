@@ -4,6 +4,7 @@ from src.reports.report import Report
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
 from src.data.data_manager import DataManager
+from src.config.response import Response
 
 from lida import Manager, TextGenerationConfig
 
@@ -23,6 +24,10 @@ class LidaReportHandler:
         Generates a summary of the data by calling LIDA's summarize() method.
         """
         data = self.data_manager.filter_data(page_id, start_date, end_date)
+
+        if data.empty:
+            return None
+
         return self.lida.summarize(data)
 
     def goal(self, summary):
@@ -71,6 +76,9 @@ class LidaReportHandler:
         Generates a full report including summary, goals, and visualization.
         """
         summary = self.summarize(page_id, start_date, end_date)
+
+        if summary is None:
+            return Response.failure("No data available")
 
         report = Report()
         goals = self.goal(summary)
