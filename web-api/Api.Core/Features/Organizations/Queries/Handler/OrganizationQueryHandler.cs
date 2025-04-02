@@ -4,27 +4,27 @@ using Api.Core.Features.Organizations.Queries.Responses;
 using Api.Service.Abstracts;
 using AutoMapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Api.Core.Features.Organizations.Queries.Handler
 {
 
     public class OrganizationQueryHandler : ResponseHandler, IRequestHandler<GetOrganizationListQuery, Response<List<GetOrganizationResponse>>>
                             , IRequestHandler<GetOrganizationQuery, Response<GetOrganizationResponse>>
+                            , IRequestHandler<GetOrganizationStatusQuery, Response<OrganizationStatusResponse>>
     {
         #region Fields
-        IOrganizationService _organizationService;
-        IMapper _mapper;
+        private readonly IOrganizationService _organizationService;
+        private readonly IMapper _mapper;
+        private readonly HttpClient _httpClient;
         #endregion
         #region Constructor
-        public OrganizationQueryHandler(IOrganizationService organizationService, IMapper mapper)
+        public OrganizationQueryHandler(IOrganizationService organizationService, IMapper mapper, HttpClient httpClient)
         {
             _organizationService = organizationService;
             _mapper = mapper;
+            _httpClient = httpClient;
         }
         #endregion
         #region HandleFunctions
@@ -53,6 +53,56 @@ namespace Api.Core.Features.Organizations.Queries.Handler
                 PageAccessToken = organization.PageAccessToken
             };
             return Success(response);
+        }
+
+        public async Task<Response<OrganizationStatusResponse>> Handle(GetOrganizationStatusQuery request, CancellationToken cancellationToken)
+        {
+            var url = "https://feedpulse.francecentral.cloudapp.azure.com/report";
+
+            var requestBody = new
+            {
+                page_id = request.FacebookId,
+                start_date = request.start_date.ToString("yyyy-MM-ddTHH:mm:ss.fff"), // ISO 8601
+                end_date = request.end_date.ToString("yyyy-MM-ddTHH:mm:ss.fff"),   // ISO 8601
+
+
+            };
+
+            var jsonContent = new StringContent(
+                JsonSerializer.Serialize(requestBody),
+                Encoding.UTF8,
+            "application/json"
+            );
+
+            var response = await _httpClient.PostAsync(url, jsonContent);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(responseContent);
+            var root = doc.RootElement;
+
+            // Extract the "body" property
+            if (!root.TryGetProperty("body", out JsonElement body))
+            {
+                throw new Exception("Invalid response: 'body' property missing.");
+            }
+
+            // Extract "goals"
+            var goals = body.GetProperty("goals").EnumerateArray().Select(x => x.GetString()).ToList();
+
+            // Extract "chart_rasters"
+            var chartRasters = body.GetProperty("chart_rasters").EnumerateArray().Select(x => x.GetString()).ToList();
+
+            var result = new OrganizationStatusResponse
+            {
+                Graphs = chartRasters,
+            };
+            return Success<OrganizationStatusResponse>(result);
+
+
         }
         #endregion
     }
