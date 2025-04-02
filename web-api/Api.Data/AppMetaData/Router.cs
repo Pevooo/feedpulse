@@ -55,7 +55,9 @@
             public const string Delete = Prefix + "/delete/{id}";
             public const string GetById = Prefix + "/{id}";
             public const string GetList = Prefix + "/list";
+
             public const string Status = Prefix + "/status";
+
 
         }
     }

@@ -12,6 +12,7 @@ namespace Api.Core.Features.Organizations.Queries.Handler
 
     public class OrganizationQueryHandler : ResponseHandler, IRequestHandler<GetOrganizationListQuery, Response<List<GetOrganizationResponse>>>
                             , IRequestHandler<GetOrganizationQuery, Response<GetOrganizationResponse>>
+
                             , IRequestHandler<GetOrganizationStatusQuery, Response<OrganizationStatusResponse>>
     {
         #region Fields
@@ -25,6 +26,7 @@ namespace Api.Core.Features.Organizations.Queries.Handler
             _organizationService = organizationService;
             _mapper = mapper;
             _httpClient = httpClient;
+
         }
         #endregion
         #region HandleFunctions
@@ -54,6 +56,7 @@ namespace Api.Core.Features.Organizations.Queries.Handler
             };
             return Success(response);
         }
+
 
         public async Task<Response<OrganizationStatusResponse>> Handle(GetOrganizationStatusQuery request, CancellationToken cancellationToken)
         {
@@ -104,6 +107,7 @@ namespace Api.Core.Features.Organizations.Queries.Handler
 
 
         }
+
         #endregion
     }
 }
