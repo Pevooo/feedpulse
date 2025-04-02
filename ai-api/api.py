@@ -153,6 +153,10 @@ class FeedPulseAPI:
                 report = self.report_handler.generate_report(
                     page_id, start_date, end_date
                 )
+
+                if report is None:
+                    return Response.failure("No data available")
+
                 return Response.success(report.__dict__)
             except Exception as e:
                 print(e)

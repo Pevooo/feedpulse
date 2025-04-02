@@ -4,7 +4,6 @@ from src.reports.report import Report
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
 from src.data.data_manager import DataManager
-from src.config.response import Response
 
 from lida import Manager, TextGenerationConfig
 
@@ -78,7 +77,7 @@ class LidaReportHandler:
         summary = self.summarize(page_id, start_date, end_date)
 
         if summary is None:
-            return Response.failure("No data available")
+            return None
 
         report = Report()
         goals = self.goal(summary)
