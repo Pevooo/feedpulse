@@ -23,6 +23,10 @@ class LidaReportHandler:
         Generates a summary of the data by calling LIDA's summarize() method.
         """
         data = self.data_manager.filter_data(page_id, start_date, end_date)
+
+        if data.empty:
+            return None
+
         return self.lida.summarize(data)
 
     def goal(self, summary):
@@ -71,6 +75,9 @@ class LidaReportHandler:
         Generates a full report including summary, goals, and visualization.
         """
         summary = self.summarize(page_id, start_date, end_date)
+
+        if summary is None:
+            return None
 
         report = Report()
         goals = self.goal(summary)
