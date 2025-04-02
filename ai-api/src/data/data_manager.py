@@ -320,6 +320,8 @@ class DataManager(Updatable):
 
         data_as_dict = [row.asDict() for row in filtered_page_data_df]
         df = pd.DataFrame(data_as_dict)
+        if df.empty:
+            return pd.DataFrame()
         df["related_topics"] = df["related_topics"].apply(lambda x: ", ".join(x))
         return df
 
