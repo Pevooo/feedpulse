@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 from src.config.environment import Environment
 from src.config.settings import Settings
@@ -31,6 +32,9 @@ class FeedPulseAPI:
         data_streamer: DataStreamer,
     ):
         self.flask_app = Flask(__name__)
+
+        # TODO: Restrict to only the WEB API DOMAIN
+        CORS(self.flask_app)
         self.report_handler = report_handler
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
