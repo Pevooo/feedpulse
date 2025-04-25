@@ -62,7 +62,7 @@ class LidaReportHandler:
                     .agg(lambda x: x.value_counts().idxmax())
                     .to_dict()
                 )
-
+                metrics["most_freq_sentiment_per_topic"] = per_topic
                 per_sentiment = (
                     df_exploded.groupby("sentiment")["related_topic"]
                     .agg(lambda x: x.value_counts().idxmax())
