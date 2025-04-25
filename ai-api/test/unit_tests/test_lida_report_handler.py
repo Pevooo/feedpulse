@@ -26,8 +26,10 @@ class TestLidaReportHandler(unittest.TestCase):
             self.mock_data_manager, self.mock_model_provider
         )
 
+        self.report_handler.compute_metrics = Mock(return_value={})
+
     def test_generate_report(self):
-        self.report_handler.summarize = Mock()
+        self.report_handler.summarize = Mock(return_value="dummy summary")
         self.report_handler.goal = Mock(
             return_value=[Goal(question="q1", visualization="v1", rationale="r1")]
         )
@@ -47,3 +49,4 @@ class TestLidaReportHandler(unittest.TestCase):
 
         self.assertEqual(result.goals[0], "Goal 1: q1")
         self.assertEqual(result.chart_rasters[0], "raster")
+        self.assertEqual(result.metrics, {})
