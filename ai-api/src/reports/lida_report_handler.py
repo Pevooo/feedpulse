@@ -1,10 +1,9 @@
 from datetime import datetime
-
+import pandas as pd
 from src.reports.report import Report
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
 from src.data.data_manager import DataManager
-
 from lida import Manager, TextGenerationConfig
 
 
@@ -18,16 +17,56 @@ class LidaReportHandler:
 
         self.data_manager = data_manager
 
-    def summarize(self, page_id: str, start_date: datetime, end_date: datetime):
+    def summarize(self, data: pd.DataFrame):
         """
         Generates a summary of the data by calling LIDA's summarize() method.
         """
-        data = self.data_manager.filter_data(page_id, start_date, end_date)
 
         if data.empty:
             return None
 
         return self.lida.summarize(data)
+
+    def compute_metrics(self, df: pd.DataFrame) -> dict:
+        metrics = {}
+
+        if "sentiment" in df.columns:
+            metrics["sentiment_counts"] = df["sentiment"].value_counts().to_dict()
+
+        if "related_topics" in df.columns:
+            # Step 1: EXPLODE properly: make sure every (sentiment, topic) pair is separated
+            df_exploded = df.assign(
+                related_topic=df["related_topics"].str.split(",")
+            ).explode("related_topic")
+
+            # Step 2: Strip spaces
+            df_exploded["related_topic"] = df_exploded["related_topic"].str.strip()
+
+            # Step 3: Now safely compute
+            metrics["topic_counts"] = (
+                df_exploded["related_topic"].value_counts().to_dict()
+            )
+
+            # Step 4: Most frequent sentiment per topic
+            metrics["most_freq_sentiment_per_topic"] = (
+                df_exploded.groupby("related_topic")["sentiment"]
+                .agg(lambda x: x.value_counts().idxmax())
+                .to_dict()
+            )
+
+            # Step 5: Most frequent topic per sentiment
+            metrics["most_freq_topic_per_sentiment"] = (
+                df_exploded.groupby("sentiment")["related_topic"]
+                .agg(lambda x: x.value_counts().idxmax())
+                .to_dict()
+            )
+
+            # Step 6: Top 5 topics
+            metrics["top_5_topics"] = (
+                df_exploded["related_topic"].value_counts().head(5).to_dict()
+            )
+
+        return metrics
 
     def goal(self, summary):
         """
@@ -74,12 +113,15 @@ class LidaReportHandler:
         """
         Generates a full report including summary, goals, and visualization.
         """
-        summary = self.summarize(page_id, start_date, end_date)
-
+        data = self.data_manager.filter_data(page_id, start_date, end_date)
+        summary = self.summarize(data)
         if summary is None:
             return None
 
+        metrics = self.compute_metrics(data)
+
         report = Report()
+        report.metrics = metrics
         goals = self.goal(summary)
         for idx, goal in enumerate(goals):
             report.goals.append(f"Goal {idx+1}: {goal.question}")

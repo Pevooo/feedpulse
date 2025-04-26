@@ -98,6 +98,8 @@ class TestAPI(unittest.TestCase):
             {
                 "goals": ["Goal 1: g1"],
                 "chart_rasters": ["r1"],
+                "metrics": {},
+                "summary": "",
             },
         )
 
