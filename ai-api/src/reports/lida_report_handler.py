@@ -4,7 +4,6 @@ from src.reports.report import Report
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
 from src.data.data_manager import DataManager
-
 from lida import Manager, TextGenerationConfig
 
 
@@ -18,11 +17,10 @@ class LidaReportHandler:
 
         self.data_manager = data_manager
 
-    def summarize(self, page_id: str, start_date: datetime, end_date: datetime):
+    def summarize(self, data: pd.DataFrame):
         """
         Generates a summary of the data by calling LIDA's summarize() method.
         """
-        data = self.data_manager.filter_data(page_id, start_date, end_date)
 
         if data.empty:
             return None
@@ -42,8 +40,8 @@ class LidaReportHandler:
         if "sentiment" in df.columns:
             metrics["sentiment_counts"] = df["sentiment"].value_counts().to_dict()
 
-        if "related_topic" in df.columns:
-            exploded_topics = df["related_topic"].str.split(",")
+        if "related_topics" in df.columns:
+            exploded_topics = df["related_topics"].str.split(",")
             exploded_topics = exploded_topics.explode().str.strip()
             metrics["topic_counts"] = exploded_topics.value_counts().to_dict()
 
@@ -51,20 +49,20 @@ class LidaReportHandler:
 
                 df_exploded = df.copy()
                 df_exploded = df_exploded.assign(
-                    related_topic=df_exploded["related_topic"]
+                    related_topic=df_exploded["related_topics"]
                     .str.split(",")
                     .explode()
                     .str.strip()
                 )
 
                 per_topic = (
-                    df_exploded.groupby("related_topic")["sentiment"]
+                    df_exploded.groupby("related_topics")["sentiment"]
                     .agg(lambda x: x.value_counts().idxmax())
                     .to_dict()
                 )
                 metrics["most_freq_sentiment_per_topic"] = per_topic
                 per_sentiment = (
-                    df_exploded.groupby("sentiment")["related_topic"]
+                    df_exploded.groupby("sentiment")["related_topics"]
                     .agg(lambda x: x.value_counts().idxmax())
                     .to_dict()
                 )
@@ -119,12 +117,12 @@ class LidaReportHandler:
         """
         Generates a full report including summary, goals, and visualization.
         """
-        summary = self.summarize(page_id, start_date, end_date)
+        data = self.data_manager.filter_data(page_id, start_date, end_date)
+        summary = self.summarize(data)
         if summary is None:
             return None
 
-        df = self.data_manager.filter_data(page_id, start_date, end_date)
-        metrics = self.compute_metrics(df)
+        metrics = self.compute_metrics(data)
 
         report = Report()
         report.metrics = metrics

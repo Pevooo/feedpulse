@@ -2,7 +2,7 @@ import unittest
 from dataclasses import dataclass
 from typing import Optional, Union, Dict
 from unittest.mock import Mock
-
+import pandas as pd
 from lida.datamodel import Goal
 
 from src.reports.lida_report_handler import LidaReportHandler
@@ -27,6 +27,58 @@ class TestLidaReportHandler(unittest.TestCase):
         )
 
         self.report_handler.compute_metrics = Mock(return_value={})
+
+    def test_compute_metrics(self):
+        data = pd.DataFrame(
+            {
+                "sentiment": ["positive", "negative", "neutral", "positive"],
+                "related_topics": ["sports", "politics", "technology", "sports"],
+            }
+        )
+
+        result = self.report_handler.compute_metrics(data)
+        print(result)
+
+    def test_compute_metrics_multiple_topics(self):
+        # DataFrame with multiple topics in one cell
+        data = pd.DataFrame({
+            'sentiment': ['positive', 'negative', 'neutral', 'positive'],
+            'related_topics': ['sports, politics', 'politics', 'technology', 'sports, technology']
+        })
+
+        result = self.report_handler.compute_metrics(data)
+        print(result)
+        self.assertIsNotNone(result)
+    
+    def test_compute_metrics_with_empty(self):
+        # Test with an empty DataFrame
+        empty_data = pd.DataFrame({
+            'sentiment': ['positive', 'negative', 'neutral', 'positive'],
+            'related_topics': ['', '', '', 'sports, technology']
+        })
+
+        result = self.report_handler.compute_metrics(empty_data)
+
+        # Example: assert the result is empty or zeros
+        # Adjust based on your expected behavior
+        print(result)
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result),0) 
+
+    def test_compute_metrics_empty(self):
+        # Test with an empty DataFrame
+        empty_data = pd.DataFrame({
+            'sentiment': ['positive', 'negative', 'neutral', 'positive'],
+            'related_topics': ['', '', '', '']
+        })
+
+        result = self.report_handler.compute_metrics(empty_data)
+
+        # Example: assert the result is empty or zeros
+        # Adjust based on your expected behavior
+        print(result)
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result),0) 
 
     def test_generate_report(self):
         self.report_handler.summarize = Mock(return_value="dummy summary")
