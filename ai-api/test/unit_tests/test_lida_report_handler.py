@@ -26,8 +26,6 @@ class TestLidaReportHandler(unittest.TestCase):
             self.mock_data_manager, self.mock_model_provider
         )
 
-        self.report_handler.compute_metrics = Mock(return_value={})
-
     def test_compute_metrics(self):
         data = pd.DataFrame(
             {
@@ -37,48 +35,114 @@ class TestLidaReportHandler(unittest.TestCase):
         )
 
         result = self.report_handler.compute_metrics(data)
-        print(result)
+        self.assertEqual(
+            result,
+            {
+                "most_freq_sentiment_per_topic": {
+                    "politics": "negative",
+                    "sports": "positive",
+                    "technology": "neutral",
+                },
+                "most_freq_topic_per_sentiment": {
+                    "negative": "politics",
+                    "neutral": "technology",
+                    "positive": "sports",
+                },
+                "sentiment_counts": {"negative": 1, "neutral": 1, "positive": 2},
+                "top_5_topics": {"politics": 1, "sports": 2, "technology": 1},
+                "topic_counts": {"politics": 1, "sports": 2, "technology": 1},
+            },
+        )
 
     def test_compute_metrics_multiple_topics(self):
         # DataFrame with multiple topics in one cell
-        data = pd.DataFrame({
-            'sentiment': ['positive', 'negative', 'neutral', 'positive'],
-            'related_topics': ['sports, politics', 'politics', 'technology', 'sports, technology']
-        })
+        data = pd.DataFrame(
+            {
+                "sentiment": ["positive", "negative", "neutral", "positive"],
+                "related_topics": [
+                    "sports, politics",
+                    "politics",
+                    "technology",
+                    "sports, technology",
+                ],
+            }
+        )
 
         result = self.report_handler.compute_metrics(data)
-        print(result)
-        self.assertIsNotNone(result)
-    
+        self.assertEqual(
+            result,
+            {
+                "most_freq_sentiment_per_topic": {
+                    "politics": "positive",
+                    "sports": "positive",
+                    "technology": "neutral",
+                },
+                "most_freq_topic_per_sentiment": {
+                    "negative": "politics",
+                    "neutral": "technology",
+                    "positive": "sports",
+                },
+                "sentiment_counts": {"negative": 1, "neutral": 1, "positive": 2},
+                "top_5_topics": {"politics": 2, "sports": 2, "technology": 2},
+                "topic_counts": {"politics": 2, "sports": 2, "technology": 2},
+            },
+        )
+
     def test_compute_metrics_with_empty(self):
         # Test with an empty DataFrame
-        empty_data = pd.DataFrame({
-            'sentiment': ['positive', 'negative', 'neutral', 'positive'],
-            'related_topics': ['', '', '', 'sports, technology']
-        })
+        empty_data = pd.DataFrame(
+            {
+                "sentiment": ["positive", "negative", "neutral", "positive"],
+                "related_topics": ["", "", "", "sports, technology"],
+            }
+        )
 
         result = self.report_handler.compute_metrics(empty_data)
 
-        # Example: assert the result is empty or zeros
-        # Adjust based on your expected behavior
-        print(result)
-        self.assertIsNotNone(result)
-        self.assertEqual(len(result),0) 
+        self.assertEqual(
+            result,
+            {
+                "most_freq_sentiment_per_topic": {
+                    "": "positive",
+                    "sports": "positive",
+                    "technology": "positive",
+                },
+                "most_freq_topic_per_sentiment": {
+                    "negative": "",
+                    "neutral": "",
+                    "positive": "",
+                },
+                "sentiment_counts": {"negative": 1, "neutral": 1, "positive": 2},
+                "top_5_topics": {"": 3, "sports": 1, "technology": 1},
+                "topic_counts": {"": 3, "sports": 1, "technology": 1},
+            },
+        )
 
     def test_compute_metrics_empty(self):
         # Test with an empty DataFrame
-        empty_data = pd.DataFrame({
-            'sentiment': ['positive', 'negative', 'neutral', 'positive'],
-            'related_topics': ['', '', '', '']
-        })
+        empty_data = pd.DataFrame(
+            {
+                "sentiment": ["positive", "negative", "neutral", "positive"],
+                "related_topics": ["", "", "", ""],
+            }
+        )
 
         result = self.report_handler.compute_metrics(empty_data)
 
-        # Example: assert the result is empty or zeros
-        # Adjust based on your expected behavior
-        print(result)
-        self.assertIsNotNone(result)
-        self.assertEqual(len(result),0) 
+        self.assertEqual(
+            result,
+            {
+                "sentiment_counts": {"positive": 2, "negative": 1, "neutral": 1},
+                "topic_counts": {"": 4},
+                "most_freq_sentiment_per_topic": {"": "positive"},
+                "most_freq_topic_per_sentiment": {
+                    "negative": "",
+                    "neutral": "",
+                    "positive": "",
+                },
+                "top_5_topics": {"": 4},
+            },
+        )
 
     def test_generate_report(self):
         self.report_handler.summarize = Mock(return_value="dummy summary")
@@ -93,6 +157,7 @@ class TestLidaReportHandler(unittest.TestCase):
         )
 
         self.report_handler.refine_chart = Mock(return_value="refined raster")
+        self.report_handler.compute_metrics = Mock(return_value={})
 
         result = self.report_handler.generate_report(Mock(), Mock(), Mock())
 

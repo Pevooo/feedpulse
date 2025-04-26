@@ -28,47 +28,43 @@ class LidaReportHandler:
         return self.lida.summarize(data)
 
     def compute_metrics(self, df: pd.DataFrame) -> dict:
-        """
-        Compute metrics for 'sentiment' and 'related_topic' columns, handling comma-separated topics:
-        - sentiment_counts: count of each sentiment label
-        - topic_counts: count of each individual topic
-        - most_freq_sentiment_per_topic: sentiment that appears most for each topic
-        - most_freq_topic_per_sentiment: topic that appears most for each sentiment
-        - top_5_topics: overall top 5 topics
-        """
         metrics = {}
+
         if "sentiment" in df.columns:
             metrics["sentiment_counts"] = df["sentiment"].value_counts().to_dict()
 
         if "related_topics" in df.columns:
-            exploded_topics = df["related_topics"].str.split(",")
-            exploded_topics = exploded_topics.explode().str.strip()
-            metrics["topic_counts"] = exploded_topics.value_counts().to_dict()
+            # Step 1: EXPLODE properly: make sure every (sentiment, topic) pair is separated
+            df_exploded = df.assign(
+                related_topic=df["related_topics"].str.split(",")
+            ).explode("related_topic")
 
-            if "sentiment" in df.columns:
+            # Step 2: Strip spaces
+            df_exploded["related_topic"] = df_exploded["related_topic"].str.strip()
 
-                df_exploded = df.copy()
-                df_exploded = df_exploded.assign(
-                    related_topic=df_exploded["related_topics"]
-                    .str.split(",")
-                    .explode()
-                    .str.strip()
-                )
+            # Step 3: Now safely compute
+            metrics["topic_counts"] = (
+                df_exploded["related_topic"].value_counts().to_dict()
+            )
 
-                per_topic = (
-                    df_exploded.groupby("related_topics")["sentiment"]
-                    .agg(lambda x: x.value_counts().idxmax())
-                    .to_dict()
-                )
-                metrics["most_freq_sentiment_per_topic"] = per_topic
-                per_sentiment = (
-                    df_exploded.groupby("sentiment")["related_topics"]
-                    .agg(lambda x: x.value_counts().idxmax())
-                    .to_dict()
-                )
-                metrics["most_freq_topic_per_sentiment"] = per_sentiment
+            # Step 4: Most frequent sentiment per topic
+            metrics["most_freq_sentiment_per_topic"] = (
+                df_exploded.groupby("related_topic")["sentiment"]
+                .agg(lambda x: x.value_counts().idxmax())
+                .to_dict()
+            )
 
-            metrics["top_5_topics"] = exploded_topics.value_counts().head(5).to_dict()
+            # Step 5: Most frequent topic per sentiment
+            metrics["most_freq_topic_per_sentiment"] = (
+                df_exploded.groupby("sentiment")["related_topic"]
+                .agg(lambda x: x.value_counts().idxmax())
+                .to_dict()
+            )
+
+            # Step 6: Top 5 topics
+            metrics["top_5_topics"] = (
+                df_exploded["related_topic"].value_counts().head(5).to_dict()
+            )
 
         return metrics
 
