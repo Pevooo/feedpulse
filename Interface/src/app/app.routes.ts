@@ -8,6 +8,7 @@ import { ServicesComponent } from '../Components/services/services.component';
 import { ContactusComponent } from '../Components/contactus/contactus.component';
 import { DashboardComponent } from '../Components/dashboard/dashboard.component';
 import { AddOrganizationComponent } from '../Components/add-organization/add-organization.component';
+import { PageAnalyticsComponent } from '../Components/page-analytics/page-analytics.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'add-organization', component: AddOrganizationComponent },
+  {path:'page-analytics',component:PageAnalyticsComponent},
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];

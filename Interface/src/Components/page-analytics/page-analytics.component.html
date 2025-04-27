@@ -1,0 +1,38 @@
+ 
+ 
+<div class="analytics-container">
+    <h2>Page Analytics</h2>
+  
+    <div class="input-container">
+      <label for="startDate">Start Date:</label>
+      <input id="startDate" type="date" [(ngModel)]="startDate">
+  
+      <label for="endDate">End Date:</label>
+      <input id="endDate" type="date" [(ngModel)]="endDate">
+    </div>
+  
+    <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
+      Get Analytics
+    </button>
+  
+    <div *ngIf="!startDate || !endDate" class="empty-state">
+      <p>Please select both start and end dates to proceed.</p>
+    </div>
+  
+    <div *ngIf="goals.length > 0" class="goals-section">
+      <h4>Goals:</h4>
+      <ul>
+        <li *ngFor="let goal of goals">{{ goal }}</li>
+      </ul>
+    </div>
+  
+    <div *ngIf="chartImages.length > 0" class="images-section">
+      <h4>Analytics Images:</h4>
+      <div class="images-container">
+        <div *ngFor="let img of chartImages" class="image-wrapper">
+          <img [src]="img" alt="Analytics Chart" class="analytics-image" />
+        </div>
+      </div>
+    </div>
+  </div>
+  

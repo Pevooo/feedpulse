@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FacebookService } from '../../app/services/facebook.service';
 import { FacebookPage } from '../../app/interfaces/Facebook_Page';
 import { Router } from '@angular/router';
+import { OrganizationService } from '../../app/services/organization.service';
 
 
 @Component({
@@ -17,11 +18,14 @@ export class DashboardComponent  implements OnInit{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userData: any = null;
   pages: FacebookPage[] = [];
+  UnRegistered_Pages:FacebookPage[]=[];
+  Registered_Pages: FacebookPage[] = [];
   loading = false;
   errorMessage = '';
   isBrowser: boolean;
   isConnected = false;
   constructor(private facebookService: FacebookService,
+    private organizationService:OrganizationService,
     private router: Router, 
     @Inject(PLATFORM_ID) private platformId: object
   ) {
@@ -32,13 +36,24 @@ export class DashboardComponent  implements OnInit{
     const user = localStorage.getItem('fb_user_profile');
     if(token&&user){
       this.isConnected=true;
+      this.organizationService.getUnRegisterdOrganization(token).subscribe({
+        next: (res) => {
+          this.UnRegistered_Pages=res.data;
+          this.calculateRegisteredPages();
+        },
+        error: (err) => {
+          console.error('❌ Error fetching pages:', err);
+        }
+      })
     }
+    
     console.log(token);
     console.log(user);
 
     if (token && user) {
       this.userData = JSON.parse(user);
       await this.fetchPages(token);
+      this.calculateRegisteredPages();
     }else {
       // 🔄 Check login status again in case session exists
       this.facebookService.checkLoginStatus().then(response => {
@@ -48,12 +63,14 @@ export class DashboardComponent  implements OnInit{
             localStorage.setItem('fb_user_profile', JSON.stringify(profile));
             this.userData = profile;
             this.fetchPages(response.authResponse.accessToken);
+            this.calculateRegisteredPages();
           });
         }
       }).catch(() => {
         console.warn('User is not logged in.');
       });
     }
+    this.calculateRegisteredPages();
   }
   async login() {
     this.loading = true;
@@ -75,7 +92,10 @@ export class DashboardComponent  implements OnInit{
                     if (res.succeeded&& res.data) {
                       this.pages = res.data;
                       this.isConnected = true;
+                      this.calculateRegisteredPages();
                       console.log('✅ Pages:', this.pages);
+                      console.log('✅ Unregisted:', this.UnRegistered_Pages);
+                      console.log('✅ registerd:', this.Registered_Pages);
                     }
                   },
                   error: (err) => {
@@ -122,5 +142,16 @@ export class DashboardComponent  implements OnInit{
     this.pages=[];
     this.isConnected=false;
     
+  }
+  goToAnalytics(page: FacebookPage) {
+    const facebookId = page.id;
+    console.log('Navigating to page-analytics with ID:', facebookId);
+    this.router.navigate(['/page-analytics'], {
+      queryParams: { facebookId }
+    });
+  }
+  private calculateRegisteredPages(): void {
+    const unregisteredIds = new Set(this.UnRegistered_Pages.map(p => p.id));
+    this.Registered_Pages = this.pages.filter(p => !unregisteredIds.has(p.id));
   }
 }

@@ -8,6 +8,7 @@ import { SignInModel } from '../../app/interfaces/ISignInModel';
 import { AuthService } from '../../app/services/auth.service';
 import Swal from 'sweetalert2';
 
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -28,6 +29,13 @@ this.authService.login(this.Model.userName,this.Model.password).subscribe({
     if(response.succeeded&&response.data){
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('refreshToken', response.data.refreshToken.token);
+      
+    
+  
+       // const decoded = jwtDecode(response.data.accessToken) as JwtPayload;
+        //console.log('decoded',decoded);
+  
+      
       console.log('Access Token:', response.data.accessToken);
       console.log('Refresh Token:', response.data.refreshToken);
       Swal.fire({

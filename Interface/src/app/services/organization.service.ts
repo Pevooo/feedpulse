@@ -8,7 +8,7 @@ import { Organization } from '../interfaces/Organization';
   providedIn: 'root'
 })
 export class OrganizationService {
-  private Url = environment.apiUrl + 'organization/create'; // 🔹 Adjust the endpoint as needed
+  private Url = environment.apiUrl + '/api/v1/organization/create'; // 🔹 Adjust the endpoint as needed
 
   constructor(private http: HttpClient) {}
 
@@ -23,4 +23,16 @@ export class OrganizationService {
 
     return this.http.post(this.Url, formData);
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getUnRegisterdOrganization(token:string):Observable<any>{
+    //const params = new HttpParams().set('AccessToken', token);
+    return this.http.get(`https://localhost:7284/api/facebook/unregisteredpages`, {
+      params: {
+        AccessToken: token
+      }
+    });
+  }
 }
+/**
+ * 
+ */
