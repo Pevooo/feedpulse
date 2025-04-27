@@ -44,6 +44,12 @@ class TestDataManager(unittest.TestCase):
 
         cls.data_manager.start_streaming_job()
 
+    def setUp(self):
+        shutil.rmtree(SparkTable.CHECKPOINT.value, ignore_errors=True)
+
+    def tearDown(self):
+        shutil.rmtree(SparkTable.CHECKPOINT.value, ignore_errors=True)
+
     def test_add(self):
         # Writing random data to test on
         df = self.data_manager._spark.getActiveSession().createDataFrame(
