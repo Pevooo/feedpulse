@@ -23,8 +23,9 @@ class FakeTable(Enum):
 
 
 class TestDataManager(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
+        shutil.rmtree(SparkTable.CHECKPOINT.value, ignore_errors=True)
+
         def fake_classification_function(batch: list[str]) -> list[bool | None]:
             return [None] * len(batch)
 
@@ -33,7 +34,7 @@ class TestDataManager(unittest.TestCase):
         ) -> list[list[FeedbackTopic]]:
             return [[FeedbackTopic.CLEANLINESS]] * len(batch)
 
-        cls.data_manager = DataManager(
+        self.data_manager = DataManager(
             FakeTable.TEST_STREAMING_IN,
             FakeTable.TEST_STREAMING_OUT,
             fake_classification_function,
@@ -42,12 +43,12 @@ class TestDataManager(unittest.TestCase):
             SparkTable.PAGES,
         )
 
-        cls.data_manager.start_streaming_job()
-
-    def setUp(self):
-        shutil.rmtree(SparkTable.CHECKPOINT.value, ignore_errors=True)
+        self.data_manager.start_streaming_job()
 
     def tearDown(self):
+        for query in self.data_manager._spark.streams.active:
+            query.stop()
+        self.data_manager._spark.stop()
         shutil.rmtree(SparkTable.CHECKPOINT.value, ignore_errors=True)
 
     def test_add(self):
@@ -497,9 +498,5 @@ class TestDataManager(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        for query in cls.data_manager._spark.streams.active:
-            query.stop()
-        cls.data_manager._spark.stop()
-
         if os.path.exists("test_spark"):
             shutil.rmtree("test_spark")
