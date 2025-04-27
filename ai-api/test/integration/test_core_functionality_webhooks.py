@@ -179,3 +179,4 @@ class TestCoreFunctionality(unittest.TestCase):
         time.sleep(2)
         if os.path.exists(os.path.join(base_path, "test_streaming_integration")):
             shutil.rmtree(os.path.join(base_path, "test_streaming_integration"))
+        shutil.rmtree(SparkTable.CHECKPOINT.value, ignore_errors=True)
