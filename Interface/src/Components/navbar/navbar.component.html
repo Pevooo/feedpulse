@@ -1,23 +1,25 @@
-<nav class="navbar">
-  <div class="navbar-brand">FEEDPULSE</div>
+<nav [ngClass]="{'navbar': true, 'scrolled': isScrolled}">
+  <div class="navbar-brand">
+    <img src="assets/logo.png" alt="FeedPulse Logo" class="logo-img">
+  </div>
   <ul class="navbar-links">
     <li>
-      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">HOME</a>
+      <a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">HOME</a>
     </li>
     <li>
-      <a routerLink="/services" routerLinkActive="active">SERVICES</a>
+      <a routerLink="/services" routerLinkActive="active active-link">SERVICES</a>
     </li>
     <li>
-      <a routerLink="/about" routerLinkActive="active">ABOUT US</a>
+      <a routerLink="/about" routerLinkActive="active active-link">ABOUT US</a>
     </li>
     <li>
-      <a routerLink="/contact-us" routerLinkActive="active">CONTACT US</a>
+      <a routerLink="/contact-us" routerLinkActive="active active-link">CONTACT US</a>
     </li>
 
     <!-- Single conditional block for logged-in/not logged-in state -->
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">
       <li>
-        <a routerLink="/dashboard" routerLinkActive="active">DASHBOARD</a>
+        <a routerLink="/dashboard" routerLinkActive="active active-link">DASHBOARD</a>
       </li>
       <li>
         <a href="#" (click)="onLogout($event)">LOGOUT</a>
@@ -26,10 +28,10 @@
 
     <ng-template #notLoggedIn>
       <li>
-        <a routerLink="/login" routerLinkActive="active">LOGIN</a>
+        <a routerLink="/login" routerLinkActive="active active-link">LOGIN</a>
       </li>
       <li>
-        <a routerLink="/signup" routerLinkActive="active">SIGNUP</a>
+        <a routerLink="/signup" routerLinkActive="active active-link">SIGNUP</a>
       </li>
     </ng-template>
   </ul>

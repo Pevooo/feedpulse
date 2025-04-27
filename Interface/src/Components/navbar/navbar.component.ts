@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, HostListener  } from '@angular/core';
 import { AuthService } from '../../app/services/auth.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,13 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnDestroy {
+  isScrolled = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 50; // Change 50 to any value you want
+  }
+
   isLoggedIn = this.authService.isLoggedIn(); // Initialize with current state
   private routerSubscription: Subscription;
 

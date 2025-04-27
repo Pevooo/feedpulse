@@ -1,68 +1,84 @@
 .footer {
-    background-color: #1A3D7C;
-    color: white;
-    padding: 2rem 0;
-    font-family: Arial, sans-serif;
-  }
-  
+  background-color: #f7f8fc;
+  color: #20c0bd;
+  padding-top: 2rem; /* reduced top/bottom padding */
+}
+
+.logo-img { 
+  width: 40%; /* make logo smaller too */
+  height: auto;
+  margin-right: 8px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 0.5rem; /* reduced side padding */
+  color: #0a2640;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 180px; /* was 200px */
+  margin: 0.5rem; /* was 1rem */
+}
+
+.footer-section h2 {
+  font-size: 1.2rem; /* smaller heading */
+  margin-bottom: 0.5rem; /* smaller gap */
+  color: #20c0bd;
+}
+
+.footer-section p, .footer-section ul {
+  font-size: 0.9rem; /* slightly smaller text */
+  line-height: 1.4; /* tighter line height */
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.3rem; /* smaller gap between links */
+}
+
+.footer-section ul li a {
+  color: #0a2640;
+  text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+  text-decoration: underline;
+  color: #20c0bd;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 0.5rem; /* less space */
+  padding-top: 0.5rem;
+  border-top: 1px solid #20c0bd;
+  font-size: 0.8rem; /* smaller text */
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 6px; /* little less space */
+}
+
+@media (max-width: 768px) {
   .footer-content {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
-  .footer-section {
-    flex: 1;
-    min-width: 200px;
-    margin: 1rem;
-  }
-  
-  .footer-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .footer-section p, .footer-section ul {
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-  
-  .footer-section ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .footer-section ul li {
-    margin-bottom: 0.5rem;
-  }
-  
-  .footer-section ul li a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  .footer-section ul li a:hover {
-    text-decoration: underline;
-  }
-  
-  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #444;
-    font-size: 0.9rem;
   }
-  @media (max-width: 768px) {
-    .footer-content {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-  
-    .footer-section {
-      margin: 1rem 0;
-    }
+
+  .footer-section {
+    margin: 0.5rem 0;
   }
+}

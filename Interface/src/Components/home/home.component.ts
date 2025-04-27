@@ -9,5 +9,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-
+  onButtonClick() {
+    console.log('GIF button clicked!');
+    // Or navigate / do something else
+  }
+  
 }

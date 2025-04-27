@@ -1,10 +1,24 @@
-<section class="hero-section">
+<section class="split-container">
+  <div class="left-side">
+    <h1>FeedPulse</h1>
+    <p>We analyze real social media feedback to help your business grow smarter.</p>
+    <a routerLink="/signup"  routerLinkActive="active" class="btn btn-primary">GET STARTED</a>
+    <button class="gif-button" (click)="onButtonClick()">
+      <img src="assets/video.gif" alt="Button GIF"> WATCH VIDEO
+    </button>
+  </div>
+  <div class="right-side">
+    <img src="assets/GenericHero.png" alt="Description">
+  </div>
+</section>
+
+<!--<section class="hero-section">
     <div class="hero-content">
       <h1>FeedPulse</h1>
       <h2>Your Best Services</h2>
       <div class="hero-buttons">
-        <a routerLink="/signup"  routerLinkActive="active" class="btn btn-primary">SIGN UP</a>
-        <a routerLink="/login"  routerLinkActive="active" class="btn btn-secondary">SIGN IN</a>
-      </div>
+        <a routerLink="/signup"  routerLinkActive="active" class="btn btn-primary">GET STARTED</a>
+        <--<a routerLink="/login"  routerLinkActive="active" class="btn btn-secondary">SIGN IN</a>-->
+      <!--</div>
     </div>
-  </section>
+  </section>-->

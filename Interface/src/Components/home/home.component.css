@@ -1,8 +1,90 @@
-.hero-section {
+.split-container {
+  display: flex;
+  align-items: center; /* vertical alignment */
+  justify-content: center;
+
+  position: relative;
+  height: 100vh;
+  background: url('../../assets/hero-bg.png');
+  background-position: right;
+  background-repeat: no-repeat;
+
+  max-width: 100%;
+  height: auto;
+
+  background-color: #0a2640 ;/* #f9f9fc;*/
+  min-height: 90vh; /* or 100vh for full screen */
+  padding: 40px;
+  gap: 40px;
+}
+
+.right-side img {
+  width: 100%;
+  max-width: 500px; /* Don't let it be too big */
+  height: auto;
+  border-radius: 20px; /* optional: makes corners rounded */
+}
+
+.left-side {
+  max-width: 600px;
+}
+
+.left-side h1 {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.left-side p {
+  font-size: 1.2rem;
+  color: #f7f8fc;
+  margin-bottom: 30px;
+}
+
+/*.cta-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  background-color: #457B9D;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #1D3557;
+}*/
+/*-------------- video button-----------------*/
+.gif-button {
+  background: transparent;
+  border: none;
+  padding-left: 20px;
+  padding-bottom: 20;
+  cursor: pointer;
+  outline: none;
+  color: white;
+}
+
+.gif-button img {
+  width: 75px; /* Adjust the size you want */
+  height: auto;
+  transition: transform 0.3s ease;
+  padding-bottom: 20px;
+
+}
+
+.gif-button:hover img {
+  transform: scale(1.1); /* Slight zoom on hover */
+}
+
+/*----------------*/
+/*.hero-section {
     position: relative;
     height: 100vh;
     background-image: url('../../assets/Home.png'); /* Hardcoded image path */
-    background-size: cover;
+    /*background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     display: flex;
@@ -20,7 +102,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.4); /* Slightly darker overlay for better text contrast */
-    z-index: 1;
+    /*z-index: 1;
   }
   
   .hero-content {
@@ -29,28 +111,28 @@
     text-align: left;
     color: white;
     max-width: 50%; /* Prevent text from stretching too wide */
-  }
+  /*}
   
   .hero-content h1 {
     font-size: clamp(2.5rem, 5vw, 4rem); /* Responsive font size */
-    font-weight: bold;
+    /*font-weight: bold;
     margin-bottom: 1rem;
     text-transform: uppercase;
   }
   
   .hero-content h2 {
     font-size: clamp(1.5rem, 3vw, 2rem); /* Responsive font size */
-    font-weight: 300;
+    /*font-weight: 300;
     margin-bottom: 2rem;
   }
   
   .hero-buttons {
     display: flex;
     gap: 1rem;
-  }
+  }*/
   
   .btn {
-    padding: 0.75rem 2rem;
+    /*padding: 0.75rem 2rem;*/
     font-size: clamp(1rem, 1.5vw, 1.2rem); /* Responsive button text */
     font-weight: 500;
     text-decoration: none;
@@ -59,7 +141,7 @@
   }
   
   .btn-primary {
-    background-color: #4A90E2;
+    background-color: #20c0bd;
     color: white;
     border: none;
   }
