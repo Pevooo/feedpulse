@@ -4,6 +4,7 @@ import { ApiResponse } from '../interfaces/Api_Response';
 import { Observable } from 'rxjs';
 import { FacebookPage } from '../interfaces/Facebook_Page';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment.development';
 
 
 // Declare Facebook API globally
@@ -82,7 +83,7 @@ export class FacebookService {
     });
   }
   getFacebookPages(accessToken:string): Observable<ApiResponse<FacebookPage[]>> {
-    return this.http.get<ApiResponse<FacebookPage[]>>(`https://localhost:7284/api/facebook/pages`,{
+    return this.http.get<ApiResponse<FacebookPage[]>>(`${environment.apiUrl}/api/facebook/pages`,{
       params: {
         accessToken: accessToken
       }

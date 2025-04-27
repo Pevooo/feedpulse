@@ -23,7 +23,7 @@ export class AuthService {
     formData.append('Password', password);
     console.log(this.apiurl);
     // Send POST request with form data
-    return this.http.post<ApiResponse<AuthResponse>>(`https://localhost:7284/api/v1/authentication/sign-in`, formData);
+    return this.http.post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/api/v1/authentication/sign-in`, formData);
   }
  Register(model: IRegistrationModel): Observable<ApiResponse<object>> {
     const formData = new FormData();
@@ -57,7 +57,7 @@ export class AuthService {
     });
 
     return this.http.post<ApiResponse<object>>(
-      `https://localhost:7284/api/v1/application-users/create`,
+      `${environment.apiUrl}/api/v1/application-users/create`,
       formData
     );
   }

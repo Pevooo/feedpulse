@@ -84,7 +84,7 @@ namespace Api.Service.Implementation
 
             var registeredPages = _dbcontext.Organizations.ToList();
 
-            var unregisteredPages = pages.Where(page => registeredPages.Any(x => x.FacebookId == page.Id)).ToList();
+            var unregisteredPages = pages.Where(page => !registeredPages.Any(x => x.FacebookId == page.Id)).ToList();
 
             return unregisteredPages;
         }

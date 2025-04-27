@@ -9,12 +9,22 @@
     <img [src]="userData.picture?.data.url" alt="Profile Picture">
   </div>
 
-  <div *ngIf="pages.length > 0">
-    <h4>Your Pages:</h4>
+  <!-- ✅ Updated unregistered pages display -->
+  <div *ngIf="UnRegistered_Pages?.length">
+    <h4>Your Unregistered Pages:</h4>
+    <ul>
+      <li *ngFor="let page of UnRegistered_Pages">
+        {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
+        <button (click)="goToForm(page)">Go to Form</button>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="Registered_Pages.length > 0">
+    <h4>Your Registered_Pages:</h4>
     <ul>
       <li *ngFor="let page of pages">
         {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
-        <button (click)="goToForm(page)">Go to Form</button>
+        <button (click)="goToAnalytics(page)">Analytics</button> <!-- 🔍 New Button -->
       </li>
     </ul>
   </div>
