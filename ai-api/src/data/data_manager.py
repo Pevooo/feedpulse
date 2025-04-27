@@ -191,6 +191,9 @@ class DataManager(Updatable):
         )
         df.writeStream.trigger(processingTime="5 seconds").foreachBatch(
             self.process_data
+        ).option(
+            "checkpointLocation",
+            SparkTable.CHECKPOINT.value,
         ).start()
 
     def process_data(self, df: pyspark.sql.DataFrame, epoch_id):
