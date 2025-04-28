@@ -1,12 +1,40 @@
 <div class="dashboard-container">
+  <br><br>  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+  <br><br>
+
+  <br><br>
+
   <div class="header">
-    <button *ngIf="!isConnected" (click)="login()">Login with Facebook</button>
-    <button *ngIf="isConnected" class="connected-button" (click)="logout()">Connected (Logout)</button>
+    <button *ngIf="!isConnected" (click)="login()" style="background-color: #20c0bd; color: white;">Login with Facebook</button>
+    <button *ngIf="isConnected" class="connected-button" (click)="logout()" style="background-color: #20c0bd; color: white;">Connected (Logout)</button>
   </div>
 
   <div *ngIf="userData">
-    <h3>Welcome, {{ userData.name }}</h3>
-    <img [src]="userData.picture?.data.url" alt="Profile Picture">
+    <h3>Welcome, Aya</h3> <!--{{ userData.name }}</h3>-->
+    <img src="assets/5.png" alt="profile picture"><!--[src]="userData.picture?.data.url" alt="Profile Picture">-->
   </div>
 
   <!-- ✅ Updated unregistered pages display -->

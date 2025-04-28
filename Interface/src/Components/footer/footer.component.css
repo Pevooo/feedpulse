@@ -71,6 +71,7 @@
   margin-right: 6px; /* little less space */
 }
 
+
 @media (max-width: 768px) {
   .footer-content {
     flex-direction: column;

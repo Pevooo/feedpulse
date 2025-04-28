@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports:[RouterLink,RouterOutlet,CommonModule,HttpClientModule,ReactiveFormsModule,FormsModule],
+  imports:[RouterLink, RouterOutlet,CommonModule,HttpClientModule,ReactiveFormsModule,FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -57,6 +57,8 @@ this.authService.login(this.Model.userName,this.Model.password).subscribe({
       icon: 'error',
       title: 'Login Failed',
       text: err.error.message || 'Invalid credentials.',
+      confirmButtonColor: '#20c0bd', // Change this to your desired color
+      confirmButtonText: 'OK' // Explicitly set the button text if needed
     });
   }
 })
