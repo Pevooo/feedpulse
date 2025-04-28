@@ -44,7 +44,6 @@ export class HomeComponent implements OnDestroy {
 
     // Update progress bar
     if (timeline && progress) {
-      const rect = timeline.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const scrollTop = window.scrollY;
       const offsetTop = timeline.getBoundingClientRect().top + scrollTop;
