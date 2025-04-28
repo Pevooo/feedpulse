@@ -7,7 +7,6 @@
 
 /* Body Styling */
 body {
-  font-family: Arial, sans-serif;
   line-height: 1.6;
 }
 
@@ -28,8 +27,8 @@ body {
   z-index: 1000; /* Stay above everything */
 }
 .navbar.scrolled {
-  background-color: #20c0bd; /* Example color: deep blue */
-  /*box-shadow: 0 2px 8px rgb(32,192,189,0.2) /* optional: small shadow */
+  background-color: #0a2640; /* Example color: deep blue */
+  box-shadow: 0 2px 8px rgb(32,192,189,0.2); /* optional: small shadow */
 }
 
 /* Navbar Brand (Logo/Title) */

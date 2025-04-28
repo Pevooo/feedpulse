@@ -267,47 +267,6 @@
   /*-------------------------------------
   SECTION 3
   ---------------------------------------*/
-  .split-container2 {
-    display: flex;
-    align-items: center; /* vertical alignment */
-    justify-content: center;
-  
-    position: relative;
-    height: 100vh;
-  
-    max-width: 100%;
-    height: auto;
-  
-    background-color: #f9f9fc;
-    min-height: 90vh; /* or 100vh for full screen */
-    padding: 40px;
-    gap: 40px;
-  }
-  
-  .left-side2 img {
-    width: 100%;
-    max-width: 500px; /* Don't let it be too big */
-    height: auto;
-    border-radius: 20px; /* optional: makes corners rounded */
-  }
-  
-  .right-side2 {
-    max-width: 600px;
-  }
-  
-  .right-side2 h1 {
-    font-size: 2.5rem;
-    color: #0a2640;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .right-side2 p {
-    font-size: 1.2rem;
-    color: #0a2640 ;/* #f7f8fc;*/
-    margin-bottom: 30px;
-  }
-
 /*---------------------------------------
   PAGINATION              
 -----------------------------------------*/

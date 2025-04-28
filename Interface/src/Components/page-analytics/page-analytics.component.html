@@ -1,38 +1,64 @@
- 
- 
-<div class="analytics-container">
-    <h2>Page Analytics</h2>
-  
+<section class="main-section">
+  <br><br>  <br><br>
+
+  <div class="analytics-container">
+    <h2>Analytics Page</h2>
     <div class="input-container">
-      <label for="startDate">Start Date:</label>
-      <input id="startDate" type="date" [(ngModel)]="startDate">
-  
-      <label for="endDate">End Date:</label>
-      <input id="endDate" type="date" [(ngModel)]="endDate">
+      <div class="input-group">
+        <label for="startDate">Start Date:</label>
+        <input id="startDate" type="date" [(ngModel)]="startDate">
+      </div>
+      <div class="input-group">
+        <label for="endDate">End Date:</label>
+        <input id="endDate" type="date" [(ngModel)]="endDate">
+      </div>
     </div>
-  
     <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
-      Get Analytics
+      GET ANALYTICS
     </button>
-  
     <div *ngIf="!startDate || !endDate" class="empty-state">
       <p>Please select both start and end dates to proceed.</p>
     </div>
-  
-    <div *ngIf="goals.length > 0" class="goals-section">
-      <h4>Goals:</h4>
-      <ul>
-        <li *ngFor="let goal of goals">{{ goal }}</li>
-      </ul>
-    </div>
-  
-    <div *ngIf="chartImages.length > 0" class="images-section">
-      <h4>Analytics Images:</h4>
-      <div class="images-container">
-        <div *ngFor="let img of chartImages" class="image-wrapper">
-          <img [src]="img" alt="Analytics Chart" class="analytics-image" />
+    
+    <div class="report">
+      
+      <div *ngIf="goals.length > 0" class="goals-section">
+        <h3>Report from {{ startDate }} to {{ endDate }}</h3>
+        <h4>Goals:</h4>
+        <ul>
+          <li *ngFor="let goal of goals">{{ goal }}</li>
+        </ul>
+      </div>
+      
+      <div *ngIf="chartImages.length > 0" class="images-section">
+        <h4>Analytics Images:</h4>
+        <div class="images-container">
+          <div *ngFor="let img of chartImages" class="image-wrapper">
+            <img [src]="img" alt="Analytics Chart" class="analytics-image" />
+          </div>
         </div>
       </div>
     </div>
   </div>
+</section>
+
+  <section class="about-feedpulse">
+    <div class="container">
+      <div class="about-content">
+        <!-- Image on the left -->
+        <div class="about-image">
+          <img src="assets/analysis.png" alt="About FeddPulse">
+        </div>
+        
+        <!-- Content on the right -->
+        <div class="about-text">
+          <h2>GENERATE REPORTS</h2>
+          <h1>We Will Do Our Best To Grow Your Business</h1>
+          <p class="description">
+            At FeedPulse, we empower your brand by transforming customer feedback into actionable insights, fueling sustainable growth and innovation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
   
