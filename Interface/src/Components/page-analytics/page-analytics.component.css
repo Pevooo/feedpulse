@@ -1,39 +1,74 @@
+.main-section{
+  height: 100%;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0a2640); /* nice gradient */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .analytics-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Arial', sans-serif;
+    max-width: 100%;
+    margin: 50px auto;
+    padding: 30px;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 80px; /* Pushes the whole section down from the navbar */
+
   }
-  
   h2 {
     font-size: 2rem;
     margin-bottom: 20px;
     text-align: center;
-    color: #333;
+    color: #20c0bd;
   }
   
   .input-container {
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
     margin-bottom: 20px;
+    /*display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;*/
   }
   
   input[type="date"] {
-    width: 45%;
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    font-size: 1rem;
+    color: #666;
+    /*width: 45%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 1rem;
+    font-size: 1rem;*/
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: #20c0bd; /* your custom border color */
+    box-shadow: 0 0 5px #20c0bd; /* remove the blue glowing shadow */
+    outline: none; /* remove extra outline if any */
+  }
+
+  .input-group{
+    flex: 1; /* Each date input will take 50% */
+    display: flex;
+  }
+  .input-group label{
+    color: #20c0bd;
   }
   
   .get-analytics-btn {
     display: block;
-    width: 100%;
+    width: 50%;
     padding: 12px;
-    background-color: #007bff;
+    margin: 20px auto; /* <<< This centers it horizontally */
+    background-color: #20c0bd;
     color: white;
     border: none;
     border-radius: 5px;
@@ -43,7 +78,7 @@
   }
   
   .get-analytics-btn:hover {
-    background-color: #0056b3;
+    background-color: #0a2640;
   }
   
   .get-analytics-btn:disabled {
@@ -57,41 +92,137 @@
     font-size: 1.2rem;
     color: #999;
   }
+
+  .report{
+    margin-top: 30px;
+    padding: 20px;
+    background: #f7f8fc;
+    border-radius: 10px;
+  }
+  .report h3 {
+    color: #0a2640;
+    margin-bottom: 20px;
+  }
   
   .goals-section, .images-section {
     margin-top: 30px;
+    text-align: left; /* left-align content inside sections */
   }
   
-  h4 {
+  .goals-section h4, .images-section h4 {
+    color: #20c0bd;
+    margin-bottom: 15px;
+  }
+  
+  /*h4 {
     font-size: 1.5rem;
     margin-bottom: 15px;
     color: #333;
-  }
+  }*/
   
   ul {
+    list-style-type: disc;
     padding-left: 20px;
   }
   
   li {
-    font-size: 1.1rem;
-    margin: 5px 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    /*font-size: 1.1rem;
+    margin: 5px 0;*/
   }
   
   .images-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
+    margin-top: 10px;
+    /*display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;*/
   }
   
   .image-wrapper {
-    max-width: 300px;
+    /*max-width: 300px;*/
+
+    width: 100%; /* Full width of container */
+    max-width: 500px; /* Set a bigger max width */
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f9f9f9;
+    padding: 10px;
+    
   }
   
   .analytics-image {
-    width: 100%;
+    /*width: 100%;
     height: auto;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);*/
+
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 500px;
   }
   
+/*------------------
+SECTION 2
+--------------------*/
+.about-feedpulse {
+  padding: 4rem 0;
+  background-color: #f9f9f9;
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .about-image {
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .about-text {
+    h2 {
+      color: #20c0bd;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+    
+    h1 {
+      color: #333;
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.3;
+    }
+    
+    .description {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+  }
+}

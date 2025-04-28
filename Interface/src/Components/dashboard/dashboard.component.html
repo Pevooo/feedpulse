@@ -1,31 +1,38 @@
-<div class="dashboard-container">
-  <div class="header">
-    <button *ngIf="!isConnected" (click)="login()">Login with Facebook</button>
-    <button *ngIf="isConnected" class="connected-button" (click)="logout()">Connected (Logout)</button>
-  </div>
+<section class="gradient-custom">
+  <div class="dashboard-container">
+    <div *ngIf="userData">
+      <h3 style="color: #13547a;">Welcome, {{ userData.name }}</h3>
+      <br>
+      <img [src]="userData.picture?.data.url" alt="Profile Picture">
+      <br>
+    </div>
+      <!-- ✅ Updated unregistered pages display -->
+      <div *ngIf="UnRegistered_Pages?.length">
+        <h4>Your Unregistered Pages:</h4>
+        <ul>
+          <li *ngFor="let page of UnRegistered_Pages">
+            {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
+            <button (click)="goToForm(page)">Go to Form</button>
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="Registered_Pages.length > 0">
+        <h4>Your Registered_Pages:</h4>
+        <ul>
+          <li *ngFor="let page of pages">
+            {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
+            <button (click)="goToAnalytics(page)" class="gif-button">
+                <img src="assets/gif/report.gif" alt="Analytics">
+            
+            </button> <!-- 🔍 New Button -->
+          </li>
+        </ul>
+      </div>
 
-  <div *ngIf="userData">
-    <h3>Welcome, {{ userData.name }}</h3>
-    <img [src]="userData.picture?.data.url" alt="Profile Picture">
-  </div>
+    <div class="header">
+      <button *ngIf="!isConnected" (click)="login()" style="background-color: #20c0bd; color: white;">CONNECT TO FACEBOOK</button>
+      <button *ngIf="isConnected" class="connected-button" (click)="logout()" style="background-color: #20c0bd; color: white;">DISCONNECT</button>
+    </div>
 
-  <!-- ✅ Updated unregistered pages display -->
-  <div *ngIf="UnRegistered_Pages?.length">
-    <h4>Your Unregistered Pages:</h4>
-    <ul>
-      <li *ngFor="let page of UnRegistered_Pages">
-        {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
-        <button (click)="goToForm(page)">Go to Form</button>
-      </li>
-    </ul>
   </div>
-  <div *ngIf="Registered_Pages.length > 0">
-    <h4>Your Registered_Pages:</h4>
-    <ul>
-      <li *ngFor="let page of pages">
-        {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
-        <button (click)="goToAnalytics(page)">Analytics</button> <!-- 🔍 New Button -->
-      </li>
-    </ul>
-  </div>
-</div>
+</section>

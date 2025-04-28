@@ -1,12 +1,30 @@
 
   .gradient-custom {
-    background: #4A90E2;
-    background: -webkit-linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));
-    background: linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));
+    /*background: #20c0bd;
+    background: -webkit-linear-gradient(to bottom right, #20c0bd, rgba(10, 38, 64, 1));
+    background: linear-gradient(to bottom right, #20c0bd, rgba(10, 38, 64, 1));
     height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center;*/
+
+    display: flex;
+  align-items: center; /* vertical alignment */
+  justify-content: center;
+
+  position: relative;
+  height: 100vh;
+  background: url('../../assets/hero-bg.png');
+  background-position: right;
+  background-repeat: no-repeat;
+
+  max-width: 100%;
+  height: auto;
+
+  background-color: #0a2640 ;/* #f9f9fc;*/
+  min-height: 90vh; /* or 100vh for full screen */
+  padding: 40px;
+  gap: 40px;
   }
   .card-registration .select-input.form-control[readonly]:not([disabled]) {
   font-size: 1rem;
@@ -16,4 +34,35 @@
   }
   .card-registration .select-arrow {
   top: 13px;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: #20c0bd; /* your custom border color */
+    box-shadow: 0 0 5px #20c0bd; /* remove the blue glowing shadow */
+    outline: none; /* remove extra outline if any */
+  }
+
+  .btn{
+    background-color: #20c0bd;
+    border: none;
+  }
+  .btn {
+    /*padding: 0.75rem 2rem;*/
+    font-size: clamp(1rem, 1.5vw, 1.2rem); /* Responsive button text */
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .btn-primary {
+    background-color: #20c0bd;
+    color: white;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #f7f8fc;
+    color: #0a2640;
+    transform: translateY(-2px);
   }
