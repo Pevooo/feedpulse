@@ -1,4 +1,5 @@
-﻿using Api.Data.Entities;
+﻿using Api.Data.DTOS;
+using Api.Data.Entities;
 using Api.Data.Helpers;
 using Api.Infrastructure.Abstracts;
 using Api.Infrastructure.Data;
@@ -114,6 +115,36 @@ namespace Api.Service.Implementation
         {
             return await _organizationRepository.GetTableNoTracking().Where(x => x.UserId == id).ToListAsync();
         }
-        #endregion
-    }
+
+        public async Task<ReportResponse> GetReportAsync(GetReportRequest query)
+        {
+            string url = "https://feedpulse.francecentral.cloudapp.azure.com/report";
+            try
+            {
+                var jsonContent = JsonSerializer.Serialize(query);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(url, content);
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+				Console.WriteLine(responseBody);
+                try
+                {
+                    ReportResponse responseBodyDeserialize = JsonSerializer.Deserialize<ReportResponse>(responseBody);
+					return responseBodyDeserialize;
+
+				}
+				catch (Exception ex)
+                {
+					throw new Exception(ex.Message);
+				}
+			}
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+		}
+
+		#endregion
+	}
 }

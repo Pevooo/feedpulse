@@ -34,5 +34,11 @@ namespace web_api.Controllers
             var response = await Mediator.Send(query);
             return NewResult(response);
         }
-    }
+		[HttpPost(Router.Organization.GetReport)]
+		public async Task<IActionResult> GetReport([FromBody] GetReportQuery query)
+		{
+			var response = await Mediator.Send(query);
+			return NewResult(response);
+		}
+	}
 }
