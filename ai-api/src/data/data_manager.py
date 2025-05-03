@@ -318,6 +318,7 @@ class DataManager(Updatable):
                 & (col("created_time") >= start_date)
                 & (col("created_time") <= end_date)
             )
+            .drop("post_id", "comment_id", "page_id")
             .collect()
         )
 
