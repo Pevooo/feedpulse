@@ -1,4 +1,5 @@
-﻿using Api.Data.Entities;
+﻿using Api.Data.DTOS;
+using Api.Data.Entities;
 using Api.Data.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,5 @@ namespace Api.Infrastructure.Data
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<UserRefershToken> UserRefershTokens { get; set; }
-        public DbSet<Reports> Reports { get; set; }
     }
 }

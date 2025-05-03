@@ -1,4 +1,5 @@
-﻿using Api.Data.Entities;
+﻿using Api.Data.DTOS;
+using Api.Data.Entities;
 
 namespace Api.Service.Abstracts
 {
@@ -10,5 +11,6 @@ namespace Api.Service.Abstracts
         Task<List<Organization>> GetOrganizationsByUseridAsync(string id);
         Task<string> AddOrganizationAsync(Organization organization);
         Task<string> DeleteOrganizationAsync(int id);
+        Task<ReportResponse> GetReportAsync(GetReportRequest query);
     }
 }
