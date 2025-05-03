@@ -12,13 +12,18 @@ describe('AddOrganizationComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        AddOrganizationComponent, // ✅ Standalone components go here
+        AddOrganizationComponent, // ✅ Standalone component
       ],
       providers: [
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({ id: '123' }),
+            queryParams: of({
+              name: 'Test Organization',
+              pageAccessToken: 'abc123',
+              facebookId: 'fb_001',
+              userId: 'user_001'
+            }),
             snapshot: { paramMap: { get: () => '123' } }
           }
         }

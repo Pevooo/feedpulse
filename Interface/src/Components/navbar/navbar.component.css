@@ -18,13 +18,15 @@ body {
   background-color: #333;
   color: white;
   padding: 10px 20px;*/
+  font-family: 'NunitoSans';
   position: fixed;
   top: 0;
   width: 100%;
   padding: 20px 40px;
-  background-color: transparent;
+  background-color: #0a2640;
   transition: background-color 0.4s ease, box-shadow 0.4s ease;
   z-index: 1000; /* Stay above everything */
+  text-transform: none;
 }
 .navbar.scrolled {
   background-color: #0a2640; /* Example color: deep blue */
@@ -39,17 +41,19 @@ body {
   display: flex;
   align-items: center;
 }
-.logo-img{ /*aya*/
-  width: 120px;
-  height: 40px; /* adjust size as needed */
+.logo-img{
+  width: 180px;
+  height: 60px; /* adjust size as needed */
   margin-right: 10px;
 }
 
 /* Navbar Links List */
 .navbar-links {
+  background-color: #0a2640;
   list-style: none;
   display: flex;
   gap: 20px;
+
 }
 
 /* Individual Link Styles */
@@ -60,7 +64,7 @@ body {
 .navbar-links a { /*aya*/
   text-decoration: none;
   color: white;
-  font-size: 1rem;
+  font-size: 1.1rem;
   transition: color 0.3s ease;
 }
 

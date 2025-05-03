@@ -1,4 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'BrownedeCalvin';
+  src: url('/assets/fonts/BrownedeCalvin-Regular.otf') format('opentype');
+}
+@font-face {
+  font-family: 'NunitoSans';
+  src: url('/assets/fonts/NunitoSans-LightItalic.ttf') format('opentype');
+}
+@font-face {
+  font-family: 'Helmet';
+  src: url('/assets/fonts/Helmet-Regular.ttf') format('opentype');
+}
 body{
-    font-family: "DM Sans",sans-serif;
+    font-family: "DM Sans","sans-serif", "BrownedeCalvin","NunitoSans","Helmet";
 }
