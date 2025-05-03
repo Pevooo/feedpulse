@@ -20,6 +20,7 @@
 
   max-width: 100%;
   height: auto;
+  font-family: 'Helmet';
 
   background-color: #0a2640 ;/* #f9f9fc;*/
   min-height: 90vh; /* or 100vh for full screen */
