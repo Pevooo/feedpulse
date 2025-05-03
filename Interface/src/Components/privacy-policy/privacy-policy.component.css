@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+  h1 {
+    color: #f9f9f9;
+    padding: 10px;
+    padding-left: 50px;
+  }
+  h3{
+    padding-top: 30px;
+    padding-left: 50px;
+  }
+  h3, a{
+    font-size: small;
+    margin-top: 50px;
+    color: #f9f9f9;
+  }
+  p{
+    padding: 20px;
+    color: #0a2640;
+  }
+  section {
+    margin-bottom: 0; /* or a smaller value like 10px */
+    background-color: #f9f9f9;
+  }
+  .part1{
+    background-color: #0a2640;
+    height: 100%;
+  }
+  .part2{
+    padding: 20px;
+    padding-bottom: 50px;
+    background-color: #f9f9f9;
+    align-items: center;
+    justify-content: center;
+  }

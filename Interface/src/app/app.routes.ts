@@ -9,6 +9,7 @@ import { ContactusComponent } from '../Components/contactus/contactus.component'
 import { DashboardComponent } from '../Components/dashboard/dashboard.component';
 import { AddOrganizationComponent } from '../Components/add-organization/add-organization.component';
 import { PageAnalyticsComponent } from '../Components/page-analytics/page-analytics.component';
+import { PrivacyPolicyComponent} from '../Components/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -20,5 +21,6 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'add-organization', component: AddOrganizationComponent },
   {path:'page-analytics',component:PageAnalyticsComponent},
+  {path: 'privacy-policy', component: PrivacyPolicyComponent},
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];
