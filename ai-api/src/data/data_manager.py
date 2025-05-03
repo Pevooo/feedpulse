@@ -82,6 +82,7 @@ class DataManager(Updatable):
     ):
         self._spark = configure_spark_with_delta_pip(
             SparkSession.builder.appName("FeedPulse")
+            .config("spark.sql.execution.arrow.pyspark.enabled", "true")
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
             .config(
                 "spark.sql.catalog.spark_catalog",
@@ -311,7 +312,7 @@ class DataManager(Updatable):
         Returns:
             pd.DataFrame: The filtered data.
         """
-        filtered_page_data_df = (
+        df = (
             self.read(self.stream_out)
             .filter(
                 (substring_index(col("post_id"), "_", 1) == page_id)
@@ -319,13 +320,9 @@ class DataManager(Updatable):
                 & (col("created_time") <= end_date)
             )
             .drop("post_id", "comment_id", "page_id")
-            .collect()
+            .toPandas()
         )
 
-        data_as_dict = [row.asDict() for row in filtered_page_data_df]
-        df = pd.DataFrame(data_as_dict)
-        if df.empty:
-            return pd.DataFrame()
         df["related_topics"] = df["related_topics"].apply(lambda x: ", ".join(x))
         return df
 
