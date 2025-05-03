@@ -87,6 +87,7 @@ class DataManager(Updatable):
                 "spark.sql.catalog.spark_catalog",
                 "org.apache.spark.sql.delta.catalog.DeltaCatalog",
             )
+            .config("spark.sql.execution.arrow.pyspark.enabled", "true")
         ).getOrCreate()
 
         self.feedback_classification_batch_function = (
@@ -313,20 +314,20 @@ class DataManager(Updatable):
         """
         filtered_page_data_df = (
             self.read(self.stream_out)
+            .selectExpr("*")  # start with all columns
             .filter(
                 (substring_index(col("post_id"), "_", 1) == page_id)
                 & (col("created_time") >= start_date)
                 & (col("created_time") <= end_date)
             )
-            .collect()
+            .drop("post_id", "comment_id", "page_id")
+            .toPandas()  # use Arrow here for speed
         )
 
-        data_as_dict = [row.asDict() for row in filtered_page_data_df]
-        df = pd.DataFrame(data_as_dict)
-        if df.empty:
-            return pd.DataFrame()
-        df["related_topics"] = df["related_topics"].apply(lambda x: ", ".join(x))
-        return df
+        filtered_page_data_df["related_topics"] = filtered_page_data_df[
+            "related_topics"
+        ].apply(lambda x: ", ".join(x))
+        return filtered_page_data_df
 
     def update(self) -> None:
         self.processing_batch_size = Settings.processing_batch_size

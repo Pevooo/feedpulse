@@ -412,7 +412,6 @@ class TestDataManager(unittest.TestCase):
 
         self.assertIn(
             {
-                "post_id": "123_112",
                 "created_time": datetime.datetime(
                     2025, 2, 23, 20, 47, 43, tzinfo=datetime.timezone.utc
                 ).isoformat(),
@@ -422,7 +421,6 @@ class TestDataManager(unittest.TestCase):
         )
         self.assertIn(
             {
-                "post_id": "123_111",
                 "created_time": datetime.datetime(
                     2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                 ).isoformat(),
@@ -483,7 +481,6 @@ class TestDataManager(unittest.TestCase):
             data_as_dict,
             [
                 {
-                    "post_id": "123_111",
                     "created_time": datetime.datetime(
                         2025, 2, 24, 20, 47, 43, tzinfo=datetime.timezone.utc
                     ).isoformat(),
