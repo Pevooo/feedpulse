@@ -52,6 +52,16 @@ class FacebookWebhookHandler(WebhookHandler):
         return True
 
     def register(self, page_id: str, access_token: str) -> bool:
+        """
+        Registers a page for feed webhooks given an access token.
+
+        Args:
+            page_id (str): The id of the page.
+            access_token (str): The access token that belongs to the page.
+
+        Returns:
+            bool: True if registration was successful otherwise False.
+        """
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",

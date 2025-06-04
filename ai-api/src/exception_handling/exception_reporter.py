@@ -17,7 +17,7 @@ class ExceptionReporter:
                 "time": datetime.now().isoformat(),
             }
         )
-        if len(self.exceptions) == 50:
+        if len(self.exceptions) >= 50:
             self.spark.add(
                 SparkTable.EXCEPTIONS,
                 self.exceptions,

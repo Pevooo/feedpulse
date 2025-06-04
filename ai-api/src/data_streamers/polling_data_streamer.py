@@ -1,3 +1,5 @@
+# Deprecated: We now use webhook handlers
+
 import logging
 import time
 import traceback

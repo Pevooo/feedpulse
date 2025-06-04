@@ -1,7 +1,10 @@
+# DEPRECATED: We now use webhooks with webhook handlers
+
 import requests
 from datetime import datetime
 
 from src.data_providers.data_provider import DataProvider
+from src.utlity.util import deprecated
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v22.0/"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
@@ -12,6 +15,7 @@ class FacebookDataProvider(DataProvider):
     represents a data provider for the Facebook Graph API to fetch facebook data.
     """
 
+    @deprecated
     def get_page_id(self) -> str:
         """
         Retrieves the page ID associated with the provided page access token.
@@ -29,6 +33,7 @@ class FacebookDataProvider(DataProvider):
 
         return data.get("id")
 
+    @deprecated
     def get_posts(self) -> tuple[dict, ...]:
         """
         Gets the last 100 posts with all of their comments and replies from a Facebook page using the page access token.
@@ -93,6 +98,7 @@ class FacebookDataProvider(DataProvider):
 
         return tuple(posts)
 
+    @deprecated
     def next(self, url: str) -> list[dict]:
         """Fetch all items by following pagination cursors."""
         items = []

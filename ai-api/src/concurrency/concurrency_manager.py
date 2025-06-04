@@ -9,6 +9,13 @@ class ConcurrencyManager:
         self.executor = ThreadPoolExecutor()
 
     def submit_job(self, func: Callable, *args, **kwargs) -> Future:
+        """
+        Submits a job to the concurrency manager.
+        Args:
+            func (Callable): The function to execute.
+            args (tuple): The arguments to pass to the function.
+            kwargs (dict): The keyword arguments to pass to the function.
+        """
         future = self.executor.submit(func, *args, **kwargs)
         future.add_done_callback(self.get_complete_callback(traceback.format_exc()))
         return future

@@ -10,7 +10,7 @@ from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
 import pyspark
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, substring_index, split
+from pyspark.sql.functions import col, split
 from pyspark.sql.functions import (
     monotonically_increasing_id,
     collect_list,
@@ -119,21 +119,6 @@ class DataManager(Updatable):
         # Move the file to the real directory
         shutil.move(temp_path, final_path)
 
-    @deprecated
-    def stream_by_polling(self):
-        df = self.read(self.pages)
-        if df:
-            flattened_df = self._get_flattened_polled_data(df)
-
-            processed_comments = self.read(self.stream_out)
-            if processed_comments:
-                stream_df = self._get_unique(
-                    flattened_df, processed_comments, "comment_id"
-                )
-                self.add(self.stream_in, stream_df, "json").result()
-            else:
-                self.add(self.stream_in, flattened_df, "json").result()
-
     def add(
         self,
         table: SparkTable,
@@ -145,17 +130,11 @@ class DataManager(Updatable):
             self._add_worker, table, row_data, write_format, schema
         )
 
-    def delete(self, table: SparkTable, row_data: str):
-        pass
-
     def read(self, table: SparkTable) -> pyspark.sql.DataFrame | None:
         try:
             return self._spark.read.format("delta").load(table.value)
         except Exception:
             return None
-
-    def modify(self, table: SparkTable, row_data: str):
-        pass
 
     # Modified _add_worker function to reduce Spark-level parallelism for small datasets
     # noinspection PyTypeChecker
@@ -191,13 +170,13 @@ class DataManager(Updatable):
             .load(self.stream_in.value)
         )
         df.writeStream.trigger(processingTime="5 seconds").foreachBatch(
-            self.process_data
+            self.process_incoming_data
         ).option(
             "checkpointLocation",
             SparkTable.CHECKPOINT.value,
         ).start()
 
-    def process_data(self, df: pyspark.sql.DataFrame, epoch_id):
+    def process_incoming_data(self, df: pyspark.sql.DataFrame, epoch_id):
         if df.isEmpty():
             return
 
@@ -272,6 +251,50 @@ class DataManager(Updatable):
 
         return batch_results
 
+    def get_filtered_page_data(
+        self, page_id: str, start_date: datetime, end_date: datetime
+    ) -> pd.DataFrame:
+        """
+        Prepare and filter the data.
+        Args:
+            page_id (str): The id of the page which the report belongs to.
+            start_date (datetime): The start date of the data to be included in the report.
+            end_date (datetime): The end date of the data to be included in the report.
+        Returns:
+            pd.DataFrame: The filtered data.
+        """
+        df = (
+            self.read(self.stream_out)
+            .filter(
+                (col("page_id") == page_id)
+                & (col("created_time") >= start_date)
+                & (col("created_time") <= end_date)
+            )
+            .drop("post_id", "comment_id", "page_id")
+            .toPandas()
+        )
+
+        df["related_topics"] = df["related_topics"].apply(lambda x: ", ".join(x))
+        return df
+
+    def update(self) -> None:
+        self.processing_batch_size = Settings.processing_batch_size
+
+    @deprecated
+    def stream_by_polling(self):
+        df = self.read(self.pages)
+        if df:
+            flattened_df = self._get_flattened_polled_data(df)
+
+            processed_comments = self.read(self.stream_out)
+            if processed_comments:
+                stream_df = self._get_unique(
+                    flattened_df, processed_comments, "comment_id"
+                )
+                self.add(self.stream_in, stream_df, "json").result()
+            else:
+                self.add(self.stream_in, flattened_df, "json").result()
+
     @deprecated
     def _get_unique(
         self, new_df: pyspark.sql.DataFrame, old_df: pyspark.sql.DataFrame, on: str
@@ -299,32 +322,3 @@ class DataManager(Updatable):
 
         results_rdd = df.rdd.flatMap(process_page)
         return self._spark.createDataFrame(results_rdd)
-
-    def filter_data(
-        self, page_id: str, start_date: datetime, end_date: datetime
-    ) -> pd.DataFrame:
-        """
-        Prepare and filter the data.
-        Args:
-            page_id (str): The id of the page which the report belongs to.
-            start_date (datetime): The start date of the data to be included in the report.
-            end_date (datetime): The end date of the data to be included in the report.
-        Returns:
-            pd.DataFrame: The filtered data.
-        """
-        df = (
-            self.read(self.stream_out)
-            .filter(
-                (substring_index(col("post_id"), "_", 1) == page_id)
-                & (col("created_time") >= start_date)
-                & (col("created_time") <= end_date)
-            )
-            .drop("post_id", "comment_id", "page_id")
-            .toPandas()
-        )
-
-        df["related_topics"] = df["related_topics"].apply(lambda x: ", ".join(x))
-        return df
-
-    def update(self) -> None:
-        self.processing_batch_size = Settings.processing_batch_size

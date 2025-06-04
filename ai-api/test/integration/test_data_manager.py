@@ -406,7 +406,7 @@ class TestDataManager(unittest.TestCase):
             FakeTable.TEST_STREAMING_OUT.value
         )
 
-        df = self.data_manager.filter_data("123", start_time, end_time)
+        df = self.data_manager.get_filtered_page_data("123", start_time, end_time)
 
         data_as_dict = df.to_dict(orient="records")
 
@@ -473,7 +473,7 @@ class TestDataManager(unittest.TestCase):
             FakeTable.TEST_STREAMING_OUT.value
         )
 
-        df = self.data_manager.filter_data("123", start_time, end_time)
+        df = self.data_manager.get_filtered_page_data("123", start_time, end_time)
 
         data_as_dict = df.to_dict(orient="records")
 

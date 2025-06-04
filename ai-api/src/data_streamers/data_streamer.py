@@ -1,3 +1,5 @@
+# Deprecated: We now use webhook handlers
+
 from abc import ABC, abstractmethod
 
 

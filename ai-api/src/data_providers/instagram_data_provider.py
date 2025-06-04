@@ -1,7 +1,10 @@
+# DEPRECATED: We now use webhooks with webhook handlers
+
 import requests
 from datetime import datetime
 
 from src.data_providers.data_provider import DataProvider
+from src.utlity.util import deprecated
 
 FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v21.0/"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
@@ -12,6 +15,7 @@ class InstagramDataProvider(DataProvider):
     represents a data provider for the Facebook Graph API to fetch instagram data.
     """
 
+    @deprecated
     def get_instagram_account_id(self) -> str:
         """
         Retrieves the Instagram Business Account ID linked to the Facebook page.
@@ -34,6 +38,7 @@ class InstagramDataProvider(DataProvider):
 
         raise Exception("No Instagram Business Account linked to this page.")
 
+    @deprecated
     def get_posts(self) -> tuple[dict, ...]:
         """
         Gets the Instagram posts from the linked Instagram Business Account along with
@@ -99,6 +104,7 @@ class InstagramDataProvider(DataProvider):
 
         return tuple(posts)
 
+    @deprecated
     def next(self, url: str) -> list[dict]:
         """Fetch all items by following pagination cursors."""
         items = []

@@ -113,7 +113,7 @@ class LidaReportHandler:
         """
         Generates a full report including summary, goals, and visualization.
         """
-        data = self.data_manager.filter_data(page_id, start_date, end_date)
+        data = self.data_manager.get_filtered_page_data(page_id, start_date, end_date)
         summary = self.summarize(data)
         if summary is None:
             return None
