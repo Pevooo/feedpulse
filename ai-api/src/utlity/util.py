@@ -6,6 +6,7 @@ def deprecated(func):
     """
     This is a decorator which can be used to mark functions
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         warnings.warn(

@@ -5,6 +5,7 @@ class FeedbackTopic(Enum):
     """
     This enum includes all the topics we use in feedback classification
     """
+
     CLEANLINESS = "cleanliness"
     STAFF = "staff"
     FOOD = "food"
