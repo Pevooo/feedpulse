@@ -10,7 +10,7 @@ from typing import Any, Iterable, Callable
 from delta import configure_spark_with_delta_pip
 import pyspark
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, split
+from pyspark.sql.functions import col, split, substring_index
 from pyspark.sql.functions import (
     monotonically_increasing_id,
     collect_list,
@@ -266,7 +266,7 @@ class DataManager(Updatable):
         df = (
             self.read(self.stream_out)
             .filter(
-                (col("page_id") == page_id)
+                (substring_index(col("post_id"), "_", 1) == page_id)
                 & (col("created_time") >= start_date)
                 & (col("created_time") <= end_date)
             )
