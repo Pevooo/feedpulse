@@ -19,6 +19,7 @@ export class PageAnalyticsComponent implements OnInit {
   images: string[] = [];
   chartImages: SafeUrl[] = [];
   goals: string[] = [];
+  metrics: any;
   constructor(private route: ActivatedRoute,
      private http: HttpClient,
      private sanitizer: DomSanitizer
@@ -53,6 +54,7 @@ export class PageAnalyticsComponent implements OnInit {
           this.chartImages = res.body.chart_rasters?.map((b64: string) =>
             this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${b64}`)
           ) || [];
+          this.metrics = res.body.metrics || {};
         } else {
           console.error('❌ API returned failure:', res);
         }
