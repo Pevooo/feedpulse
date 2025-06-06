@@ -19,7 +19,7 @@ export class PageAnalyticsComponent implements OnInit {
   images: string[] = [];
   chartImages: SafeUrl[] = [];
   goals: string[] = [];
-  metrics: any;
+  metrics: object | undefined;
   constructor(private route: ActivatedRoute,
      private http: HttpClient,
      private sanitizer: DomSanitizer
