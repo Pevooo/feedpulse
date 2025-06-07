@@ -19,9 +19,9 @@
     <div *ngIf="!startDate || !endDate" class="empty-state">
       <p>Please select both start and end dates to proceed.</p>
     </div>
-    
+
     <div class="report">
-      
+
       <div *ngIf="goals.length > 0" class="goals-section">
         <h3>Report from {{ startDate }} to {{ endDate }}</h3>
         <h4>Goals:</h4>
@@ -29,7 +29,7 @@
           <li *ngFor="let goal of goals">{{ goal }}</li>
         </ul>
       </div>
-      
+
       <div *ngIf="chartImages.length > 0" class="images-section">
         <h4>Analytics Images:</h4>
         <div class="images-container">
@@ -37,6 +37,11 @@
             <img [src]="img" alt="Analytics Chart" class="analytics-image" />
           </div>
         </div>
+      </div>
+
+      <div *ngIf="metrics" class="goals-section">
+        <h4>Metrics:</h4>
+        <pre>{{ metrics | json }}</pre>
       </div>
     </div>
   </div>
@@ -49,7 +54,7 @@
         <div class="about-image">
           <img src="assets/analysis.png" alt="About FeddPulse">
         </div>
-        
+
         <!-- Content on the right -->
         <div class="about-text">
           <h2>GENERATE REPORTS</h2>
@@ -61,4 +66,3 @@
       </div>
     </div>
   </section>
-  
