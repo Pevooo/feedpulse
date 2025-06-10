@@ -227,16 +227,40 @@ SECTION 2
   }
 }
 table {
-  width: 90%;
+  width: 100%;
+  margin: 30px auto;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
 }
 
-table, th, td {
-  border: 1px solid #ccc;
-}
-
-th, td {
-  padding: 8px;
+th {
+  background-color: #0a2640;
+  color: white;
+  padding: 12px;
   text-align: left;
+  font-weight: bold;
 }
+
+td {
+  padding: 12px;
+  color: #333;
+  border-top: 1px solid #eee;
+}
+
+tr:nth-child(even) {
+  background-color: #f7f8fc;
+}
+
+tr:hover {
+  background-color: #e0f7f6;
+}
+
+h5 {
+  color: #20c0bd;
+  margin: 20px 0 10px;
+  font-size: 1.3rem;
+}
+
