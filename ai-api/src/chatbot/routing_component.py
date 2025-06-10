@@ -43,7 +43,7 @@ class Routing:
             category = 4
 
         if category == 1:
-            return ChatBotComponent().run(self.input_text)
+            return ChatBot().run(self.input_text)
         elif category == 2:
             return SqlComponent().run(self.input_text)
         elif category == 3:
