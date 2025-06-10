@@ -41,8 +41,83 @@
 
       <div *ngIf="metrics" class="goals-section">
         <h4>Metrics:</h4>
-        <pre>{{ metrics | json }}</pre>
+
+        <!-- Sentiment Counts -->
+        <h5>Sentiment Counts</h5>
+        <table>
+          <tr>
+            <th>Sentiment</th>
+            <th>Count</th>
+          </tr>
+          <tr *ngFor="let sentiment of getMetricKeys('sentiment_counts')">
+            <td>{{ sentiment }}</td>
+            <td>{{ metrics.sentiment_counts[sentiment] }}</td>
+          </tr>
+        </table>
+
+        <!-- Topic Counts -->
+        <h5>Topic Counts</h5>
+        <table>
+          <tr>
+            <th>Topic</th>
+            <th>Count</th>
+          </tr>
+          <tr *ngFor="let topic of getMetricKeys('topic_counts')">
+            <ng-container *ngIf="topic">
+              <td>{{ topic }}</td>
+              <td>{{ metrics.topic_counts[topic] }}</td>
+            </ng-container>
+          </tr>
+        </table>
+
+        <!-- Top 5 Topics -->
+        <h5>Top 5 Topics</h5>
+        <table>
+          <tr>
+            <th>Topic</th>
+            <th>Count</th>
+          </tr>
+          <tr *ngFor="let topic of getMetricKeys('top_5_topics')">
+            <ng-container *ngIf="topic">
+              <td>{{ topic }}</td>
+              <td>{{ metrics.top_5_topics[topic] }}</td>
+            </ng-container>
+          </tr>
+        </table>
+
+        <!-- Most Frequent Sentiment Per Topic -->
+        <h5>Most Frequent Sentiment Per Topic</h5>
+        <table>
+          <tr>
+            <th>Topic</th>
+            <th>Sentiment</th>
+          </tr>
+          <tr *ngFor="let topic of getMetricKeys('most_freq_sentiment_per_topic')">
+            <ng-container *ngIf="topic">
+              <td>{{ topic }}</td>
+              <td>{{ metrics.most_freq_sentiment_per_topic[topic] }}</td>
+            </ng-container>
+          </tr>
+        </table>
+
+        <!-- Most Frequent Topic Per Sentiment -->
+        <h5>Most Frequent Topic Per Sentiment</h5>
+        <table>
+          <tr>
+            <th>Sentiment</th>
+            <th>Topic</th>
+          </tr>
+
+          <ng-container *ngFor="let sentiment of getMetricKeys('most_freq_topic_per_sentiment')">
+            <tr *ngIf="metrics.most_freq_topic_per_sentiment[sentiment]">
+              <td>{{ sentiment }}</td>
+              <td>{{ metrics.most_freq_topic_per_sentiment[sentiment] }}</td>
+            </tr>
+          </ng-container>
+
+        </table>
       </div>
+
     </div>
   </div>
 </section>

@@ -1,9 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  DomSanitizer,
+  SafeUrl,
+} from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-page-analytics',
@@ -19,7 +25,8 @@ export class PageAnalyticsComponent implements OnInit {
   images: string[] = [];
   chartImages: SafeUrl[] = [];
   goals: string[] = [];
-  metrics: object | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  metrics:any;
   constructor(private route: ActivatedRoute,
      private http: HttpClient,
      private sanitizer: DomSanitizer
@@ -64,4 +71,11 @@ export class PageAnalyticsComponent implements OnInit {
       }
     });
   }
+  getMetricKeys(metricKey: string): string[] {
+  if (this.metrics && this.metrics[metricKey]) {
+    return Object.keys(this.metrics[metricKey]);
+  }
+  return [];
+}
+
 }
