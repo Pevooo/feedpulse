@@ -6,7 +6,7 @@ from sql_component import SqlComponent
 from visualization_component import VisualizationComponent
 
 
-class Routing:
+class Routing(ChatBotComponent):
     def __init__(self, input_text, model_provider: GlobalModelProvider):
         self.model_provider = model_provider
         self.input_text = input_text
