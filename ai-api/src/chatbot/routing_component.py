@@ -1,7 +1,6 @@
 from src.global_model_provider import GlobalModelProvider
 from src.prompt import Prompt
 from chatbot_component import ChatBotComponent
-from chatbot import ChatBot
 from sql_component import SqlComponent
 from visualization_component import VisualizationComponent
 from chat_component import ChatComponent
