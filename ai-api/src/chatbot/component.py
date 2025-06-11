@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class ChatBotComponent(ABC):
+class Component(ABC):
     """
     An abstract base class representing a chatbot interface.
     """
