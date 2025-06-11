@@ -1,5 +1,5 @@
-from component import Component
 from chat_component import ChatComponent
+from src.chatbot.component import Component
 from src.chatbot.query_component import QueryComponent
 from src.chatbot.visualization_component import VisualizationComponent
 from src.models.global_model_provider import GlobalModelProvider
@@ -10,7 +10,7 @@ class RoutingComponent(Component):
     def __init__(self, model_provider: GlobalModelProvider):
         self.model_provider = model_provider
 
-    def run(self, input_text, dataset) -> tuple[str, bool]:
+    def run(self, input_text, dataset) -> tuple[str, int]:
         prompt = Prompt(
             instructions="""
             You will be given a statement. Classify it into one of the following contexts by responding with only the corresponding number:
