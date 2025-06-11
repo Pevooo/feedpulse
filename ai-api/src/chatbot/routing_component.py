@@ -33,16 +33,6 @@ Here are some examples:
                 ("asdf123$@!", "4"),
                 ("Tell me which topic had the most negative feedback on Facebook", "2"),
                 ("Plot how sentiment about electricity changed in May", "3"),
-                ("Hello! How are you today?", "1"),
-                ("Tell me a joke about social media", "1"),
-                ("What are the most common complaints related to food?", "2"),
-                ("What was the overall sentiment about healthcare in October?", "2"),
-                ("Draw a bar chart of complaints per platform", "3"),
-                ("I want a line chart showing food sentiment over time", "3"),
-                ("I miss pizza", "1"),
-                ("asdf123$@!", "4"),
-                ("Tell me which topic had the most negative feedback on Facebook", "2"),
-                ("Plot how sentiment about electricity changed in May", "3"),
             ),
             input_text=input_text,
         )
@@ -56,15 +46,15 @@ Here are some examples:
 
         try:
             if category == 1:
-                return ChatComponent(self.model_provider).run(input_text, dataset), 1
+                return ChatComponent(self.model_provider).run(input_text, dataset), 0
             elif category == 2:
-                return QueryComponent(self.model_provider).run(input_text, dataset), 1
+                return QueryComponent(self.model_provider).run(input_text, dataset), 0
             elif category == 3:
                 return (
                     VisualizationComponent(self.model_provider).run(
                         input_text, dataset
                     ),
-                    0,
+                    1,
                 )
             else:
                 raise ValueError("Input not understandable")
