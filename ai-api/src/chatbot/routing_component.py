@@ -13,23 +13,26 @@ class RoutingComponent(Component):
     def run(self, input_text, dataset) -> tuple[str, int]:
         prompt = Prompt(
             instructions="""
-            You will be given a statement. Classify it into one of the following contexts by responding with only the corresponding number:
-            1 — General conversation
-            2 — SQL query
-            3 — Data visualization
-            4 — Irrelevant or not understandable
-
-            Please respond with only one number (1, 2, 3, or 4).
-            """,
+You are classifying user questions or statements into four categories based on what they want.
+Respond with only one number:
+1 — General conversation (chit-chat, greetings, opinions not related to data)
+2 — Query (the user wants a data answer or insight from the dataset, even in natural language)
+3 — Data visualization (the user is asking for a chart or graph based on data)
+4 — Irrelevant or unclear (nonsense, off-topic, or impossible to process)
+Here are some examples:
+""",
             context=None,
             examples=(
-                (
-                    "How many complaints were received about water issues last month?",
-                    "2",
-                ),
-                ("Hello, how are you!", "1"),
-                ("Show me a chart of the most common complaint types this year.", "3"),
-                ("asdf234@@!!", "4"),
+                ("Hello! How are you today?", "1"),
+                ("Tell me a joke about social media", "1"),
+                ("What are the most common complaints related to food?", "2"),
+                ("What was the overall sentiment about healthcare in October?", "2"),
+                ("Draw a bar chart of complaints per platform", "3"),
+                ("I want a line chart showing food sentiment over time", "3"),
+                ("I miss pizza", "1"),
+                ("asdf123$@!", "4"),
+                ("Tell me which topic had the most negative feedback on Facebook", "2"),
+                ("Plot how sentiment about electricity changed in May", "3"),
             ),
             input_text=input_text,
         )
@@ -41,14 +44,21 @@ class RoutingComponent(Component):
         except ValueError:
             category = 4
 
-        if category == 1:
-            return ChatComponent(self.model_provider).run(input_text, dataset), 0
-        elif category == 2:
-            return QueryComponent(self.model_provider).run(input_text, dataset), 1
-        elif category == 3:
-            return (
-                VisualizationComponent(self.model_provider).run(input_text, dataset),
-                0,
+        try:
+            if category == 1:
+                return ChatComponent(self.model_provider).run(input_text, dataset), 1
+            elif category == 2:
+                return QueryComponent(self.model_provider).run(input_text, dataset), 0
+            elif category == 3:
+                return (
+                    VisualizationComponent(self.model_provider).run(
+                        input_text, dataset
+                    ),
+                    1,
+                )
+            else:
+                raise ValueError("Input not understandable")
+        except Exception as e:
+            raise RuntimeError(
+                f"Component failed to process input. Please try again!: {e}"
             )
-        else:
-            raise ValueError("Input not understandable")
