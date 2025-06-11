@@ -14,5 +14,9 @@ class RedisManager:
 
     def get_dataframe(
         self, start_date: str, end_date: str, page_id: str
-    ) -> pd.DataFrame:
-        return pickle.loads(self.redis.get(start_date + end_date + page_id))
+    ) -> pd.DataFrame | None:
+        serialized_data = self.redis.get(start_date + end_date + page_id)
+        if serialized_data:
+            return pickle.loads(serialized_data)
+        else:
+            return None
