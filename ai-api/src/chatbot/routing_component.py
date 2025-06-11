@@ -1,10 +1,12 @@
-from chatbot_component import ChatBotComponent
+from component import Component
 from chat_component import ChatComponent
+from src.chatbot.sql_component import SqlComponent
+from src.chatbot.visualization_component import VisualizationComponent
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
 
 
-class Routing(ChatBotComponent):
+class RoutingComponent(Component):
     def __init__(self, model_provider: GlobalModelProvider):
         self.model_provider = model_provider
 
@@ -44,6 +46,6 @@ class Routing(ChatBotComponent):
         elif category == 2:
             return SqlComponent().run(input_text, dataset)
         elif category == 3:
-            return VisualizationComponent().run(input_text, dataset)
+            return VisualizationComponent(self.model_provider).run(input_text, dataset)
         else:
             raise ValueError("Input not understandable")

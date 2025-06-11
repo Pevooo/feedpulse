@@ -1,4 +1,4 @@
-from chatbot_component import ChatBotComponent
+from component import Component
 from lida import Manager, TextGenerationConfig
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
@@ -6,7 +6,7 @@ from lida.datamodel import Goal
 import pandas as pd
 
 
-class VisualizationComponent(ChatBotComponent):
+class VisualizationComponent(Component):
     def __init__(self, model_provider: GlobalModelProvider):
         self.text_generator = CustomTextGenerator(
             lambda prompt: model_provider.generate_content(prompt)
