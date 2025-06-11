@@ -1,6 +1,6 @@
-from src.global_model_provider import GlobalModelProvider
-from src.prompt import Prompt
 from chatbot_component import ChatBotComponent
+from src.models.global_model_provider import GlobalModelProvider
+from src.models.prompt import Prompt
 
 
 class ChatComponent(ChatBotComponent):

@@ -1,9 +1,7 @@
-from src.global_model_provider import GlobalModelProvider
-from src.prompt import Prompt
 from chatbot_component import ChatBotComponent
-from sql_component import SqlComponent
-from visualization_component import VisualizationComponent
 from chat_component import ChatComponent
+from src.models.global_model_provider import GlobalModelProvider
+from src.models.prompt import Prompt
 
 
 class Routing(ChatBotComponent):
@@ -22,7 +20,7 @@ class Routing(ChatBotComponent):
             Please respond with only one number (1, 2, 3, or 4).
             """,
             context=None,
-            examples=[
+            examples=(
                 (
                     "How many complaints were received about water issues last month?",
                     "2",
@@ -30,7 +28,7 @@ class Routing(ChatBotComponent):
                 ("Hello, how are you!", "1"),
                 ("Show me a chart of the most common complaint types this year.", "3"),
                 ("asdf234@@!!", "4"),
-            ],
+            ),
             input_text=input_text,
         )
 
@@ -42,7 +40,7 @@ class Routing(ChatBotComponent):
             category = 4
 
         if category == 1:
-            return ChatComponent().run(input_text, dataset)
+            return ChatComponent(self.model_provider).run(input_text, dataset)
         elif category == 2:
             return SqlComponent().run(input_text, dataset)
         elif category == 3:
