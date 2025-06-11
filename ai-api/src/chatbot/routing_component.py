@@ -1,9 +1,9 @@
 from src.global_model_provider import GlobalModelProvider
 from src.prompt import Prompt
 from chatbot_component import ChatBotComponent
-from chatbot import ChatBot
 from sql_component import SqlComponent
 from visualization_component import VisualizationComponent
+from chat_component import ChatComponent
 
 
 class Routing(ChatBotComponent):
@@ -42,7 +42,7 @@ class Routing(ChatBotComponent):
             category = 4
 
         if category == 1:
-            return ChatBot().run(input_text, dataset)
+            return ChatComponent().run(input_text, dataset)
         elif category == 2:
             return SqlComponent().run(input_text, dataset)
         elif category == 3:
