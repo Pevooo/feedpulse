@@ -7,5 +7,5 @@ class ChatBotComponent(ABC):
     """
 
     @abstractmethod
-    def run(self, text: str, dataset):
+    def run(self, input_text: str, dataset):
         pass

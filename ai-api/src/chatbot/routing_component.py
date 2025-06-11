@@ -7,21 +7,20 @@ from visualization_component import VisualizationComponent
 
 
 class Routing(ChatBotComponent):
-    def __init__(self, input_text, model_provider: GlobalModelProvider):
+    def __init__(self, model_provider: GlobalModelProvider):
         self.model_provider = model_provider
-        self.input_text = input_text
 
-    def run(self):
+    def run(self, input_text, dataset):
         prompt = Prompt(
             instructions="""
-        You will be given a statement. Classify it into one of the following contexts by responding with only the corresponding number:
-        1 — General conversation
-        2 — SQL query
-        3 — Data visualization
-        4 — Irrelevant or not understandable
+            You will be given a statement. Classify it into one of the following contexts by responding with only the corresponding number:
+            1 — General conversation
+            2 — SQL query
+            3 — Data visualization
+            4 — Irrelevant or not understandable
 
-        Please respond with only one number (1, 2, 3, or 4).
-        """,
+            Please respond with only one number (1, 2, 3, or 4).
+            """,
             context=None,
             examples=[
                 (
@@ -32,7 +31,7 @@ class Routing(ChatBotComponent):
                 ("Show me a chart of the most common complaint types this year.", "3"),
                 ("asdf234@@!!", "4"),
             ],
-            input_text=self.input_text,
+            input_text=input_text,
         )
 
         response = self.model_provider.generate_content(prompt).strip()
@@ -43,10 +42,10 @@ class Routing(ChatBotComponent):
             category = 4
 
         if category == 1:
-            return ChatBot().run(self.input_text)
+            return ChatBot().run(input_text, dataset)
         elif category == 2:
-            return SqlComponent().run(self.input_text)
+            return SqlComponent().run(input_text, dataset)
         elif category == 3:
-            return VisualizationComponent().run(self.input_text)
+            return VisualizationComponent().run(input_text, dataset)
         else:
-            return "Sorry, I couldn't understand your request."
+            raise ValueError("Input not understandable")
