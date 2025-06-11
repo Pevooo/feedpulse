@@ -1,6 +1,6 @@
 from component import Component
 from chat_component import ChatComponent
-from src.chatbot.sql_component import SqlComponent
+from src.chatbot.query_component import QueryComponent
 from src.chatbot.visualization_component import VisualizationComponent
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
@@ -44,7 +44,7 @@ class RoutingComponent(Component):
         if category == 1:
             return ChatComponent(self.model_provider).run(input_text, dataset)
         elif category == 2:
-            return SqlComponent().run(input_text, dataset)
+            return QueryComponent(self.model_provider).run(input_text, dataset)
         elif category == 3:
             return VisualizationComponent(self.model_provider).run(input_text, dataset)
         else:
