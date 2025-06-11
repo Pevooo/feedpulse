@@ -1,4 +1,4 @@
-from chat_component import ChatComponent
+from src.chatbot.chat_component import ChatComponent
 from src.chatbot.component import Component
 from src.chatbot.query_component import QueryComponent
 from src.chatbot.visualization_component import VisualizationComponent

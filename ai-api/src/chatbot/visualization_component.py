@@ -1,5 +1,5 @@
-from component import Component
 from lida import Manager, TextGenerationConfig
+from src.chatbot.component import Component
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
 from lida.datamodel import Goal
