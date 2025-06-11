@@ -1,5 +1,7 @@
 from datetime import datetime
 import pandas as pd
+
+from src.redis.redis_manager import RedisManager
 from src.reports.report import Report
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
@@ -8,13 +10,18 @@ from lida import Manager, TextGenerationConfig
 
 
 class LidaReportHandler:
-    def __init__(self, data_manager: DataManager, model_provider: GlobalModelProvider):
+    def __init__(
+        self,
+        data_manager: DataManager,
+        model_provider: GlobalModelProvider,
+        redis_manager: RedisManager,
+    ):
         self.text_generator = CustomTextGenerator(
             lambda prompt: model_provider.generate_content(prompt)
         )
         self.lida = Manager(text_gen=self.text_generator)
         self.config = TextGenerationConfig(n=1, temperature=0.5)
-
+        self.redis_manager = redis_manager
         self.data_manager = data_manager
 
     def summarize(self, data: pd.DataFrame):
@@ -113,7 +120,17 @@ class LidaReportHandler:
         """
         Generates a full report including summary, goals, and visualization.
         """
-        data = self.data_manager.filter_data(page_id, start_date, end_date)
+
+        # Check for cached data
+        data = self.redis_manager.get_dataframe(str(start_date), str(end_date), page_id)
+        if data is None:
+            data = self.data_manager.filter_data(page_id, start_date, end_date)
+
+            # Cache Data
+            self.redis_manager.cache_dataframe(
+                str(start_date), str(end_date), page_id, data
+            )
+
         summary = self.summarize(data)
         if summary is None:
             return None

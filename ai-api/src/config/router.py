@@ -17,3 +17,6 @@ class Router:
 
     # Access token registration route
     REGISTER_AC_TOKEN = "/register_token"
+
+    # Chatbot route
+    CHAT = "/chat"

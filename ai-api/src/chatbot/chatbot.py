@@ -9,5 +9,5 @@ class Chatbot:
         self.routing_component = RoutingComponent(model_provider)
         self.dataset = dataset
 
-    def ask(self, question: str) -> str:
+    def ask(self, question: str) -> tuple[str, bool]:
         return self.routing_component.run(question, self.dataset)

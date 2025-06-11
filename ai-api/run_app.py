@@ -8,6 +8,7 @@ from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
 from src.models.hf_model_provider import HFModelProvider
+from src.redis.redis_manager import RedisManager
 from src.reports.lida_report_handler import LidaReportHandler
 from src.topics.topic_detector import TopicDetector
 from src.data.data_manager import DataManager, SparkTable
@@ -51,7 +52,9 @@ def run_app(
     # Define Concurrency Manager
     concurrency_manager = ConcurrencyManager()
 
-    report_handler = LidaReportHandler(data_manager, model_provider)
+    redis_manager = RedisManager()
+
+    report_handler = LidaReportHandler(data_manager, model_provider, redis_manager)
 
     # Define Streamer
     data_streamer = PollingDataStreamer(
@@ -71,6 +74,7 @@ def run_app(
         exception_reporter=exception_reporter,
         data_manager=data_manager,
         data_streamer=data_streamer,
+        redis_manager=redis_manager,
     )
 
     Settings.register_observer(model_provider)
