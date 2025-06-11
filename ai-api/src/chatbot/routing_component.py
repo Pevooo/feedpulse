@@ -48,13 +48,13 @@ Here are some examples:
             if category == 1:
                 return ChatComponent(self.model_provider).run(input_text, dataset), 1
             elif category == 2:
-                return QueryComponent(self.model_provider).run(input_text, dataset), 0
+                return QueryComponent(self.model_provider).run(input_text, dataset), 1
             elif category == 3:
                 return (
                     VisualizationComponent(self.model_provider).run(
                         input_text, dataset
                     ),
-                    1,
+                    0,
                 )
             else:
                 raise ValueError("Input not understandable")
