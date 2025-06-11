@@ -1,4 +1,4 @@
-from component import Component
+from src.chatbot.component import Component
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
 

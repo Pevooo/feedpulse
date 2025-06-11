@@ -1,5 +1,5 @@
-from component import Component
-from chat_component import ChatComponent
+from src.chatbot.chat_component import ChatComponent
+from src.chatbot.component import Component
 from src.chatbot.query_component import QueryComponent
 from src.chatbot.visualization_component import VisualizationComponent
 from src.models.global_model_provider import GlobalModelProvider
@@ -10,7 +10,7 @@ class RoutingComponent(Component):
     def __init__(self, model_provider: GlobalModelProvider):
         self.model_provider = model_provider
 
-    def run(self, input_text, dataset):
+    def run(self, input_text, dataset) -> tuple[str, int]:
         prompt = Prompt(
             instructions="""
             You will be given a statement. Classify it into one of the following contexts by responding with only the corresponding number:
@@ -42,10 +42,13 @@ class RoutingComponent(Component):
             category = 4
 
         if category == 1:
-            return ChatComponent(self.model_provider).run(input_text, dataset)
+            return ChatComponent(self.model_provider).run(input_text, dataset), 0
         elif category == 2:
-            return QueryComponent(self.model_provider).run(input_text, dataset)
+            return QueryComponent(self.model_provider).run(input_text, dataset), 1
         elif category == 3:
-            return VisualizationComponent(self.model_provider).run(input_text, dataset)
+            return (
+                VisualizationComponent(self.model_provider).run(input_text, dataset),
+                0,
+            )
         else:
             raise ValueError("Input not understandable")

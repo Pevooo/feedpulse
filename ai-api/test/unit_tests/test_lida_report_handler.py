@@ -23,7 +23,7 @@ class TestLidaReportHandler(unittest.TestCase):
         self.mock_data_manager = Mock()
         self.mock_model_provider = Mock()
         self.report_handler = LidaReportHandler(
-            self.mock_data_manager, self.mock_model_provider
+            self.mock_data_manager, self.mock_model_provider, Mock()
         )
 
     def test_compute_metrics(self):

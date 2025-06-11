@@ -1,5 +1,5 @@
-from component import Component
 from lida import Manager, TextGenerationConfig
+from src.chatbot.component import Component
 from src.reports.custom_text_generator import CustomTextGenerator
 from src.models.global_model_provider import GlobalModelProvider
 from lida.datamodel import Goal
@@ -14,7 +14,7 @@ class VisualizationComponent(Component):
         self.lida = Manager(text_gen=self.text_generator)
         self.config = TextGenerationConfig(n=1, temperature=0.5)
 
-    def run(self, input_text: str, dataset: pd.DataFrame):
+    def run(self, input_text: str, dataset: pd.DataFrame) -> str:
         summary = self.lida.summarize(dataset, summary_method="default")
         goal = Goal(
             question=input_text,
@@ -22,4 +22,4 @@ class VisualizationComponent(Component):
             visualization="auto",
         )
         code = self.lida.visualize(summary=summary, goal=goal)
-        return code
+        return code[0].raster

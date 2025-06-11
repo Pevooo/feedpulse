@@ -168,6 +168,7 @@ class TestCoreFunctionality(unittest.TestCase):
             },
         )
 
+        print(response.json())
         self.assertTrue(response.ok)
         self.assertTrue(isinstance(response.json()["body"], dict))
         self.assertTrue(isinstance(response.json()["body"]["goals"], list))

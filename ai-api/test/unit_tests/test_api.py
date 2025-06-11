@@ -22,6 +22,7 @@ class TestAPI(unittest.TestCase):
             self.mock_exception_reporter,
             Mock(),
             Mock(),
+            Mock(),
         )
         self.app = self.feed_pulse_app.flask_app
         self.app.config["TESTING"] = True

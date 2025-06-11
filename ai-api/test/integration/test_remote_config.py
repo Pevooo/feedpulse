@@ -23,6 +23,7 @@ class TestRemoteConfig(unittest.TestCase):
             Mock(),
             Mock(),
             Mock(),
+            Mock(),
         )
         self.app = self.feed_pulse_app.flask_app
         self.app.config["TESTING"] = True

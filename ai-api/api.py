@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+from src.chatbot.chatbot import Chatbot
 from src.config.environment import Environment
 from src.config.settings import Settings
 from src.config.response import Response
@@ -10,6 +11,7 @@ from src.config.router import Router
 from src.data_streamers.data_streamer import DataStreamer
 from src.exception_handling.exception_reporter import ExceptionReporter
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
+from src.redis.redis_manager import RedisManager
 from src.reports.lida_report_handler import LidaReportHandler
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
@@ -30,6 +32,7 @@ class FeedPulseAPI:
         exception_reporter: ExceptionReporter,
         data_manager: DataManager,
         data_streamer: DataStreamer,
+        redis_manager: RedisManager,
     ):
         self.flask_app = Flask(__name__)
 
@@ -47,6 +50,7 @@ class FeedPulseAPI:
             GroqModelProvider(),
         ]
         self.global_model_provider = GlobalModelProvider(self.model_providers)
+        self.redis_manager = redis_manager
 
         self.__setup_routes()
         self.__setup_exception_reporter()
@@ -165,3 +169,25 @@ class FeedPulseAPI:
             except Exception as e:
                 print(e)
                 return Response.failure(str(e))
+
+        @self.flask_app.route(Router.CHAT, methods=["GET"])
+        def chat():
+            data = request.json
+            page_id = data.get("page_id")
+            start_date = datetime.fromisoformat(data.get("start_date"))
+            end_date = datetime.fromisoformat(data.get("end_date"))
+            question = data.get("question")
+            df = self.redis_manager.get_dataframe(
+                str(start_date), str(end_date), page_id
+            )
+
+            if df is None:
+                return Response.failure("Expired or nonexistent entry")
+
+            response = Chatbot(self.global_model_provider, df).ask(question)
+            return Response.success(
+                {
+                    "data": response[0],
+                    "isRaster": response[1],
+                }
+            )
