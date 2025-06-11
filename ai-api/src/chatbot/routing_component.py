@@ -21,8 +21,26 @@ Respond with only one number:
 4 — Irrelevant or unclear (nonsense, off-topic, or impossible to process)
 Here are some examples:
 """,
+You are classifying user questions or statements into four categories based on what they want.
+Respond with only one number:
+1 — General conversation (chit-chat, greetings, opinions not related to data)
+2 — Query (the user wants a data answer or insight from the dataset, even in natural language)
+3 — Data visualization (the user is asking for a chart or graph based on data)
+4 — Irrelevant or unclear (nonsense, off-topic, or impossible to process)
+Here are some examples:
+""",
             context=None,
             examples=(
+                ("Hello! How are you today?", "1"),
+                ("Tell me a joke about social media", "1"),
+                ("What are the most common complaints related to food?", "2"),
+                ("What was the overall sentiment about healthcare in October?", "2"),
+                ("Draw a bar chart of complaints per platform", "3"),
+                ("I want a line chart showing food sentiment over time", "3"),
+                ("I miss pizza", "1"),
+                ("asdf123$@!", "4"),
+                ("Tell me which topic had the most negative feedback on Facebook", "2"),
+                ("Plot how sentiment about electricity changed in May", "3"),
                 ("Hello! How are you today?", "1"),
                 ("Tell me a joke about social media", "1"),
                 ("What are the most common complaints related to food?", "2"),

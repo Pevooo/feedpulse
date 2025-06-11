@@ -5,7 +5,7 @@ import redis
 
 class RedisManager:
     def __init__(self, host="localhost", port=6379, db=0):
-        self.redis = redis.Redis(host=host, port=port, db=db, decode_responses=True)
+        self.redis = redis.Redis(host=host, port=port, db=db, decode_responses=False)
 
     def cache_dataframe(
         self, start_date: str, end_date: str, page_id: str, df: pd.DataFrame
