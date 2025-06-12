@@ -170,7 +170,7 @@ class FeedPulseAPI:
                 print(e)
                 return Response.failure(str(e))
 
-        @self.flask_app.route(Router.CHAT, methods=["GET"])
+        @self.flask_app.route(Router.CHAT, methods=["GET", "POST"])
         def chat():
             data = request.json
             page_id = data.get("page_id")
