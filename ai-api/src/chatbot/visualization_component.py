@@ -21,5 +21,5 @@ class VisualizationComponent(Component):
             rationale="Generate a relevant chart",
             visualization="auto",
         )
-        code = self.lida.visualize(summary=summary, goal=goal)
-        return code[0].raster
+        charts = self.lida.visualize(summary=summary, goal=goal)
+        return charts[0].raster
