@@ -79,6 +79,7 @@ class DataManager(Updatable):
         concurrency_manager: ConcurrencyManager,
         pages: SparkTable,
         processing_batch_size: int = 32,
+        spark_trigger_time="5 minutes",
     ):
         self._spark = configure_spark_with_delta_pip(
             SparkSession.builder.appName("FeedPulse")
@@ -100,6 +101,7 @@ class DataManager(Updatable):
         self.stream_out = stream_out
         self.pages = pages
         self.processing_batch_size = processing_batch_size
+        self.spark_trigger_time = spark_trigger_time
 
     def start_streaming_job(self):
         self._streaming_worker()
@@ -190,7 +192,7 @@ class DataManager(Updatable):
             .schema(self.INPUT_STREAM_SCHEMA)
             .load(self.stream_in.value)
         )
-        df.writeStream.trigger(processingTime="5 seconds").foreachBatch(
+        df.writeStream.trigger(processingTime=self.spark_trigger_time).foreachBatch(
             self.process_data
         ).option(
             "checkpointLocation",

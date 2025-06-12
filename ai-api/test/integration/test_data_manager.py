@@ -41,6 +41,7 @@ class TestDataManager(unittest.TestCase):
             fake_topic_detection_function,
             ConcurrencyManager(),
             SparkTable.PAGES,
+            spark_trigger_time="5 seconds",
         )
 
         self.data_manager.start_streaming_job()

@@ -21,6 +21,7 @@ def run_app(
     paged_dir=SparkTable.PAGES,
     polling_streamer_trigger_time=60,
     global_model_provider_retry_delay=60,
+    spark_trigger_time="5 minutes",
 ):
     # Define the global model provider (and load balancer)
     model_provider = GlobalModelProvider(
@@ -47,6 +48,7 @@ def run_app(
         topic_detection_batch_function=topic_detector.detect,
         concurrency_manager=concurrency_manager,
         pages=paged_dir,
+        spark_trigger_time=spark_trigger_time,
     )
 
     # Define Concurrency Manager
