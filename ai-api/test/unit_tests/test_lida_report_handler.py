@@ -22,8 +22,9 @@ class TestLidaReportHandler(unittest.TestCase):
     def setUp(self):
         self.mock_data_manager = Mock()
         self.mock_model_provider = Mock()
+        self.mock_redis_manager = Mock()
         self.report_handler = LidaReportHandler(
-            self.mock_data_manager, self.mock_model_provider, Mock()
+            self.mock_data_manager, self.mock_model_provider, self.mock_redis_manager
         )
 
     def test_compute_metrics(self):
@@ -55,7 +56,6 @@ class TestLidaReportHandler(unittest.TestCase):
         )
 
     def test_compute_metrics_multiple_topics(self):
-        # DataFrame with multiple topics in one cell
         data = pd.DataFrame(
             {
                 "sentiment": ["positive", "negative", "neutral", "positive"],
@@ -89,7 +89,6 @@ class TestLidaReportHandler(unittest.TestCase):
         )
 
     def test_compute_metrics_with_empty(self):
-        # Test with an empty DataFrame
         empty_data = pd.DataFrame(
             {
                 "sentiment": ["positive", "negative", "neutral", "positive"],
@@ -119,7 +118,6 @@ class TestLidaReportHandler(unittest.TestCase):
         )
 
     def test_compute_metrics_empty(self):
-        # Test with an empty DataFrame
         empty_data = pd.DataFrame(
             {
                 "sentiment": ["positive", "negative", "neutral", "positive"],
@@ -144,18 +142,59 @@ class TestLidaReportHandler(unittest.TestCase):
             },
         )
 
+    def test_generate_report_with_cache(self):
+        mock_redis_manager = Mock()
+        mock_data_manager = Mock()
+        mock_model_provider = Mock()
+
+        report_handler = LidaReportHandler(
+            data_manager=mock_data_manager,
+            model_provider=mock_model_provider,
+            redis_manager=mock_redis_manager,
+        )
+
+        dummy_df = pd.DataFrame(
+            {
+                "sentiment": ["positive", "negative"],
+                "related_topics": ["food", "service"],
+            }
+        )
+
+        mock_redis_manager.get_dataframe.return_value = dummy_df
+        report_handler.summarize = Mock(return_value="dummy summary")
+        report_handler.goal = Mock(
+            return_value=[Goal(question="q1", visualization="v1", rationale="r1")]
+        )
+        report_handler.visualize = Mock(
+            return_value=[
+                FakeChartExecutorResponse(Mock(), Mock(), "raster", Mock(), Mock())
+            ]
+        )
+        report_handler.refine_chart = Mock(return_value="refined raster")
+        report_handler.compute_metrics = Mock(return_value={"metric": 1})
+
+        result = report_handler.generate_report("123", Mock(), Mock())
+
+        mock_redis_manager.get_dataframe.assert_called_once()
+        report_handler.summarize.assert_called_once()
+        report_handler.goal.assert_called_once()
+        report_handler.visualize.assert_called_once()
+        report_handler.compute_metrics.assert_called_once()
+
+        self.assertEqual(result.goals[0], "Goal 1: q1")
+        self.assertEqual(result.chart_rasters[0], "raster")
+        self.assertEqual(result.metrics, {"metric": 1})
+
     def test_generate_report(self):
         self.report_handler.summarize = Mock(return_value="dummy summary")
         self.report_handler.goal = Mock(
             return_value=[Goal(question="q1", visualization="v1", rationale="r1")]
         )
-
         self.report_handler.visualize = Mock(
             return_value=[
                 FakeChartExecutorResponse(Mock(), Mock(), "raster", Mock(), Mock())
             ]
         )
-
         self.report_handler.refine_chart = Mock(return_value="refined raster")
         self.report_handler.compute_metrics = Mock(return_value={})
 
@@ -163,7 +202,6 @@ class TestLidaReportHandler(unittest.TestCase):
 
         self.assertEqual(len(result.goals), 1)
         self.assertEqual(len(result.chart_rasters), 1)
-
         self.assertEqual(result.goals[0], "Goal 1: q1")
         self.assertEqual(result.chart_rasters[0], "raster")
         self.assertEqual(result.metrics, {})
