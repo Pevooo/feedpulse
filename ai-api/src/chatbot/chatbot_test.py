@@ -1,5 +1,4 @@
 import base64
-import uuid
 
 import pandas as pd
 
@@ -36,13 +35,10 @@ chatbot = Chatbot(GlobalModelProvider([GoogleModelProvider()]), df)
 
 
 while True:
-    response = chatbot.ask(input("Enter your question: "))
-    if isinstance(response, str):
-        print(response)
-    elif isinstance(response, list):
-        for item in response:
-            with open(f"{uuid.uuid4()}.png", "wb") as f:
-                f.write(base64.b64decode(item.raster))
+    response, is_raster = chatbot.ask(input("Enter your question: "))
+    if is_raster:
+        with open(r"C:\Users\pevod\Desktop\plot.png", "wb") as f:
+            f.write(base64.b64decode(response))
+        print("Image saved")
     else:
         print(response)
-        print(type(response))

@@ -27,14 +27,12 @@ class TestChooseComponent(unittest.TestCase):
         self.assertIsInstance(component, VisualizationComponent)
         self.assertEqual(is_raster, 1)
 
-    def test_choose_invalid_component(self):
-        with self.assertRaises(RuntimeError):
-            self.router._choose_component("4")
+    def test_choose_invalid_int_component(self):
+        component, is_raster = self.router._choose_component("4")
+        self.assertIsInstance(component, ChatComponent)
+        self.assertEqual(is_raster, 0)
 
     def test_choose_non_numeric_response(self):
-        with self.assertRaises(RuntimeError):
-            self.router._choose_component("hello!")
-
-
-if __name__ == "__main__":
-    unittest.main()
+        component, is_raster = self.router._choose_component("Hello!")
+        self.assertIsInstance(component, ChatComponent)
+        self.assertEqual(is_raster, 0)
