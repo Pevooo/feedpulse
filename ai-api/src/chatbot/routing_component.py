@@ -15,7 +15,7 @@ class RoutingComponent(Component):
             instructions="""
 You are classifying user questions or statements into four categories based on what they want.
 Respond with on_ly one number:
-1 — General conversation (chit-chat, greetings, opinions not related to data) 
+1 — General conversation (chit-chat, greetings, opinions not related to data)
 or Irrelevant or unclear text (nonsense, off-topic, or impossible to process)
 2 — Query (the user wants a data answer or insight from the dataset, even in natural language)
 3 — Data visualization (the user is asking for a chart or graph based on data)
