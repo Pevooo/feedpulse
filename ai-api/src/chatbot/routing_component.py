@@ -14,7 +14,7 @@ class RoutingComponent(Component):
         prompt = Prompt(
             instructions="""
 You are classifying user questions or statements into four categories based on what they want.
-Respond with only one number:
+Respond with on_ly one number:
 1 — General conversation (chit-chat, greetings, opinions not related to data)
 2 — Query (the user wants a data answer or insight from the dataset, even in natural language)
 3 — Data visualization (the user is asking for a chart or graph based on data)
@@ -38,7 +38,10 @@ Here are some examples:
         )
 
         response = self.model_provider.generate_content(prompt).strip()
+        component, is_raster = self._choose_component(response)
+        return component.run(input_text, dataset), is_raster
 
+    def _choose_component(self, response):
         try:
             category = int(response)
         except ValueError:
@@ -46,14 +49,12 @@ Here are some examples:
 
         try:
             if category == 1:
-                return ChatComponent(self.model_provider).run(input_text, dataset), 0
+                return ChatComponent(self.model_provider), 0
             elif category == 2:
-                return QueryComponent(self.model_provider).run(input_text, dataset), 0
+                return QueryComponent(self.model_provider), 0
             elif category == 3:
                 return (
-                    VisualizationComponent(self.model_provider).run(
-                        input_text, dataset
-                    ),
+                    VisualizationComponent(self.model_provider),
                     1,
                 )
             else:

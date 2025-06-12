@@ -4,6 +4,7 @@ import pandas as pd
 from src.chatbot.visualization_component import VisualizationComponent
 from src.models.global_model_provider import GlobalModelProvider
 
+
 class TestVisualizationComponent(unittest.TestCase):
     def setUp(self):
         # Mock the model provider
@@ -28,10 +29,9 @@ plot()
         self.component = VisualizationComponent(self.mock_model_provider)
 
         # Sample dataset for testing
-        self.dataset = pd.DataFrame({
-            "Country": ["USA", "Canada", "Germany"],
-            "Value": [100, 200, 300]
-        })
+        self.dataset = pd.DataFrame(
+            {"Country": ["USA", "Canada", "Germany"], "Value": [100, 200, 300]}
+        )
 
     def test_run_returns_visualization_code(self):
         input_text = "Show the value distribution by country"
@@ -44,6 +44,7 @@ plot()
 
         # Make sure generate_content was called
         self.mock_model_provider.generate_content.assert_called()
+
 
 if __name__ == "__main__":
     unittest.main()
