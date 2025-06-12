@@ -12,16 +12,13 @@ class TestVisualizationComponent(unittest.TestCase):
         self.mock_model_provider.generate_content = MagicMock(
             side_effect=lambda prompt: """
 import matplotlib.pyplot as plt
-
-def plot():
-    countries = ['USA', 'Canada', 'Germany']
-    values = [100, 200, 300]
-    plt.bar(countries, values)
-    plt.xlabel('Country')
-    plt.ylabel('Value')
-    plt.title('Value by Country')
-    plt.show()
-plot()
+countries = ['USA', 'Canada', 'Germany']
+values = [100, 200, 300]
+plt.bar(countries, values)
+plt.xlabel('Country')
+plt.ylabel('Value')
+plt.title('Value by Country')
+plt.show()
 """
         )
 
