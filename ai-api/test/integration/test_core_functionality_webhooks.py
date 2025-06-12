@@ -46,6 +46,8 @@ class TestCoreFunctionality(unittest.TestCase):
                 FakeTable.TEST_STREAMING_OUT,
                 SparkTable.PAGES,
                 5,
+                60,
+                "5 seconds",
             ),
         )
 

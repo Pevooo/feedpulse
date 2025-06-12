@@ -190,7 +190,7 @@ class DataManager(Updatable):
             .schema(self.INPUT_STREAM_SCHEMA)
             .load(self.stream_in.value)
         )
-        df.writeStream.trigger(processingTime="5 seconds").foreachBatch(
+        df.writeStream.trigger(processingTime="5 minutes").foreachBatch(
             self.process_data
         ).option(
             "checkpointLocation",
