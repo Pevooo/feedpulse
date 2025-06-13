@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ChatbotService, ChatMessage, ChatRequest } from '../../services/chatbot.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chatbot',
@@ -55,7 +55,7 @@ export class ChatbotComponent implements OnInit {
       next: (response) => {
         if (response.succeeded && response.data.status === 'SUCCESS') {
           const botMessage: ChatMessage = {
-            content: response.data.body.isRaster === 1 
+            content: response.data.body.isRaster === 1
               ? this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${response.data.body.data}`) as string
               : response.data.body.data,
             isUser: false,
@@ -78,4 +78,4 @@ export class ChatbotComponent implements OnInit {
       this.isOpen = !this.isOpen;
     }
   }
-} 
+}

@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export interface ChatMessage {
   id?: number;
   content: string;
@@ -33,7 +35,7 @@ export interface ApiResponse<T> {
   meta: any;
   succeeded: boolean;
   message: string;
-  
+
   errors: any;
   data: T;
 }
@@ -49,4 +51,4 @@ export class ChatbotService {
   sendMessage(request: ChatRequest): Observable<ApiResponse<ChatResponseData>> {
     return this.http.post<ApiResponse<ChatResponseData>>(this.apiUrl, request);
   }
-} 
+}
