@@ -26,7 +26,10 @@ class QueryComponent(Component):
     def run(self, input_text, dataset: pd.DataFrame) -> str:
         llm = QueryComponent.CustomLLM(self.model_provider)
         sdf = SmartDataframe(dataset, config={"llm": llm})
-        return str(sdf.chat(input_text))
+        response = str(sdf.chat(input_text))
+        if "no code in response" in response.lower():
+            raise ValueError("No code in response")
+        return response
 
     def _wrap_prompt(self, prompt: str) -> str:
         return f"The dataset includes the comments data of a facebook page, alongside with their sentiments and related topic. {prompt}"
