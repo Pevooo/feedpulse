@@ -26,7 +26,7 @@ export class OrganizationService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getUnRegisterdOrganization(token:string):Observable<any>{
     //const params = new HttpParams().set('AccessToken', token);
-    return this.http.get(`https://localhost:7284/api/facebook/unregisteredpages`, {
+    return this.http.get(`https://feedpulse-d0ebhmb4gucybhdg.italynorth-01.azurewebsites.net/api/facebook/unregisteredpages`, {
       params: {
         AccessToken: token
       }
@@ -34,5 +34,5 @@ export class OrganizationService {
   }
 }
 /**
- * 
+ *
  */

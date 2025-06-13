@@ -14,7 +14,7 @@ import { OrganizationService } from '../../app/services/organization.service';
   styleUrls: ['./dashboard.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // ✅ Allow Custom Elements
 })
-export class DashboardComponent  implements OnInit{
+export class DashboardComponent implements OnInit{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userData: any = null;
   pages: FacebookPage[] = [];
@@ -24,9 +24,10 @@ export class DashboardComponent  implements OnInit{
   errorMessage = '';
   isBrowser: boolean;
   isConnected = false;
-  constructor(private facebookService: FacebookService,
+  constructor(
+    private facebookService: FacebookService,
     private organizationService:OrganizationService,
-    private router: Router, 
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -34,8 +35,8 @@ export class DashboardComponent  implements OnInit{
   async ngOnInit(): Promise<void> {
     const token = localStorage.getItem('fb_access_token');
     const user = localStorage.getItem('fb_user_profile');
-    if(token&&user){
-      this.isConnected=true;
+    if(token && user){
+      this.isConnected = true;
       this.organizationService.getUnRegisterdOrganization(token).subscribe({
         next: (res) => {
           this.UnRegistered_Pages=res.data;
@@ -46,7 +47,7 @@ export class DashboardComponent  implements OnInit{
         }
       })
     }
-    
+
     console.log(token);
     console.log(user);
 
@@ -54,7 +55,7 @@ export class DashboardComponent  implements OnInit{
       this.userData = JSON.parse(user);
       await this.fetchPages(token);
       this.calculateRegisteredPages();
-    }else {
+    } else {
       // 🔄 Check login status again in case session exists
       this.facebookService.checkLoginStatus().then(response => {
         if (response.authResponse) {
@@ -85,11 +86,11 @@ export class DashboardComponent  implements OnInit{
         console.log('✅ Facebook Profile:', profile);
         this.userData = profile;
         const accessToken = authData.authResponse.accessToken;
-        
+
                 // 🌐 Fetch Pages
                 this.facebookService.getFacebookPages(accessToken).subscribe({
                   next: (res) => {
-                    if (res.succeeded&& res.data) {
+                    if (res.succeeded && res.data) {
                       this.pages = res.data;
                       this.isConnected = true;
                       this.calculateRegisteredPages();
@@ -127,7 +128,7 @@ export class DashboardComponent  implements OnInit{
   }
   goToForm(page: FacebookPage) {
     const userId = this.userData?.id;  // Get the logged-in user ID
-  
+
     this.router.navigate(['/add-organization'], {
       queryParams: {
         name: page.name,
@@ -141,7 +142,7 @@ export class DashboardComponent  implements OnInit{
     this.facebookService.logout();
     this.pages=[];
     this.isConnected=false;
-    
+
   }
   goToAnalytics(page: FacebookPage) {
     const facebookId = page.id;

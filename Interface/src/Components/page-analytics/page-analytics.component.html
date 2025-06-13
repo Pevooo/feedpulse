@@ -14,7 +14,7 @@
       </div>
     </div>
     <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
-      GET ANALYTICS
+      See Insights!
     </button>
     <div *ngIf="!startDate || !endDate" class="empty-state">
       <p>Please select both start and end dates to proceed.</p>
@@ -50,7 +50,7 @@
             <th>Count</th>
           </tr>
           <tr *ngFor="let sentiment of getMetricKeys('sentiment_counts')">
-            <td>{{ sentiment }}</td>
+            <td>{{ sentiment.charAt(0).toUpperCase() + sentiment.slice(1) }}</td>
             <td>{{ metrics.sentiment_counts[sentiment] }}</td>
           </tr>
         </table>
