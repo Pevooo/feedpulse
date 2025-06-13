@@ -23,7 +23,10 @@ class QueryComponent(Component):
     def __init__(self, model_provider):
         self.model_provider = model_provider
 
-    def run(self, input_text, dataset: pd.DataFrame):
+    def run(self, input_text, dataset: pd.DataFrame) -> str:
         llm = QueryComponent.CustomLLM(self.model_provider)
         sdf = SmartDataframe(dataset, config={"llm": llm})
-        return sdf.chat(input_text)
+        return str(sdf.chat(input_text))
+
+    def _wrap_prompt(self, prompt: str) -> str:
+        return f"The dataset includes the comments data of a facebook page, alongside with their sentiments and related topic. {prompt}"
