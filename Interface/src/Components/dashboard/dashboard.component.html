@@ -8,7 +8,7 @@
     </div>
       <!-- ✅ Updated unregistered pages display -->
       <div *ngIf="UnRegistered_Pages?.length">
-        <h4>Your Unregistered Pages:</h4>
+        <h4>Your unregistered pages:</h4>
         <ul>
           <li *ngFor="let page of UnRegistered_Pages">
             {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
