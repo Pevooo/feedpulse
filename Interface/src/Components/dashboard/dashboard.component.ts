@@ -37,15 +37,21 @@ export class DashboardComponent implements OnInit{
     const user = localStorage.getItem('fb_user_profile');
     if(token && user){
       this.isConnected = true;
-      this.organizationService.getUnRegisterdOrganization(token).subscribe({
+      this.facebookService.getFacebookPages(token).subscribe({
         next: (res) => {
-          this.UnRegistered_Pages=res.data;
-          this.calculateRegisteredPages();
-        },
+          if (res.succeeded && res.data) {
+            this.pages = res.data;
+            this.isConnected = true;
+            this.calculateRegisteredPages();
+            console.log('✅ Pages:', this.pages);
+            console.log('✅ Unregisted:', this.UnRegistered_Pages);
+            console.log('✅ registerd:', this.Registered_Pages);
+          }
+          },
         error: (err) => {
           console.error('❌ Error fetching pages:', err);
         }
-      })
+      });
     }
 
     console.log(token);
@@ -138,12 +144,15 @@ export class DashboardComponent implements OnInit{
       }
     });
   }
+
   logout() {
     this.facebookService.logout();
-    this.pages=[];
-    this.isConnected=false;
-
+    this.pages = [];
+    this.Registered_Pages = [];
+    this.UnRegistered_Pages = [];
+    this.isConnected = false;
   }
+
   goToAnalytics(page: FacebookPage) {
     const facebookId = page.id;
     console.log('Navigating to page-analytics with ID:', facebookId);
