@@ -7,14 +7,9 @@
       <a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
     </li>
     <li>
-      <a routerLink="/services" routerLinkActive="active active-link">Services</a>
+      <a routerLink="/about" routerLinkActive="active active-link">About us</a>
     </li>
-    <li>
-      <a routerLink="/about" routerLinkActive="active active-link">About Us</a>
-    </li>
-    <li>
-      <a routerLink="/contact-us" routerLinkActive="active active-link">Contact Us</a>
-    </li>
+    
 
     <!-- Single conditional block for logged-in/not logged-in state -->
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">

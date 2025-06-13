@@ -1,26 +1,23 @@
 /* General Styles */
 @import "../../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
 body {
-    font-family: 'Nunito', sans-serif;
-    line-height: 1.8;
     color: #818181;
   }
 
-  .container {
+  /*.container {
     padding: 60px 15px;
-  }
+  }*/
 
   /* Section Title */
   .section-title {
-    font-size: 36px;
-    font-weight: bold;
-    color: #303030;
+    font-size: 1.2rem;
+    color: #20c0bd;
     margin-bottom: 20px;
   }
 
   .section-subtitle {
-    font-size: 18px;
-    color: #555;
+    font-size: 2.985984rem;
+    color: #303030;
     margin-bottom: 40px;
   }
 
@@ -60,7 +57,6 @@ body {
 
   .service-title {
     font-size: 20px;
-    font-weight: bold;
     color: #303030;
     margin-bottom: 15px;
   }
