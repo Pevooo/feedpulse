@@ -2,11 +2,12 @@ import { Component, HostListener, OnDestroy  } from '@angular/core';
 import { RouterLink} from '@angular/router';
 import { AuthService } from '../../app/services/auth.service';
 import { CommonModule } from '@angular/common';  // Import CommonModule
+import { ServicesComponent } from '../services/services.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ServicesComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
