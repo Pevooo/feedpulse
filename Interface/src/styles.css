@@ -12,5 +12,5 @@
   src: url('/assets/fonts/Helmet-Regular.ttf') format('opentype');
 }
 body{
-    font-family: "DM Sans","sans-serif", "BrownedeCalvin","NunitoSans","Helmet";
+    font-family: "NunitoSans","sans-serif", "BrownedeCalvin","DM Sans","Helmet";
 }

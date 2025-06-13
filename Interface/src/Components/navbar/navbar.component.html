@@ -19,7 +19,7 @@
     <!-- Single conditional block for logged-in/not logged-in state -->
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">
       <li>
-        <a routerLink="/dashboard" routerLinkActive="active active-link">Dashboard</a>
+        <a routerLink="/dashboard" routerLinkActive="active active-link">Insights</a>
       </li>
       <li>
         <a href="#" (click)="onLogout($event)">Logout</a>

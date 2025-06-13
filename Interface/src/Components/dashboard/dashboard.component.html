@@ -17,21 +17,21 @@
         </ul>
       </div>
       <div *ngIf="Registered_Pages.length > 0">
-        <h4>Your Registered_Pages:</h4>
+        <h4>Your registered pages:</h4>
         <ul>
           <li *ngFor="let page of pages">
-            {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
+            <b>{{ page.name || 'Unknown Page' }}</b>&nbsp;(ID: {{ page.id }})
             <button (click)="goToAnalytics(page)" class="gif-button">
                 <img src="assets/gif/report.gif" alt="Analytics">
-            
+
             </button> <!-- 🔍 New Button -->
           </li>
         </ul>
       </div>
 
     <div class="header">
-      <button *ngIf="!isConnected" (click)="login()" style="background-color: #20c0bd; color: white;">CONNECT TO FACEBOOK</button>
-      <button *ngIf="isConnected" class="connected-button" (click)="logout()" style="background-color: #20c0bd; color: white;">DISCONNECT</button>
+      <button *ngIf="!isConnected" (click)="login()" style="background-color: #20c0bd; color: white;">Connect to Facebook</button>
+      <button *ngIf="isConnected" class="connected-button" (click)="logout()" style="background-color: #20c0bd; color: white;">Disconnect</button>
     </div>
 
   </div>
