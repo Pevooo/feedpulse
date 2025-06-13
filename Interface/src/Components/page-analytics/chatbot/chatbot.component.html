@@ -1,0 +1,58 @@
+<div class="chatbot-container" [class.open]="isOpen">
+  <!-- Chat Toggle Button -->
+  <button class="chat-toggle" (click)="toggleChat()">
+    <i class="fas" [class.fa-comments]="!isOpen" [class.fa-times]="isOpen"></i>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="chat-window" *ngIf="isOpen">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <h3>Analytics Assistant</h3>
+      <button class="close-btn" (click)="toggleChat()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages" #chatMessages>
+      <div *ngFor="let message of messages" 
+           class="message" 
+           [class.user-message]="message.isUser"
+           [class.bot-message]="!message.isUser">
+        <div class="message-content">
+          <ng-container *ngIf="!message.isRaster">
+            {{ message.content }}
+          </ng-container>
+          <img *ngIf="message.isRaster" [src]="message.content" alt="Analytics Chart" class="message-image">
+        </div>
+        <div class="message-timestamp">
+          {{ message.timestamp | date:'shortTime' }}
+        </div>
+      </div>
+      
+      <!-- Typing Indicator -->
+      <div class="message bot-message" *ngIf="isLoading">
+        <div class="message-content">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="chat-input">
+      <input type="text" 
+             [(ngModel)]="newMessage" 
+             (keyup.enter)="sendMessage()"
+             placeholder="Type your message..."
+             [disabled]="isLoading">
+      <button (click)="sendMessage()" [disabled]="isLoading || !newMessage.trim()">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div> 

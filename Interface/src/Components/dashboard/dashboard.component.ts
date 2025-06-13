@@ -44,11 +44,12 @@ export class DashboardComponent implements OnInit{
             this.isConnected = true;
             this.calculateRegisteredPages();
             console.log('✅ Pages:', this.pages);
-            console.log('✅ Unregisted:', this.UnRegistered_Pages);
-            console.log('✅ registerd:', this.Registered_Pages);
+            console.log('✅ Unregister:', this.UnRegistered_Pages);
+            console.log('✅ Registered:', this.Registered_Pages);
           }
           },
         error: (err) => {
+          this.isConnected = false;
           console.error('❌ Error fetching pages:', err);
         }
       });

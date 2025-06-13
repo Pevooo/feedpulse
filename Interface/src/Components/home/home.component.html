@@ -3,14 +3,14 @@
     <!-- Single conditional block for logged-in/not logged-in state -->
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">
       <h1 style="color: #20c0bd;">Welcome to FeedPulse</h1>
-      <p style="color: #f7f8fc;">We analyze real social media feedback to help your business grow smarter.</p>
+      <p style="color: #f7f8fc;">We analyze real social media feedback to help your business grow smarter</p>
       <button class="gif-button" (click)="onButtonClick()" routerLink="/dashboard"  routerLinkActive="active" style="color: #f7f8fc;">
-        <img src="assets/gif/report.gif" alt="Button GIF"> CREATE REPORT
+        <img src="assets/gif/report.gif" alt="Button GIF"> Create Report
       </button>
     </ng-container>
     <ng-template #notLoggedIn>>
       <h1>FeedPulse</h1>
-      <p>We analyze real social media feedback to help your business grow smarter.</p>
+      <p>We analyze real social media feedback to help your business grow smarter</p>
       <a routerLink="/signup"  routerLinkActive="active" class="btn btn-primary">GET STARTED</a>
       <button class="gif-button" (click)="onButtonClick()">
         <img src="assets/gif/video.gif" alt="Button GIF"> WATCH VIDEO
@@ -22,74 +22,9 @@
   </div>
 </section>
 
-<section class="about-feedpulse">
-  <div class="container">
-    <div class="about-content">
-      <!-- Image on the left -->
-      <div class="about-image">
-        <img src="assets/analytics.png" alt="About FeddPulse">
-      </div>
+<app-services></app-services>
 
-      <!-- Content on the right -->
-      <div class="about-text">
-        <h2>ABOUT FeedPulse</h2>
-        <h1>We Will Do Our Best To Grow Your Business</h1>
-        <p class="description">
-          At FeedPulse, we empower your brand by transforming customer feedback into actionable insights, fueling sustainable growth and innovation.
-        </p>
 
-        <div class="vision-mission-container">
-          <div class="vision">
-            <h3>Our Vision</h3>
-            <ul>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                To be the leading platform.
-              </li>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                Makes real-time customer insights.
-              </li>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                Enables organizations to make smarter decisions.
-              </li>
-            </ul>
-          </div>
-
-          <div class="mission">
-            <h3>Our Mission</h3>
-            <ul>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                To simplify feedback analysis with intelligent technology.
-              </li>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                To help businesses thrive by understanding and acting on customer voices.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="story">
-          <a routerLink="/about"  routerLinkActive="active" class="btn btn-primary">OUR STORY</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!--<section class="hero-section">
-    <div class="hero-content">
-      <h1>FeedPulse</h1>
-      <h2>Your Best Services</h2>
-      <div class="hero-buttons">
-        <a routerLink="/signup"  routerLinkActive="active" class="btn btn-primary">GET STARTED</a>
-        <--<a routerLink="/login"  routerLinkActive="active" class="btn btn-secondary">SIGN IN</a>-->
-      <!--</div>
-    </div>
-  </section>-->
 
   <section class="timeline-section section-padding">
     <div class="section-overlay"></div>
@@ -151,4 +86,59 @@
           </div>
         </div>
     </div>
+</section>
+
+<section class="about-feedpulse">
+  <div class="container">
+    <div class="about-content">
+      <!-- Image on the left -->
+      <div class="about-image">
+        <img src="assets/analytics.png" alt="About FeddPulse">
+      </div>
+
+      <!-- Content on the right -->
+      <div class="about-text">
+        <h2>About FeedPulse</h2>
+        <h1>We Will Do Our Best To Grow Your Business</h1>
+        <p class="description">
+          At FeedPulse, we empower your brand by transforming customer feedback into actionable insights, fueling sustainable growth and innovation.
+        </p>
+        <div class="vision-mission-container">
+          <div class="vision">
+            <h3>Our Vision</h3>
+            <ul>
+              <li>
+                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
+                To be the leading platform.
+              </li>
+              <li>
+                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
+                Makes real-time customer insights.
+              </li>
+              <li>
+                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
+                Enables organizations to make smarter decisions.
+              </li>
+            </ul>
+          </div>
+          <div class="mission">
+            <h3>Our Mission</h3>
+            <ul>
+              <li>
+                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
+                To simplify feedback analysis with intelligent technology.
+              </li>
+              <li>
+                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
+                To help businesses thrive by understanding and acting on customer voices.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="story">
+          <a routerLink="/about"  routerLinkActive="active" class="btn btn-primary">OUR STORY</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

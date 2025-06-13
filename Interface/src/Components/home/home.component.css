@@ -2,9 +2,7 @@
   display: flex;
   align-items: center; /* vertical alignment */
   justify-content: center;
-  font-family: 'Helmet';
   position: relative;
-  height: 100vh;
   background: url('../../assets/hero-bg.png');
   background-position: right;
   background-repeat: no-repeat;
@@ -13,9 +11,7 @@
   height: auto;
 
   background-color: #0a2640 ;/* #f9f9fc;*/
-  min-height: 100vh; /* or 100vh for full screen */
-  padding: 40px;
-  gap: 40px;
+  min-height: 97vh; /* or 100vh for full screen */
 }
 
 .right-side img {
@@ -27,6 +23,7 @@
 
 .left-side {
   max-width: 600px;
+  margin-right: 70px;
 }
 
 .left-side h1 {
@@ -42,20 +39,6 @@
   margin-bottom: 30px;
 }
 
-/*.cta-button {
-  padding: 12px 24px;
-  font-size: 1rem;
-  background-color: #457B9D;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.cta-button:hover {
-  background-color: #1D3557;
-}*/
 /*-------------- video button-----------------*/
 .gif-button {
   background: transparent;
@@ -80,56 +63,7 @@
 }
 
 /*----------------*/
-/*.hero-section {
-    position: relative;
-    height: 100vh;
-    background-image: url('../../assets/Home.png'); /* Hardcoded image path */
-    /*background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 0 5rem;
-    overflow: hidden;
-  }
 
-  .hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4); /* Slightly darker overlay for better text contrast */
-    /*z-index: 1;
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: left;
-    color: white;
-    max-width: 50%; /* Prevent text from stretching too wide */
-  /*}
-
-  .hero-content h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem); /* Responsive font size */
-    /*font-weight: bold;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-  }
-
-  .hero-content h2 {
-    font-size: clamp(1.5rem, 3vw, 2rem); /* Responsive font size */
-    /*font-weight: 300;
-    margin-bottom: 2rem;
-  }
-
-  .hero-buttons {
-    display: flex;
-    gap: 1rem;
-  }*/
 
   .btn {
     /*padding: 0.75rem 2rem;*/
@@ -166,8 +100,6 @@
   SECTION 2
   ---------------------------------------*/
   .about-feedpulse {
-    font-family: 'Helmet';
-
     padding: 4rem 0;
     background-color: #f9f9f9;
 
@@ -280,7 +212,6 @@
   border: 0;
   border-radius: var(--border-radius-small);
   color: var(--p-color);
-  font-family: var(--title-font-family);
   margin: 0 5px;
   padding: 10px 20px;
 }
@@ -338,7 +269,6 @@
     background-position: center;
     background-size: cover;
     position: relative;
-    font-family: 'Helmet';
     font-size: 1.5rem;
     display: flex;
     align-items: center; /* vertical alignment */
