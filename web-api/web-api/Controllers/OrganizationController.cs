@@ -40,5 +40,11 @@ namespace web_api.Controllers
             var response = await Mediator.Send(query);
             return NewResult(response);
         }
+        [HttpPost(Router.Organization.SendMessage)]
+        public async Task<IActionResult> SendChatBotMessage([FromBody] GetChatReponseQuery query)
+        {
+            var response = await Mediator.Send(query);
+            return NewResult(response);
+        }
     }
 }

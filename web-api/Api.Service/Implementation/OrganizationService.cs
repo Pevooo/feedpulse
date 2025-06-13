@@ -32,6 +32,7 @@ namespace Api.Service.Implementation
             _applicationDbContext = applicationDbContext;
         }
 
+        #endregion
         public async Task<string> AddOrganizationAsync(Organization organization)
         {
             var tmp = await _organizationRepository.GetTableNoTracking().Where(x => x.FacebookId == organization.FacebookId).FirstOrDefaultAsync();
@@ -94,7 +95,8 @@ namespace Api.Service.Implementation
             return "Success";
         }
 
-        #endregion
+
+
         #region HandleFunctions
         public async Task<Organization> GetOrganizationByFacebookidAsync(string id)
         {
@@ -127,24 +129,44 @@ namespace Api.Service.Implementation
                 var response = await _httpClient.PostAsync(url, content);
 
                 var responseBody = await response.Content.ReadAsStringAsync();
-				Console.WriteLine(responseBody);
+                Console.WriteLine(responseBody);
                 try
                 {
                     ReportResponse responseBodyDeserialize = JsonSerializer.Deserialize<ReportResponse>(responseBody);
-					return responseBodyDeserialize;
+                    return responseBodyDeserialize;
 
-				}
-				catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
-					throw new Exception(ex.Message);
-				}
-			}
+                    throw new Exception(ex.Message);
+                }
+            }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-		}
+        }
 
-		#endregion
-	}
+        public async Task<ChatResponse> GetChatResponseAsync(GetChatRequest query)
+        {
+            string url = "https://feedpulse.francecentral.cloudapp.azure.com/chat";
+            try
+            {
+                var jsonContent = JsonSerializer.Serialize(query);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(url, content);
+                var responseBody = await response.Content.ReadAsStringAsync();
+                ChatResponse responseBodyDeserialize = JsonSerializer.Deserialize<ChatResponse>(responseBody);
+                return responseBodyDeserialize;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+        #endregion
+    }
 }
