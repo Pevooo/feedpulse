@@ -56,6 +56,7 @@
             public const string GetById = Prefix + "/{id}";
             public const string GetList = Prefix + "/list";
             public const string GetReport = Prefix + "/report";
+            public const string SendMessage = Prefix + "/chat";
 
         }
     }

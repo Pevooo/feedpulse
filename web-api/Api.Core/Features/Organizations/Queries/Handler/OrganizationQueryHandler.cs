@@ -5,18 +5,14 @@ using Api.Data.DTOS;
 using Api.Service.Abstracts;
 using AutoMapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Api.Core.Features.Organizations.Queries.Handler
 {
 
     public class OrganizationQueryHandler : ResponseHandler, IRequestHandler<GetOrganizationListQuery, Response<List<GetOrganizationResponse>>>
                             , IRequestHandler<GetOrganizationQuery, Response<GetOrganizationResponse>>,
-						IRequestHandler<GetReportQuery, Response<GetReportResponse>>
+                        IRequestHandler<GetReportQuery, Response<GetReportResponse>>,
+                        IRequestHandler<GetChatReponseQuery, Response<ChatResponse>>
     {
         #region Fields
         IOrganizationService _organizationService;
@@ -56,8 +52,8 @@ namespace Api.Core.Features.Organizations.Queries.Handler
             };
             return Success(response);
         }
-		public async Task<Response<GetReportResponse>> Handle(GetReportQuery request, CancellationToken cancellationToken)
-		{
+        public async Task<Response<GetReportResponse>> Handle(GetReportQuery request, CancellationToken cancellationToken)
+        {
             var req = new GetReportRequest
             {
                 page_id = request.page_id,
@@ -67,25 +63,38 @@ namespace Api.Core.Features.Organizations.Queries.Handler
             var report = await _organizationService.GetReportAsync(req);
             var response = new GetReportResponse
             {
-				Body = new ReportResponseBody
-				{
-					ChartRasters = report.Body.ChartRasters.ToList(),
-					Goals = report.Body.Goals.ToList(),
-					Metrics = new ReportResponseMetrics
-					{
-						MostFreqSentimentPerTopic = new Dictionary<string, string>(report.Body.Metrics.MostFreqSentimentPerTopic),
-						MostFreqTopicPerSentiment = new Dictionary<string, string>(report.Body.Metrics.MostFreqTopicPerSentiment),
-						SentimentCounts = new Dictionary<string, int>(report.Body.Metrics.SentimentCounts),
-						Top5Topics = new Dictionary<string, int>(report.Body.Metrics.Top5Topics),
-						TopicCounts = new Dictionary<string, int>(report.Body.Metrics.TopicCounts)
-					},
-					Summary = report.Body.Summary
-				},
-				Status = report.Status
-			};
+                Body = new ReportResponseBody
+                {
+                    ChartRasters = report.Body.ChartRasters.ToList(),
+                    Goals = report.Body.Goals.ToList(),
+                    Metrics = new ReportResponseMetrics
+                    {
+                        MostFreqSentimentPerTopic = new Dictionary<string, string>(report.Body.Metrics.MostFreqSentimentPerTopic),
+                        MostFreqTopicPerSentiment = new Dictionary<string, string>(report.Body.Metrics.MostFreqTopicPerSentiment),
+                        SentimentCounts = new Dictionary<string, int>(report.Body.Metrics.SentimentCounts),
+                        Top5Topics = new Dictionary<string, int>(report.Body.Metrics.Top5Topics),
+                        TopicCounts = new Dictionary<string, int>(report.Body.Metrics.TopicCounts)
+                    },
+                    Summary = report.Body.Summary
+                },
+                Status = report.Status
+            };
 
-			return Success(response);
-		}
-		#endregion
-	}
+            return Success(response);
+        }
+
+        public async Task<Response<ChatResponse>> Handle(GetChatReponseQuery request, CancellationToken cancellationToken)
+        {
+            var req = new GetChatRequest
+            {
+                page_id = request.page_id,
+                start_date = request.start_date,
+                end_date = request.end_date,
+                question = request.question,
+            };
+            var response = await _organizationService.GetChatResponseAsync(req);
+            return Success(response);
+        }
+        #endregion
+    }
 }

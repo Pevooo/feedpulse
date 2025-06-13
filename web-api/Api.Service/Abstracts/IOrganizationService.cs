@@ -12,5 +12,6 @@ namespace Api.Service.Abstracts
         Task<string> AddOrganizationAsync(Organization organization);
         Task<string> DeleteOrganizationAsync(int id);
         Task<ReportResponse> GetReportAsync(GetReportRequest query);
+        Task<ChatResponse> GetChatResponseAsync(GetChatRequest query);
     }
 }
