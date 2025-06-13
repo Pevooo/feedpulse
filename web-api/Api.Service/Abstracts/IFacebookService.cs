@@ -10,5 +10,6 @@ namespace Api.Service.Abstracts
         Task<List<FacebookPage>> GetUnregisteredFacebookPages(string accessToken);
         Task<string> ExchangeForLongLivedPageToken(string pageAccessToken);
 
+
     }
 }
