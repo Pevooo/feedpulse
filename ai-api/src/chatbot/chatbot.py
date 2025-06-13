@@ -9,5 +9,8 @@ class Chatbot:
         self.routing_component = RoutingComponent(model_provider)
         self.dataset = dataset
 
-    def ask(self, question: str) -> tuple[str, bool]:
-        return self.routing_component.run(question, self.dataset)
+    def ask(self, question: str) -> tuple[str, int]:
+        try:
+            return self.routing_component.run(question, self.dataset)
+        except RuntimeError:
+            return "Chatbot failed to process input. Please try again!", 0
