@@ -21,7 +21,6 @@
     </div>
 
     <div class="report">
-
       <div *ngIf="goals.length > 0" class="goals-section">
         <h3>Report from {{ startDate }} to {{ endDate }}</h3>
         <h4>Goals:</h4>
@@ -107,37 +106,42 @@
             <th>Sentiment</th>
             <th>Topic</th>
           </tr>
-
           <ng-container *ngFor="let sentiment of getMetricKeys('most_freq_topic_per_sentiment')">
             <tr *ngIf="metrics.most_freq_topic_per_sentiment[sentiment]">
               <td>{{ sentiment }}</td>
               <td>{{ metrics.most_freq_topic_per_sentiment[sentiment] }}</td>
             </tr>
           </ng-container>
-
         </table>
       </div>
-
     </div>
   </div>
 </section>
 
-  <section class="about-feedpulse">
-    <div class="container">
-      <div class="about-content">
-        <!-- Image on the left -->
-        <div class="about-image">
-          <img src="assets/analysis.png" alt="About FeddPulse">
-        </div>
+<section class="about-feedpulse">
+  <div class="container">
+    <div class="about-content">
+      <!-- Image on the left -->
+      <div class="about-image">
+        <img src="assets/analysis.png" alt="About FeddPulse">
+      </div>
 
-        <!-- Content on the right -->
-        <div class="about-text">
-          <h2>GENERATE REPORTS</h2>
-          <h1>We Will Do Our Best To Grow Your Business</h1>
-          <p class="description">
-            At FeedPulse, we empower your brand by transforming customer feedback into actionable insights, fueling sustainable growth and innovation.
-          </p>
-        </div>
+      <!-- Content on the right -->
+      <div class="about-text">
+        <h2>GENERATE REPORTS</h2>
+        <h1>We Will Do Our Best To Grow Your Business</h1>
+        <p class="description">
+          At FeedPulse, we empower your brand by transforming customer feedback into actionable insights, fueling sustainable growth and innovation.
+        </p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- Add Chatbot Component -->
+<app-chatbot 
+  [facebookId]="facebookId"
+  [startDate]="startDate"
+  [endDate]="endDate"
+  [showChatbot]="goals.length > 0">
+</app-chatbot>

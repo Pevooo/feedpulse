@@ -10,11 +10,12 @@ import {
   SafeUrl,
 } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { ChatbotComponent } from './chatbot/chatbot.component';
 
 @Component({
   selector: 'app-page-analytics',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ChatbotComponent],
   templateUrl: './page-analytics.component.html',
   styleUrls: ['./page-analytics.component.css']
 })
