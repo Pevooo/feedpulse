@@ -2,7 +2,6 @@ from src.chatbot.chat_component import ChatComponent
 from src.chatbot.component import Component
 from src.chatbot.format_component import FormatComponent
 from src.chatbot.query_component import QueryComponent
-from src.chatbot.human_like_component import HumanlikeComponent
 from src.chatbot.visualization_component import VisualizationComponent
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
