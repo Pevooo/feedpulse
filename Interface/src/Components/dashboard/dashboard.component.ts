@@ -49,8 +49,22 @@ export class DashboardComponent implements OnInit{
           }
           },
         error: (err) => {
-          this.isConnected = false;
-          console.error('❌ Error fetching pages:', err);
+          // Check login status
+          this.facebookService.checkLoginStatus().then(response => {
+            if (response.authResponse) {
+              localStorage.setItem('fb_access_token', response.authResponse.accessToken);
+              this.facebookService.getUserProfile().then(profile => {
+                localStorage.setItem('fb_user_profile', JSON.stringify(profile));
+                this.userData = profile;
+                this.fetchPages(response.authResponse.accessToken);
+                this.calculateRegisteredPages();
+              });
+            }
+          }).catch(() => {
+            console.warn('User is not logged in.');
+            console.error('❌ Error fetching pages:', err);
+            this.isConnected = false;
+          });
         }
       });
     }
