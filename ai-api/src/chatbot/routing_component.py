@@ -14,8 +14,8 @@ class RoutingComponent(Component):
     def run(self, input_text, dataset) -> tuple[str, int]:
         prompt = Prompt(
             instructions="""
-You are given a chat between a user and an assistant and based on the last user input you should do the following:
-You are classifying user questions or statements into four categories based on what they want.
+You are given a whole chat history between a user and an assistant and based on the last user inputs you should do the following:
+You are classifying user questions or statements into four categories based on what they want. You should never choose the wrong number.
 Respond with only one number:
 1 — General conversation (chit-chat, greetings, opinions not related to data)
 or Irrelevant or unclear text (nonsense, off-topic, or impossible to process)
@@ -24,16 +24,32 @@ or Irrelevant or unclear text (nonsense, off-topic, or impossible to process)
 """,
             context=None,
             examples=(
-                ("Hello! How are you today?", "1"),
-                ("Tell me a joke about social media", "1"),
-                ("What are the most common complaints related to food?", "2"),
-                ("What was the overall sentiment about healthcare in October?", "2"),
-                ("Draw a bar chart of complaints per platform", "3"),
-                ("I want a line chart showing food sentiment over time", "3"),
-                ("I miss pizza", "1"),
-                ("asdf123$@!", "1"),
-                ("Tell me which topic had the most negative feedback on Facebook", "2"),
-                ("Plot how sentiment about electricity changed in May", "3"),
+                ("User: Hello! How are you today?", "1"),
+                ("User: Tell me a joke about social media", "1"),
+                ("User: What are the most common complaints related to food?", "2"),
+                ("User: What was the overall sentiment about healthcare in October?", "2"),
+                ("User: Draw a bar chart of complaints per platform", "3"),
+                ("User: I want a line chart showing food sentiment over time", "3"),
+                ("User: I miss pizza", "1"),
+                ("User: asdf123$@!", "1"),
+                ("User: Tell me which topic had the most negative feedback on Facebook", "2"),
+                ("User: Plot how sentiment about electricity changed in May", "3"),
+                (
+                    "User: Hello\n"
+                    "Assistant: Hi, how can I help you?\n"
+                    "User: How many comments are there\n"
+                    "Assistant: 12\n"
+                    "User: Nice, how can I increase my engagement?",
+                    "1"
+                ),
+                (
+                    "User: Make me a visualization of sentiment and time\n"
+                    "Assistant: Chart generated Successfully\n"
+                    "User: Hmm nice! How many food related comments are there?\n"
+                    "Assistant: 4\n"
+                    "User: Nice, I now want a visualization of the topics",
+                    "3"
+                )
             ),
             input_text=input_text,
         )
