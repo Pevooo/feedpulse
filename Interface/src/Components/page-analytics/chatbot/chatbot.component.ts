@@ -3,6 +3,7 @@ import { ChatbotService, ChatMessage, ChatRequest } from '../../services/chatbot
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-chatbot',
@@ -16,6 +17,7 @@ export class ChatbotComponent implements OnInit {
   @Input() startDate = '';
   @Input() endDate = '';
   @Input() showChatbot = false;
+  @ViewChild('chatMessages') chatMessages!: ElementRef;
 
   messages: ChatMessage[] = [];
   newMessage = '';
@@ -41,6 +43,7 @@ export class ChatbotComponent implements OnInit {
     };
 
     this.messages.push(userMessage);
+    this.scrollToBottom();
     this.isLoading = true;
     this.newMessage = '';
 
@@ -63,6 +66,7 @@ export class ChatbotComponent implements OnInit {
             isRaster: response.data.body.isRaster === 1
           };
           this.messages.push(botMessage);
+          this.scrollToBottom();
         }
         this.isLoading = false;
       },
@@ -72,7 +76,18 @@ export class ChatbotComponent implements OnInit {
       }
     });
   }
-
+  scrollToBottom(): void {
+    try {
+      setTimeout(() => {
+        this.chatMessages.nativeElement.scrollTo({
+          top: this.chatMessages.nativeElement.scrollHeight,
+          behavior: 'smooth' // 👈 this makes it smooth
+        });
+      }, 0); // allow DOM update
+    } catch (err) {
+      console.error('Could not scroll:', err);
+    }
+  }
   toggleChat() {
     if (this.showChatbot) {
       this.isOpen = !this.isOpen;
