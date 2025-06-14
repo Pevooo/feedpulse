@@ -18,7 +18,7 @@ class VisualizationComponent(Component):
         summary = self.lida.summarize(dataset, summary_method="default")
         goal = Goal(
             question=input_text,
-            rationale="Generate a relevant chart",
+            rationale="Generate a relevant chart based on the question. It may be a question or a command",
             visualization="auto",
         )
         charts = self.lida.visualize(summary=summary, goal=goal)
