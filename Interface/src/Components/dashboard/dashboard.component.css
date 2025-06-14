@@ -97,3 +97,25 @@ li {
 .gif-button:hover img {
   transform: scale(1.1); /* Slight zoom on hover */
 }
+.facebook-button {
+      background-color: #1877F2; /* Facebook blue */
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .facebook-button:hover {
+      background-color: #145dbf; /* Darker blue on hover */
+    }
+
+    .facebook-icon {
+      width: 20px;
+      height: 20px;
+    }

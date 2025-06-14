@@ -29,10 +29,19 @@
         </ul>
       </div>
 
-    <div class="header">
-      <button *ngIf="!isConnected" (click)="login()" style="background-color: #20c0bd; color: white;">Connect to Facebook</button>
-      <button *ngIf="isConnected" class="connected-button" (click)="logout()" style="background-color: #20c0bd; color: white;">Disconnect</button>
-    </div>
+<div class="header">
+  <button *ngIf="!isConnected" (click)="login()" class="facebook-button">
+        <img class="facebook-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo">
+    Connect to Facebook
+  </button>
+
+  <button *ngIf="isConnected" (click)="logout()" class="facebook-btn connected-button">
+        <img class="facebook-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo">
+
+    Disconnect
+  </button>
+</div>
+
 
   </div>
 </section>
