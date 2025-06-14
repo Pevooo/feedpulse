@@ -7,16 +7,16 @@
       <br>
     </div>
       <!-- ✅ Updated unregistered pages display -->
-      <div *ngIf="UnRegistered_Pages?.length">
+      <div *ngIf="unregisteredPages?.length">
         <h4>Your unregistered pages:</h4>
         <ul>
-          <li *ngFor="let page of UnRegistered_Pages">
+          <li *ngFor="let page of unregisteredPages">
             {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
             <button (click)="goToForm(page)">Go to Form</button>
           </li>
         </ul>
       </div>
-      <div *ngIf="Registered_Pages.length > 0">
+      <div *ngIf="registeredPages.length > 0">
         <h4>Your registered pages:</h4>
         <ul>
           <li *ngFor="let page of pages">
