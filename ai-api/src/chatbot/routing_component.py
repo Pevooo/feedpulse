@@ -1,5 +1,6 @@
 from src.chatbot.chat_component import ChatComponent
 from src.chatbot.component import Component
+from src.chatbot.format_component import FormatComponent
 from src.chatbot.query_component import QueryComponent
 from src.chatbot.human_like_component import HumanlikeComponent
 from src.chatbot.visualization_component import VisualizationComponent
@@ -14,13 +15,13 @@ class RoutingComponent(Component):
     def run(self, input_text, dataset) -> tuple[str, int]:
         prompt = Prompt(
             instructions="""
+You are given a chat between a user and an assistant and based on the last user input you should do the following:
 You are classifying user questions or statements into four categories based on what they want.
-Respond with on_ly one number:
+Respond with only one number:
 1 — General conversation (chit-chat, greetings, opinions not related to data)
 or Irrelevant or unclear text (nonsense, off-topic, or impossible to process)
 2 — Query (the user wants a data answer or insight from the dataset, even in natural language)
 3 — Data visualization (the user is asking for a chart or graph based on data)
-Here are some examples:
 """,
             context=None,
             examples=(
@@ -40,10 +41,15 @@ Here are some examples:
 
         response = self.model_provider.generate_content(prompt).strip()
         component, is_raster = self._choose_component(response)
+
+        if isinstance(component, QueryComponent) or isinstance(component, VisualizationComponent):
+            input_text = FormatComponent(self.model_provider, component.__class__).run(input_text, dataset)
+
         component_result = component.run(input_text, dataset)
+
         if isinstance(component, QueryComponent):
-            humanlikeComponent = HumanlikeComponent(self.model_provider)
-            return humanlikeComponent.run(component_result, dataset), is_raster
+            human_like_component = HumanlikeComponent(self.model_provider)
+            return human_like_component.run(component_result, dataset), is_raster
         return component_result, is_raster
 
     def _choose_component(self, response):

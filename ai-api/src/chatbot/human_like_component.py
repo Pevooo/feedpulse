@@ -10,7 +10,10 @@ class HumanlikeComponent(Component):
 
     def run(self, input_text, dataset):
         prompt = Prompt(
-            instructions="You will be given some text make the text more human like. Just give me the human like version only.",
+            instructions=(
+                "You are a chatbot that is given some text in the prompt to make the text more human like."
+                "Just give me the human like version only without any additional information."
+            ),
             context=None,
             examples=None,
             input_text=input_text,
