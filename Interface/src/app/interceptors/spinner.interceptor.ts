@@ -7,9 +7,20 @@ export function spinnerInterceptor(
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> {
-  const spinnerService = inject(SpinnerService) as SpinnerService; // Explicitly cast to SpinnerService
-  spinnerService.show(); // Show spinner when request starts
+  const spinnerService = inject(SpinnerService) as SpinnerService;
+
+  // Skip showing spinner for chatbot requests
+  const isChatbotRequest = req.url.includes('/chat'); // <-- Customize this based on your endpoint
+
+  if (!isChatbotRequest) {
+    spinnerService.show();
+  }
+
   return next(req).pipe(
-    finalize(() => spinnerService.hide()) // Hide spinner when request completes
+    finalize(() => {
+      if (!isChatbotRequest) {
+        spinnerService.hide();
+      }
+    })
   );
 }
