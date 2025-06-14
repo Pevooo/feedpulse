@@ -26,7 +26,7 @@ class QueryComponent(Component):
     def run(self, input_text, dataset: pd.DataFrame) -> str:
         llm = QueryComponent.CustomLLM(self.model_provider)
         sdf = SmartDataframe(dataset, config={"llm": llm})
-        response = str(sdf.chat(input_text))
+        response = str(sdf.chat(self._wrap_prompt(input_text)))
         if "no code in response" in response.lower():
             raise ValueError("No code in response")
         return response
