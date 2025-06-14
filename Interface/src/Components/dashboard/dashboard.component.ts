@@ -3,7 +3,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FacebookService } from '../../app/services/facebook.service';
 import { FacebookPage } from '../../app/interfaces/Facebook_Page';
 import { Router } from '@angular/router';
-import { OrganizationService } from '../../app/services/organization.service';
 
 
 @Component({
@@ -18,15 +17,14 @@ export class DashboardComponent implements OnInit{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userData: any = null;
   pages: FacebookPage[] = [];
-  UnRegistered_Pages:FacebookPage[]=[];
-  Registered_Pages: FacebookPage[] = [];
+  unregisteredPages:FacebookPage[]=[];
+  registeredPages: FacebookPage[] = [];
   loading = false;
   errorMessage = '';
   isBrowser: boolean;
   isConnected = false;
   constructor(
     private facebookService: FacebookService,
-    private organizationService:OrganizationService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
@@ -35,64 +33,42 @@ export class DashboardComponent implements OnInit{
   async ngOnInit(): Promise<void> {
     const token = localStorage.getItem('fb_access_token');
     const user = localStorage.getItem('fb_user_profile');
-    if(token && user){
+    if(token && user) {
       this.isConnected = true;
       this.facebookService.getFacebookPages(token).subscribe({
         next: (res) => {
           if (res.succeeded && res.data) {
             this.pages = res.data;
-            this.isConnected = true;
+            this.userData = JSON.parse(user);
             this.calculateRegisteredPages();
             console.log('✅ Pages:', this.pages);
-            console.log('✅ Unregister:', this.UnRegistered_Pages);
-            console.log('✅ Registered:', this.Registered_Pages);
+            console.log('✅ Unregister:', this.unregisteredPages);
+            console.log('✅ Registered:', this.registeredPages);
           }
-          },
+        },
         error: (err) => {
-          // Check login status
           this.facebookService.checkLoginStatus().then(response => {
             if (response.authResponse) {
-              localStorage.setItem('fb_access_token', response.authResponse.accessToken);
               this.facebookService.getUserProfile().then(profile => {
+                localStorage.setItem('fb_access_token', response.authResponse.accessToken);
                 localStorage.setItem('fb_user_profile', JSON.stringify(profile));
                 this.userData = profile;
                 this.fetchPages(response.authResponse.accessToken);
                 this.calculateRegisteredPages();
               });
+            } else {
+              this.userData = null;
+              this.isConnected = false;
             }
           }).catch(() => {
             console.warn('User is not logged in.');
             console.error('❌ Error fetching pages:', err);
+            this.userData = null;
             this.isConnected = false;
           });
         }
       });
     }
-
-    console.log(token);
-    console.log(user);
-
-    if (token && user) {
-      this.userData = JSON.parse(user);
-      await this.fetchPages(token);
-      this.calculateRegisteredPages();
-    } else {
-      // 🔄 Check login status again in case session exists
-      this.facebookService.checkLoginStatus().then(response => {
-        if (response.authResponse) {
-          localStorage.setItem('fb_access_token', response.authResponse.accessToken);
-          this.facebookService.getUserProfile().then(profile => {
-            localStorage.setItem('fb_user_profile', JSON.stringify(profile));
-            this.userData = profile;
-            this.fetchPages(response.authResponse.accessToken);
-            this.calculateRegisteredPages();
-          });
-        }
-      }).catch(() => {
-        console.warn('User is not logged in.');
-      });
-    }
-    this.calculateRegisteredPages();
   }
   async login() {
     this.loading = true;
@@ -108,22 +84,22 @@ export class DashboardComponent implements OnInit{
         this.userData = profile;
         const accessToken = authData.authResponse.accessToken;
 
-                // 🌐 Fetch Pages
-                this.facebookService.getFacebookPages(accessToken).subscribe({
-                  next: (res) => {
-                    if (res.succeeded && res.data) {
-                      this.pages = res.data;
-                      this.isConnected = true;
-                      this.calculateRegisteredPages();
-                      console.log('✅ Pages:', this.pages);
-                      console.log('✅ Unregisted:', this.UnRegistered_Pages);
-                      console.log('✅ registerd:', this.Registered_Pages);
-                    }
-                  },
-                  error: (err) => {
-                    console.error('❌ Error fetching pages:', err);
-                  }
-                });
+        // 🌐 Fetch Pages
+        this.facebookService.getFacebookPages(accessToken).subscribe({
+          next: (res) => {
+            if (res.succeeded && res.data) {
+              this.pages = res.data;
+              this.isConnected = true;
+              this.calculateRegisteredPages();
+              console.log('✅ Pages:', this.pages);
+              console.log('✅ Unregistered:', this.unregisteredPages);
+              console.log('✅ Registered:', this.registeredPages);
+            }
+          },
+          error: (err) => {
+            console.error('❌ Error fetching pages:', err);
+          }
+        });
       }
     } catch (error) {
       console.error('❌ Login Error:', error);
@@ -163,9 +139,12 @@ export class DashboardComponent implements OnInit{
   logout() {
     this.facebookService.logout();
     this.pages = [];
-    this.Registered_Pages = [];
-    this.UnRegistered_Pages = [];
+    this.registeredPages = [];
+    this.unregisteredPages = [];
     this.isConnected = false;
+    this.userData = null;
+    localStorage.removeItem('fb_access_token');
+    localStorage.removeItem('fb_user_profile');
   }
 
   goToAnalytics(page: FacebookPage) {
@@ -176,7 +155,7 @@ export class DashboardComponent implements OnInit{
     });
   }
   private calculateRegisteredPages(): void {
-    const unregisteredIds = new Set(this.UnRegistered_Pages.map(p => p.id));
-    this.Registered_Pages = this.pages.filter(p => !unregisteredIds.has(p.id));
+    const unregisteredIds = new Set(this.unregisteredPages.map(p => p.id));
+    this.registeredPages = this.pages.filter(p => !unregisteredIds.has(p.id));
   }
 }
