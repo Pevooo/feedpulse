@@ -1,60 +1,3 @@
-<style>
-  .gradient-custom {
-    background: #4A90E2;
-    background: -webkit-linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));
-    background: linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .card-registration {
-    border-radius: 15px;
-  }
-
-  .form-group {
-    margin-bottom: 15px;
-    position: relative;
-  }
-  
-  .form-group input, .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .form-group label {
-    position: absolute;
-    top: -10px;
-    left: 10px;
-    background: white;
-    padding: 0 5px;
-    font-size: 0.9rem;
-  }
-
-  button[type="submit"] {
-    background: #f5576c;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  button[type="submit"]:disabled {
-    background: gray;
-    cursor: not-allowed;
-  }
-
-  .text-danger {
-    color: red;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-  }
-</style>
-
 <section class="vh-100 gradient-custom">
  
   <div class="container py-5 h-100">
@@ -62,14 +5,14 @@
       <div class="col-12 col-lg-9 col-xl-7">
         <div class="card shadow-2-strong card-registration">
           <div class="card-body p-4 p-md-5">
-            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">SignUp</h3>
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Sign-up</h3>
             <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
               <!-- Full Name and User Name -->
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="text" name="fullName" [(ngModel)]="registration.fullName" required minlength="3" maxlength="50" #fullName="ngModel" />
-                    <label for="fullName">Full Name*</label>
+                    <label for="fullName"><i class="fa fa-user me-2"></i>Full Name*</label>
                     <div *ngIf="fullName.invalid && (fullName.dirty || fullName.touched)">
                       <small class="text-danger" *ngIf="fullName.errors!['required']">Full Name is required.</small>
                       <small class="text-danger" *ngIf="fullName.errors!['minlength']">Full Name must be at least 3 characters long.</small>
@@ -78,9 +21,9 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-group">
+                  <div class="form-group mb-3">
                     <input type="text" name="userName" [(ngModel)]="registration.userName" required minlength="3" maxlength="20" #userName="ngModel" />
-                    <label for="userName">User Name*</label>
+                    <label for="userName"><i class="fa fa-id-badge me-2"></i>User Name*</label>
                     <div *ngIf="userName.invalid && (userName.dirty || userName.touched)">
                       <small class="text-danger" *ngIf="userName.errors!['required']">User Name is required.</small>
                       <small class="text-danger" *ngIf="userName.errors!['minlength']">User Name must be at least 3 characters long.</small>
@@ -92,20 +35,20 @@
 
               <!-- Email and Phone Number -->
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="email" name="email" [(ngModel)]="registration.email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" #email="ngModel" />
-                    <label for="email">Email*</label>
+                    <label for="email"><i class="fa fa-envelope me-2"></i>Email*</label>
                     <div *ngIf="email.invalid && (email.dirty || email.touched)">
                       <small class="text-danger" *ngIf="email.errors!['required']">Email is required.</small>
                       <small class="text-danger" *ngIf="email.errors!['pattern']">Please enter a valid email address.</small>
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="tel" name="phoneNumber" [(ngModel)]="registration.phoneNumber" required pattern="[0-9]{11}" #phoneNumber="ngModel" />
-                    <label for="phoneNumber">Phone Number*</label>
+                    <label for="phoneNumber"><i class="fa fa-phone me-2"></i>Phone Number*</label>
                     <div *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)">
                       <small class="text-danger" *ngIf="phoneNumber.errors!['required']">Phone Number is required.</small>
                       <small class="text-danger" *ngIf="phoneNumber.errors!['pattern']">Please enter a valid 10-digit phone number.</small>
@@ -116,20 +59,20 @@
 
               <!-- Password and Confirm Password -->
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="password" name="password" [(ngModel)]="registration.password" required minlength="8" #password="ngModel" />
-                    <label for="password">Password*</label>
+                    <label for="password"><i class="fa fa-lock me-2"></i>Password*</label>
                     <div *ngIf="password.invalid && (password.dirty || password.touched)">
                       <small class="text-danger" *ngIf="password.errors!['required']">Password is required.</small>
                       <small class="text-danger" *ngIf="password.errors!['minlength']">Password must be at least 8 characters long.</small>
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="password" name="confirmPassword" [(ngModel)]="registration.confirmPassword" required #confirmPassword="ngModel" />
-                    <label for="confirmPassword">Confirm Password*</label>
+                    <label for="confirmPassword"><i class="fa fa-lock me-2"></i>Confirm Password*</label>
                     <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)">
                       <small class="text-danger" *ngIf="confirmPassword.errors!['required']">Confirm Password is required.</small>
                     </div>
@@ -142,7 +85,7 @@
 
               <!-- Country and Address -->
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <select name="country" [(ngModel)]="registration.country" required #country="ngModel">
                       <option value="" disabled selected>Choose Country</option>
@@ -150,16 +93,16 @@
                       <option value="UK">United Kingdom</option>
                       <option value="Canada">Canada</option>
                     </select>
-                    <label for="country">Country</label>
+                    <label for="country"><i class="fa fa-globe me-2"></i>Country</label>
                     <div *ngIf="country.invalid && (country.dirty || country.touched)">
                       <small class="text-danger" *ngIf="country.errors!['required']">Country is required.</small>
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="text" name="address" [(ngModel)]="registration.address" #address="ngModel" />
-                    <label for="address">Address</label>
+                    <label for="address"><i class="fa fa-map-marker-alt me-2"></i>Address</label>
                   </div>
                 </div>
               </div>
@@ -169,7 +112,7 @@
                 <div class="col-md-12">
                   <div class="form-group">
                     <input type="file" name="photo" (change)="onFileChange($event)" [(ngModel)]="registration.photo" />
-                    <label for="photo">Photo</label>
+                    <label for="photo"><i class="fa fa-image me-2"></i>Photo</label>
                   </div>
                 </div>
               </div>

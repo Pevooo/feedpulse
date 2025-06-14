@@ -1,42 +1,85 @@
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #333; /* Dark background similar to your screenshot */
-  color: white;
+.gradient-custom {
+    /*background: #4A90E2;
+    background: -webkit-linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));
+    background: linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));*/
+    background-color: #0a2640;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 30px;
+    min-height: 110vh;
 }
 
-.navbar-brand {
-  font-size: 1.5rem;
+.card-registration {
+  border-radius: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  position: relative;
+}
+.form-group label{
+  color: #6c6c6c;
   font-weight: bold;
 }
 
-.navbar-links {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-  margin: 0;
-  padding: 0;
+.form-group i{
+  color: #20c0bd;
+}
+  
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.navbar-links li {
-  display: inline-block;
+input:focus, textarea:focus, select:focus {
+  border-color: #20c0bd;
+  box-shadow: 0 0 5px #20c0bd;
+  outline: none;
 }
 
-.navbar-links a {
+.form-group label {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: white;
+    padding: 0 5px;
+    font-size: 0.9rem;
+}
+
+button[type="submit"] {
+    background: #20c0bd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:disabled {
+    background: gray;
+    cursor: not-allowed;
+}
+
+.text-danger {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+input[type="file"]::file-selector-button {
+  background: #20c0bd;
   color: white;
-  text-decoration: none;
-  font-weight: 500;
-  padding-bottom: 5px; /* Space for the underline */
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 
-.navbar-links a:hover {
-  color: #f5576c; /* Optional hover color */
-}
-
-/* Style for active link */
-.navbar-links a.active {
-  color: white; /* Keep the text white */
-  border-bottom: 2px solid #4A90E2; /* Blue underline for active link, matching your screenshot */
+input[type="file"] {
+  padding: 6px;
 }

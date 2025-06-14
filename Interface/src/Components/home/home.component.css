@@ -113,6 +113,8 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 4rem;
+      display: flex;
+      justify-content: center;
       align-items: center;
 
       @media (max-width: 768px) {
@@ -130,17 +132,16 @@
     }
 
     .about-text {
-      h2 {
+      p {
         color: #20c0bd;
         font-size: 1.2rem;
-        text-transform: uppercase;
         letter-spacing: 2px;
         margin-bottom: 1rem;
       }
 
-      h1 {
+      h2 {
         color: #333;
-        font-size: 2.2rem;
+        font-size: 2.985984rem;
         margin-bottom: 1.5rem;
         line-height: 1.3;
       }
