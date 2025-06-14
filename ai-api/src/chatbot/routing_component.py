@@ -42,15 +42,14 @@ or Irrelevant or unclear text (nonsense, off-topic, or impossible to process)
         response = self.model_provider.generate_content(prompt).strip()
         component, is_raster = self._choose_component(response)
 
-        if isinstance(component, QueryComponent) or isinstance(component, VisualizationComponent):
-            input_text = FormatComponent(self.model_provider, component.__class__).run(input_text, dataset)
+        if isinstance(component, QueryComponent) or isinstance(
+            component, VisualizationComponent
+        ):
+            input_text = FormatComponent(self.model_provider, component.__class__).run(
+                input_text, dataset
+            )
 
-        component_result = component.run(input_text, dataset)
-
-        if isinstance(component, QueryComponent):
-            human_like_component = HumanlikeComponent(self.model_provider)
-            return human_like_component.run(component_result, dataset), is_raster
-        return component_result, is_raster
+        return component.run(input_text, dataset), is_raster
 
     def _choose_component(self, response):
         try:

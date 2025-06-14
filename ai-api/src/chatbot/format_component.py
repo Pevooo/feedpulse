@@ -9,7 +9,9 @@ from src.models.prompt import Prompt
 
 class FormatComponent(Component):
 
-    def __init__(self, model_provider: GlobalModelProvider, target_component: Type[Component]):
+    def __init__(
+        self, model_provider: GlobalModelProvider, target_component: Type[Component]
+    ):
         self.model_provider = model_provider
         self.target_component = target_component
 
@@ -33,7 +35,7 @@ class FormatComponent(Component):
                     "Assistant: Chart generated Successfully\n"
                     "User: Not like this I want it to only have data from 2025",
                     "Generate a chart of sentiments and time considering data from 2025 only?",
-                )
+                ),
             ),
             input_text=input_text,
         )
