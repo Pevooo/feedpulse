@@ -1,6 +1,7 @@
 from src.chatbot.chat_component import ChatComponent
 from src.chatbot.component import Component
 from src.chatbot.query_component import QueryComponent
+from src.chatbot.human_like_component import HumanlikeComponent
 from src.chatbot.visualization_component import VisualizationComponent
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
@@ -39,7 +40,11 @@ Here are some examples:
 
         response = self.model_provider.generate_content(prompt).strip()
         component, is_raster = self._choose_component(response)
-        return component.run(input_text, dataset), is_raster
+        component_result = component.run(input_text, dataset)
+        if isinstance(component, QueryComponent):
+            humanlikeComponent = HumanlikeComponent(self.model_provider)
+            return humanlikeComponent.run(component_result, dataset), is_raster
+        return component_result, is_raster
 
     def _choose_component(self, response):
         try:
