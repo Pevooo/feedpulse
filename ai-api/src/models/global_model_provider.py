@@ -25,7 +25,7 @@ class GlobalModelProvider(Updatable):
                     )
                 except Exception:
                     log(
-                        f"MODEL API REQUEST FAILED USING {provider.__class__.__name__}: {response}",
+                        f"MODEL API REQUEST FAILED USING {provider.__class__.__name__}",
                         level="error",
                     )
             time.sleep(self._retry_delay)
