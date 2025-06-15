@@ -72,6 +72,14 @@ export class ChatbotComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error sending message:', error);
+        const errorMessage: ChatMessage = {
+          content: "An unexpected error occured. Please try again!",
+          isUser: false,
+          timestamp: new Date(),
+          isRaster: false
+        }
+        this.messages.push(errorMessage);
+        this.scrollToBottom();
         this.isLoading = false;
       }
     });
@@ -91,6 +99,9 @@ export class ChatbotComponent implements OnInit {
   toggleChat() {
     if (this.showChatbot) {
       this.isOpen = !this.isOpen;
+      if (this.isOpen) {
+        this.scrollToBottom()
+      }
     }
   }
   get_last_5_messages(): string {
