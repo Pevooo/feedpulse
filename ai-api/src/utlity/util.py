@@ -16,25 +16,30 @@ def deprecated(func):
 
     return wrapper
 
+
 def log(message: str, level: str = "info"):
-    log_path = 'log.log'
+    log_path = "log.log"
     log_dir = os.path.dirname(log_path)
     if log_dir:
         os.makedirs(log_dir, exist_ok=True)
 
-    logger = logging.getLogger('feedpulse')
+    logger = logging.getLogger("feedpulse")
     logger.setLevel(logging.INFO)
 
     # Prevent adding duplicate handlers
     if not logger.hasHandlers():
         # File handler
         file_handler = logging.FileHandler(log_path)
-        file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        file_handler.setFormatter(
+            logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        )
         logger.addHandler(file_handler)
 
         # Console handler (for systemd journal)
         console_handler = logging.StreamHandler()
-        console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        console_handler.setFormatter(
+            logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        )
         logger.addHandler(console_handler)
 
     # Log the message

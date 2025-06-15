@@ -20,9 +20,14 @@ class GlobalModelProvider(Updatable):
             for provider in self.providers:
                 try:
                     response = provider.generate_content(prompt)
-                    log(f"MODEL API REQUEST USING {provider.__class__.__name__}: {response}")
+                    log(
+                        f"MODEL API REQUEST USING {provider.__class__.__name__}: {response}"
+                    )
                 except Exception:
-                    log(f"MODEL API REQUEST FAILED USING {provider.__class__.__name__}: {response}", level="error")
+                    log(
+                        f"MODEL API REQUEST FAILED USING {provider.__class__.__name__}: {response}",
+                        level="error",
+                    )
             time.sleep(self._retry_delay)
         raise Exception("No provider available")
 
