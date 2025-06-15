@@ -19,6 +19,7 @@ from src.models.groq_model_provider import GroqModelProvider
 from src.models.hf_model_provider import HFModelProvider
 from src.data.data_manager import DataManager
 from src.topics.topic_detector import TopicDetector
+from src.utlity.util import log
 from src.webhooks.facebook_webhook_handler import FacebookWebhookHandler
 from src.webhooks.instagram_webhook_handler import InstagramWebhookHandler
 
@@ -172,6 +173,7 @@ class FeedPulseAPI:
 
         @self.flask_app.route(Router.CHAT, methods=["GET", "POST"])
         def chat():
+            log(f"CHAT ROUTE CALLED WITH {request.json}")
             data = request.json
             page_id = data.get("page_id")
             start_date = datetime.fromisoformat(data.get("start_date"))

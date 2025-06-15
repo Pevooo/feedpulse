@@ -4,6 +4,7 @@ from src.config.updatable import Updatable
 from src.config.settings import Settings
 from src.models.model_provider import ModelProvider
 from src.models.prompt import Prompt
+from src.utlity.util import log
 
 
 class GlobalModelProvider(Updatable):
@@ -18,9 +19,10 @@ class GlobalModelProvider(Updatable):
         for _ in range(self._retry_count):
             for provider in self.providers:
                 try:
-                    return provider.generate_content(prompt)
+                    response = provider.generate_content(prompt)
+                    log(f"MODEL API REQUEST USING {provider.__class__.__name__}: {response}")
                 except Exception:
-                    pass
+                    log(f"MODEL API REQUEST FAILED USING {provider.__class__.__name__}: {response}", level="error")
             time.sleep(self._retry_delay)
         raise Exception("No provider available")
 

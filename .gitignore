@@ -85,3 +85,6 @@ bandit_report.html
 
 #virtual environment
 /ai-api/venv
+
+#logs
+log.log
