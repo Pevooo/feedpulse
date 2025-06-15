@@ -7,7 +7,9 @@ from src.data_streamers.polling_data_streamer import PollingDataStreamer
 from src.feedback_classification.feedback_classifier import FeedbackClassifier
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.google_model_provider import GoogleModelProvider
+from src.models.groq_model_provider import GroqModelProvider
 from src.models.hf_model_provider import HFModelProvider
+from src.models.or_model_provider import ORModelProvider
 from src.redis.redis_manager import RedisManager
 from src.reports.lida_report_handler import LidaReportHandler
 from src.topics.topic_detector import TopicDetector
@@ -25,7 +27,12 @@ def run_app(
 ):
     # Define the global model provider (and load balancer)
     model_provider = GlobalModelProvider(
-        providers=[GoogleModelProvider(), HFModelProvider()],
+        providers=[
+            GoogleModelProvider(),
+            ORModelProvider(),
+            HFModelProvider(),
+            GroqModelProvider(),
+        ],
         retry_delay=global_model_provider_retry_delay,
     )
 

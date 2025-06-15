@@ -34,5 +34,6 @@ class QueryComponent(Component):
     def _wrap_prompt(self, prompt: str) -> str:
         return (
             "The dataset includes the comments data of a facebook page, alongside with their sentiments and related topics."
-            f"Content column contains comments data. I don't want a visualization. Wrap the response in a natural language sentence. Question: {prompt}"
+            f"Content column contains comments data. I don't want a visualization. Never Send a path. "
+            f"Wrap the response in a natural language sentence. Question: {prompt}"
         )

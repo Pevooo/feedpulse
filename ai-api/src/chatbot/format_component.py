@@ -21,7 +21,9 @@ class FormatComponent(Component):
                 "You are a chatbot that is given the last 5 messages from a chat and based "
                 "on the chat you want to output a prompt from your understanding of what the user needs. "
                 f"Your prompt would be given to {self._get_target_description()}"
-                "Output the precise prompt to the agent"
+                "Output the precise prompt to the agent. "
+                "Very Important note: In the chat there may be other questions before the last one, make sure to understand "
+                "what the user wants right now. "
             ),
             context=None,
             examples=self._get_relevant_examples(),
@@ -34,9 +36,9 @@ class FormatComponent(Component):
 
     def _get_target_description(self) -> str:
         if self.target_component == QueryComponent:
-            return "Query Agent which take the prompt and runs a query on the data"
+            return "Query Agent which take the prompt and runs a query on the data. It can't make a visualization. "
         elif self.target_component == VisualizationComponent:
-            return "Query Agent which takes the prompt and generated a visualization of the data based on the prompt"
+            return "Query Agent which takes the prompt and generated a visualization of the data based on the prompt. "
 
     def _get_relevant_examples(self) -> tuple[tuple[str, str], ...]:
         if self.target_component == QueryComponent:
