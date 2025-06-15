@@ -51,7 +51,7 @@ export class ChatbotComponent implements OnInit {
       page_id: this.facebookId,
       start_date: this.startDate,
       end_date: this.endDate,
-      question: userMessage.content
+      question: this.get_last_5_messages()
     };
 
     this.chatbotService.sendMessage(request).subscribe({
@@ -92,5 +92,20 @@ export class ChatbotComponent implements OnInit {
     if (this.showChatbot) {
       this.isOpen = !this.isOpen;
     }
+  }
+  get_last_5_messages(): string {
+    const strings: string[] = [];
+    this.messages.slice(-5).forEach((message) => {
+      if (message.isUser) {
+        strings.push("User: " + message.content);
+      } else {
+        if (message.isRaster) {
+          strings.push("Assistant: Chart generated successfully");
+        } else {
+          strings.push("Assistant: " + message.content);
+        }
+      }
+    });
+    return strings.join("\n");
   }
 }
