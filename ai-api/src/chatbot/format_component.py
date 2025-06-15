@@ -18,7 +18,8 @@ class FormatComponent(Component):
     def run(self, input_text, dataset):
         prompt = Prompt(
             instructions=(
-                "You are a chatbot that is given a chat and based on the chat you want to output a prompt from your understanding of what the user needs. "
+                "You are a chatbot that is given the last 5 messages from a chat and based "
+                "on the chat you want to output a prompt from your understanding of what the user needs. "
                 f"Your prompt would be given to {self._get_target_description()}"
                 "Output the precise prompt to the agent"
             ),
@@ -34,7 +35,7 @@ class FormatComponent(Component):
                     "User: Generate a chart of sentiments and time\n"
                     "Assistant: Chart generated Successfully\n"
                     "User: Not like this I want it to only have data from 2025",
-                    "Generate a chart of sentiments and time considering data from 2025 only?",
+                    "Generate a chart of sentiments and time considering data from 2025 only",
                 ),
             ),
             input_text=input_text,
