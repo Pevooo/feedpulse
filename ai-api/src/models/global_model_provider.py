@@ -23,6 +23,7 @@ class GlobalModelProvider(Updatable):
                     log(
                         f"MODEL API REQUEST USING {provider.__class__.__name__}: {response}"
                     )
+                    return response
                 except Exception:
                     log(
                         f"MODEL API REQUEST FAILED USING {provider.__class__.__name__}",
