@@ -18,7 +18,7 @@ env:
   HF_TOKEN: ${{ secrets.HF_TOKEN }}
   GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
   TEST_AC_TOKEN: ${{ secrets.TEST_AC_TOKEN }}
-  OPEN_ROUTER_API_KEY: $ {{
+  OPEN_ROUTER_API_KEY: ${{ secrets.OPEN_ROUTER_API_KEY }}
 
 permissions:
   contents: read
