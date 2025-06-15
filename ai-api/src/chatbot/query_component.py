@@ -27,12 +27,12 @@ class QueryComponent(Component):
         llm = QueryComponent.CustomLLM(self.model_provider)
         sdf = SmartDataframe(dataset, config={"llm": llm})
         response = str(sdf.chat(self._wrap_prompt(input_text)))
-        if "no code in response" in response.lower():
-            raise ValueError("No code in response")
+        if "error" in response.lower():
+            raise ValueError("Problem encountered")
         return response
 
     def _wrap_prompt(self, prompt: str) -> str:
         return (
             "The dataset includes the comments data of a facebook page, alongside with their sentiments and related topics."
-            f"Content column contains comments data. I don't want a visualization. Question: {prompt}"
+            f"Content column contains comments data. I don't want a visualization. Wrap the response in a natural language sentence. Question: {prompt}"
         )
