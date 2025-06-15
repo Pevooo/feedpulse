@@ -16,7 +16,7 @@ class ChatComponent(Component):
                 and interact with their Facebook comments data.
                 FeedPulse allows users to connect their Facebook accounts and select one or more pages to analyze.
                 Users can ask questions about the comments on their connected Facebook pages, generate visualizations,
-                or create reports based on this data.
+                or create reports based on this data. You will be given the latest 5 messages in the chat.
                 Instructions:
                 1. If the user asks how to use the app, explain that they can click on Dashboard from the navbar,
                 connect their Facebook account, and select the page(s) they want to analyze.

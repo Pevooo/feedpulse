@@ -17,9 +17,9 @@ class RoutingComponent(Component):
 You are given the latest 5 messages from a chat between a user and an assistant and based on them you should do the following:
 You are classifying user questions or statements into four categories based on what they want. You should never choose the wrong number.
 Respond with only one number:
-1 — General conversation (chit-chat, greetings, opinions not related to data)
+1 — General conversation (chit-chat, greetings, opinions, advices about data)
 or Irrelevant or unclear text (nonsense, off-topic, or impossible to process)
-2 — Query (the user wants a data answer or insight from the dataset, even in natural language)
+2 — Query (the user wants a data answer that needs a query on the data or insight from the dataset, even in natural language)
 3 — Data visualization (the user is asking for a chart or graph based on data)
 """,
             context=None,

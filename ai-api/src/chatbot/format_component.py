@@ -24,20 +24,7 @@ class FormatComponent(Component):
                 "Output the precise prompt to the agent"
             ),
             context=None,
-            examples=(
-                (
-                    "User: Hello\n"
-                    "Assistant: Hello, I am your helpful assistant.\n"
-                    "User: How many positive comments are there?",
-                    "How many positive comments are there?",
-                ),
-                (
-                    "User: Generate a chart of sentiments and time\n"
-                    "Assistant: Chart generated Successfully\n"
-                    "User: Not like this I want it to only have data from 2025",
-                    "Generate a chart of sentiments and time considering data from 2025 only",
-                ),
-            ),
+            examples=self._get_relevant_examples(),
             input_text=input_text,
         )
 
@@ -45,8 +32,28 @@ class FormatComponent(Component):
 
         return response
 
-    def _get_target_description(self):
+    def _get_target_description(self) -> str:
         if self.target_component == QueryComponent:
             return "Query Agent which take the prompt and runs a query on the data"
         elif self.target_component == VisualizationComponent:
             return "Query Agent which takes the prompt and generated a visualization of the data based on the prompt"
+
+    def _get_relevant_examples(self) -> tuple[tuple[str, str], ...]:
+        if self.target_component == QueryComponent:
+            return (
+                (
+                    "User: Hello\n"
+                    "Assistant: Hello, I am your helpful assistant.\n"
+                    "User: How many positive comments are there?",
+                    "How many positive comments are there?",
+                ),
+            )
+        elif self.target_component == VisualizationComponent:
+            return (
+                (
+                    "User: Generate a chart of sentiments and time\n"
+                    "Assistant: Chart generated Successfully\n"
+                    "User: Not like this I want it to only have data from 2025",
+                    "Generate a chart of sentiments and time considering data from 2025 only",
+                ),
+            )
