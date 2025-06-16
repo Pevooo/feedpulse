@@ -16,7 +16,6 @@ Additionally, FeedPulse features an interactive chatbot assistant that users can
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [Dataset and Storage](#dataset-and-storage)
-- [Model Training](#model-training)
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Screenshots](#screenshots)
 - [Team](#team)
