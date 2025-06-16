@@ -2,13 +2,13 @@
     /*background: #4A90E2;
     background: -webkit-linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));
     background: linear-gradient(to bottom right, #4A90E2, rgba(245, 87, 108, 1));*/
-    background-color: #0a2640;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 30px;
-    min-height: 110vh;
+  background-color: #0a2640;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 30px;
+  min-height: 110vh;
 }
 
 .card-registration {
@@ -19,6 +19,7 @@
   margin-bottom: 15px;
   position: relative;
 }
+
 .form-group label{
   color: #6c6c6c;
   font-weight: bold;
@@ -28,11 +29,11 @@
   color: #20c0bd;
 }
   
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+input, select{
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 input:focus, textarea:focus, select:focus {
