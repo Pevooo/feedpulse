@@ -11,6 +11,16 @@ class GoogleModelProvider(ModelProvider):
         genai.configure(api_key=Environment.gemini_api_key)
 
     def generate_content(
-        self, prompt: Prompt, model: GoogleModel = GoogleModel.DEFAULT
+        self,
+        prompt: Prompt,
+        model: GoogleModel = GoogleModel.DEFAULT,
+        temperature: float = 1.0,
     ) -> str:
-        return genai.GenerativeModel(model.value).generate_content(str(prompt)).text
+        return (
+            genai.GenerativeModel(model.value)
+            .generate_content(
+                str(prompt),
+                generation_config={"temperature": temperature},
+            )
+            .text
+        )

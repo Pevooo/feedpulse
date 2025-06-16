@@ -1,4 +1,5 @@
 from src.chatbot.component import Component
+from src.config.settings import Settings
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
 
@@ -39,6 +40,8 @@ Follow these rules:
             input_text=input_text,
         )
 
-        response = self.model_provider.generate_content(prompt).strip()
+        response = self.model_provider.generate_content(
+            prompt, Settings.chat_component_temperature_x10 / 10
+        ).strip()
 
         return response

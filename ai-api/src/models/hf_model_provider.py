@@ -9,8 +9,11 @@ class HFModelProvider(ModelProvider):
     def __init__(self):
         self.client = InferenceClient(token=Environment.hf_token)
 
-    def generate_content(self, prompt: Prompt, model: HFModel = HFModel.DEFAULT) -> str:
+    def generate_content(
+        self, prompt: Prompt, model: HFModel = HFModel.DEFAULT, temperature: float = 1.0
+    ) -> str:
         return self.client.text_generation(
             prompt=prompt.to_text(),
             model=model.value,
+            temperature=temperature,
         )

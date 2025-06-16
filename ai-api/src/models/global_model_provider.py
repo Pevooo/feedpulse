@@ -15,13 +15,15 @@ class GlobalModelProvider(Updatable):
         self._retry_delay = retry_delay
         self._retry_count = retry_count
 
-    def generate_content(self, prompt: Prompt) -> str:
+    def generate_content(self, prompt: Prompt, temperature: float = 1.0) -> str:
         for _ in range(self._retry_count):
             for provider in self.providers:
                 try:
-                    response = provider.generate_content(prompt)
+                    response = provider.generate_content(
+                        prompt, temperature=temperature
+                    )
                     log(
-                        f"MODEL API REQUEST USING {provider.__class__.__name__}: {response}"
+                        f"MODEL API REQUEST USING {provider.__class__.__name__} at T={temperature}: {response}"
                     )
                     return response
                 except Exception:

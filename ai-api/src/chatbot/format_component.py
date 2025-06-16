@@ -2,6 +2,7 @@ from typing import Type
 
 from src.chatbot.component import Component
 from src.chatbot.query_component import QueryComponent
+from src.config.settings import Settings
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
 from src.utlity.util import log
@@ -43,7 +44,9 @@ class FormatComponent(Component):
             input_text=input_text,
         )
 
-        response = self.model_provider.generate_content(prompt).strip()
+        response = self.model_provider.generate_content(
+            prompt, Settings.format_component_temperature_x10 / 10
+        ).strip()
         log(f"RESPONSE FROM FORMAT COMPONENT: {response}")
         return response
 

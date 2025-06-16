@@ -3,6 +3,7 @@ from src.chatbot.component import Component
 from src.chatbot.format_component import FormatComponent
 from src.chatbot.query_component import QueryComponent
 from src.chatbot.visualization_component import VisualizationComponent
+from src.config.settings import Settings
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
 
@@ -48,16 +49,24 @@ class RoutingComponent(Component):
                 # visualization → 3
                 (
                     "USER: I’d like a bar chart of monthly users.\n"
-                    "ASSISTANT: Generating chart…\n"
+                    "ASSISTANT: [chart]\n"
                     "USER: Great, can you show it again focusing on desktop users?",
                     "3",
+                ),
+                (
+                    "USER: Can you generate a chart of the sentiment counts and time??\n"
+                    "ASSISTANT: [chart]\n"
+                    "USER: niceee!",
+                    "1",
                 ),
             ),
             context=input_text,
             input_text="",  # already included in context
         )
 
-        response = self.model_provider.generate_content(prompt).strip()
+        response = self.model_provider.generate_content(
+            prompt, Settings.routing_component_temperature_x10 / 10
+        ).strip()
         component, is_raster = self._choose_component(response)
 
         if isinstance(component, QueryComponent) or isinstance(

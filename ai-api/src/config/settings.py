@@ -28,6 +28,11 @@ class Settings:
         "processing_batch_size": [1, 2, 4, 8, 16, 32],
         "global_model_provider_retry_delay": [30, 60, 90, 120, 150, 180],
         "global_model_provider_retry_count": [1, 2, 3, 4, 5],
+        "routing_component_temperature_x10": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "chat_component_temperature_x10": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "format_component_temperature_x10": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "query_component_temperature_x10": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "visualization_component_temperature_x10": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     }
 
     # Default settings values
@@ -41,6 +46,13 @@ class Settings:
 
     # Polling Data Streamer Settings
     polling_data_streamer_trigger_time: int = 60
+
+    # Chatbot Component Temperatures
+    routing_component_temperature_x10: int = 10
+    chat_component_temperature_x10: int = 10
+    format_component_temperature_x10: int = 10
+    query_component_temperature_x10: int = 10
+    visualization_component_temperature_x10: int = 10
 
     @classmethod
     def register_observer(cls, observer: Updatable) -> None:

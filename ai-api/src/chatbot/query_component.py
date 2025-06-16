@@ -4,6 +4,7 @@ from pandasai import SmartDataframe
 from src.chatbot.component import Component
 from pandasai.llm.base import LLM
 
+from src.config.settings import Settings
 from src.models.global_model_provider import GlobalModelProvider
 
 
@@ -18,7 +19,9 @@ class QueryComponent(Component):
             return "custom"
 
         def call(self, prompt: str, context=None) -> str:
-            return self.model_provider.generate_content(prompt)
+            return self.model_provider.generate_content(
+                prompt, Settings.query_component_temperature_x10 / 10
+            ).strip()
 
     def __init__(self, model_provider):
         self.model_provider = model_provider

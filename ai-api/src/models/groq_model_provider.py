@@ -11,6 +11,14 @@ class GroqModelProvider(ModelProvider):
         self.client = Groq(api_key=Environment.groq_token)
 
     def generate_content(
-        self, prompt: Prompt, model: GroqModel = GroqModel.DEFAULT
+        self,
+        prompt: Prompt,
+        model: GroqModel = GroqModel.DEFAULT,
+        temperature: float = 1.0,
     ) -> str:
-        return super().generate_content(prompt, model)
+        response = self.client.chat.completions.create(
+            model=model.value,
+            messages=[{"role": "user", "content": str(prompt)}],
+            temperature=temperature,
+        )
+        return response.choices[0].message.content
