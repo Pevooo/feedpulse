@@ -44,6 +44,8 @@ input:focus, textarea:focus, select:focus {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 20px auto; /* <<< This centers it horizontally */
+
 }
   
 .btn-primary:hover {
@@ -78,4 +80,9 @@ input:focus, textarea:focus, select:focus {
   font-size: 1rem;
   position: relative;
   z-index: 1;
+}
+
+.custom-label i {
+  color: #20c0bd;
+  padding-right: 5px;
 }
