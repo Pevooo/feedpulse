@@ -9,7 +9,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #2196F3;
+  background-color: #20c0bd;
   border: none;
   color: white;
   font-size: 24px;
@@ -20,7 +20,7 @@
 
 .chat-toggle:hover {
   transform: scale(1.1);
-  background-color: #1976D2;
+  background-color: #20c0bd;
 }
 
 .chat-window {
