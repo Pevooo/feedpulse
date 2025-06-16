@@ -1,47 +1,52 @@
 <section class="gradient-custom">
-  <div class="dashboard-container">
+  <div class="text-center">
+    <p>Connect with Facebook</p>
+    <h2>Connect your account to Facebook to access additional features</h2>
+  </div>
+  
+  <div class="header" *ngIf="!isConnected">
+      <button (click)="login()" class="facebook-btn">
+        <i class="fa-brands fa-facebook-f"></i>
+        Connect to Facebook
+      </button>
+  </div>
+
+  <div class="dashboard-container" *ngIf="isConnected">
     <div *ngIf="userData">
       <h3 style="color: #13547a;">Welcome, {{ userData.name }}</h3>
       <br>
       <img [src]="userData.picture?.data.url" alt="Profile Picture">
       <br>
     </div>
-      <!-- ✅ Updated unregistered pages display -->
-      <div *ngIf="unregisteredPages?.length">
-        <h4>Your unregistered pages:</h4>
-        <ul>
-          <li *ngFor="let page of unregisteredPages">
-            {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
-            <button (click)="goToForm(page)">Go to Form</button>
-          </li>
-        </ul>
-      </div>
-      <div *ngIf="registeredPages.length > 0">
-        <h4>Your registered pages:</h4>
-        <ul>
-          <li *ngFor="let page of pages">
-            <b>{{ page.name || 'Unknown Page' }}</b>&nbsp;(ID: {{ page.id }})
-            <button (click)="goToAnalytics(page)" class="gif-button">
-                <img src="assets/gif/report.gif" alt="Analytics">
 
-            </button> <!-- 🔍 New Button -->
-          </li>
-        </ul>
-      </div>
+    <!-- Updated unregistered pages display -->
+    <div *ngIf="unregisteredPages?.length">
+      <h4>Your unregistered pages:</h4>
+      <ul>
+        <li *ngFor="let page of unregisteredPages">
+          {{ page.name || 'Unknown Page' }} (ID: {{ page.id }})
+          <button (click)="goToForm(page)">Go to Form</button>
+        </li>
+      </ul>
+    </div>
 
-<div class="header">
-  <button *ngIf="!isConnected" (click)="login()" class="facebook-button">
-        <img class="facebook-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo">
-    Connect to Facebook
-  </button>
-
-  <button *ngIf="isConnected" (click)="logout()" class="facebook-btn connected-button">
-        <img class="facebook-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo">
-
-    Disconnect
-  </button>
-</div>
-
-
+    <div *ngIf="registeredPages.length > 0">
+      <h4 style="color: #0a2640; font-size: 1.3rem;">Your registered pages:</h4>
+      <ul>
+        <li *ngFor="let page of pages">
+          <b>{{ page.name || 'Unknown Page' }}</b>&nbsp;(ID: {{ page.id }})
+          <button (click)="goToAnalytics(page)" class="gif-button">
+            <img src="assets/gif/report.gif" alt="Analytics">
+          </button> 
+        </li>
+      </ul>
+    </div>
+    
+    <div class="header">
+        <button *ngIf="isConnected" (click)="logout()" class="facebook-btn">
+          <i class="fa-brands fa-facebook-f"></i>
+          Disconnect
+      </button>
+    </div>
   </div>
 </section>

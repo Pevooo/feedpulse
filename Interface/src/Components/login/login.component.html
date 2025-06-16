@@ -12,22 +12,22 @@
             <!--Sing in form-->
             <div class="col-md-12">
               <div class="card-body p-4 p-md-5">
-                <h3 class="mb-5 center" style="color: #0a2640;">Login</h3>
+                <h3 class="mb-5 center" style="color: #0a2640; text-align: center;">Login</h3>
                 <form #signupForm="ngForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
                   <!-- User Name -->
                     <div class="custom-input-container">
                       <input type="text" name="userName" [(ngModel)]="Model.userName" required minlength="3" maxlength="20" #userName="ngModel" class="form-control custom-input" id="userName" />
-                      <label for="userName" class="custom-label"><img src="assets/icons/user-icon.png" class="icon" alt="user-icon">Username*</label>
-                      <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="invalid-feedback">
+                      <label for="userName" class="custom-label"><i class="fa fa-user"></i>Username*</label>
+                      <!--<div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="invalid-feedback">
                         <small *ngIf="userName.errors!['required']">User Name is required.</small>
                         <small *ngIf="userName.errors!['minlength']">User Name must be at least 3 characters long.</small>
                         <small *ngIf="userName.errors!['maxlength']">User Name cannot exceed 20 characters.</small>
-                      </div>
+                      </div>-->
                     </div>
                   <!-- Password -->
                   <div class="custom-input-container">
                     <input type="password" name="password" [(ngModel)]="Model.password" required minlength="8" #password="ngModel" class="form-control custom-input" id="password" />
-                    <label for="password" class="custom-label"><img src="assets/icons/pass-icon.png" class="icon" alt="pass-icon">Password*</label>
+                    <label for="password" class="custom-label"><i class="fa fa-lock"></i>Password*</label>
                     <div *ngIf="password.invalid && (password.dirty || password.touched)" class="invalid-feedback">
                       <small *ngIf="password.errors!['required']">Password is required.</small>
                       <small *ngIf="password.errors!['minlength']">Password must be at least 8 characters long.</small>

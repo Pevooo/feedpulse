@@ -1,7 +1,62 @@
-.footer {
-  background-color: #e9e9ea;
+.cta-section {
+  background: url('../../assets/hero-bg.png');
+  background-repeat: no-repeat;
+  background-position: right;
+  background-color: #0a2640;
+  padding: 100px 20px;
+  text-align: center;
+  color: white;
+  border-radius: 8px;
+  width: 70%;
+  margin: 0 auto; /* this centers the section horizontally */
+}
+
+.cta-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+}
+
+.cta-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cta-form input[type="email"] {
+  padding: 15px 25px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  width: 300px;
+  max-width: 100%;
+  outline: none;
+}
+
+.cta-form button {
+  width: 100%;
+  max-width: 180px;
+  padding: 15px 30px;
+  font-size: 1rem;
+  background-color: #20c0bd;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-form button:hover {
+  background-color: white;
   color: #20c0bd;
-  padding-top: 2rem; /* reduced top/bottom padding */
+}
+
+.footer {
+  background-color: #f9f9f9;
+  color: #20c0bd;
+  padding-top: 2rem;
 }
 
 .logo-img {
@@ -18,8 +73,6 @@
   margin: 0 auto;
   padding: 0 0.5rem; /* reduced side padding */
   color: #0a2640;
-  font-family: 'Helmet';
-
 }
 
 .footer-section {
@@ -62,7 +115,7 @@
   text-align: center;
   font-family: 'Helmet';
 
-  background-color: #d7d7da;
+  background-color: #f9f9f9;
   margin-top: 0.5rem; /* less space */
   padding-top: 0.5rem;
   /* border-top: 1px solid #20c0bd; */
@@ -86,5 +139,9 @@
 
   .footer-section {
     margin: 0.5rem 0;
+  }
+
+  .cta-section {
+    width: 90%;
   }
 }

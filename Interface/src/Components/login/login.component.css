@@ -2,57 +2,55 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
   position: relative;
-  background: url('../../assets/hero-bg.png') no-repeat right;
   background-color: #0a2640;
   min-height: 100vh; /* full screen height */
   padding: 40px;
   gap: 40px;
 }
 
-  .card-registration .select-input.form-control[readonly]:not([disabled]) {
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
   font-size: 1rem;
   line-height: 2.15;
   padding-left: .75em;
   padding-right: .75em;
-  }
-  .card-registration .select-arrow {
+}
+
+.card-registration .select-arrow {
   top: 13px;
-  }
+}
 
 .card-registration {
   max-width: 500px; /* or 400px if you want it narrower */
   margin: auto;     /* centers the card horizontally */
 }
 
-
-  input:focus, textarea:focus, select:focus {
-    border-color: #20c0bd; /* your custom border color */
-    box-shadow: 0 0 5px #20c0bd; /* remove the blue glowing shadow */
-    outline: none; /* remove extra outline if any */
-  }
-
-.btn{
-  background-color: #20c0bd;
-  border: none;
-  /*padding: 0.75rem 2rem;*/
-  font-size: clamp(1rem, 1.5vw, 1.2rem); /* Responsive button text */
-  font-weight: 500;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+input:focus, textarea:focus, select:focus {
+  border-color: #20c0bd; /* your custom border color */
+  box-shadow: 0 0 5px #20c0bd; /* remove the blue glowing shadow */
+  outline: none; /* remove extra outline if any */
 }
   
 .btn-primary {
+  width: 100%;
+  max-width: 180px;
+  height: 54px;
+  padding: 15px 30px;
+  font-size: 1.1rem;
   background-color: #20c0bd;
   color: white;
+  font-weight: bold;
   border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 20px auto; /* <<< This centers it horizontally */
+
 }
   
 .btn-primary:hover {
-  background-color: #f7f8fc;
-  color: #0a2640;
+  background-color: #0a2640;
+  color: white;
   transform: translateY(-2px);
 }
 
@@ -82,4 +80,9 @@
   font-size: 1rem;
   position: relative;
   z-index: 1;
+}
+
+.custom-label i {
+  color: #20c0bd;
+  padding-right: 5px;
 }
