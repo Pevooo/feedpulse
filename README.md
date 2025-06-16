@@ -1,85 +1,129 @@
-# Graduation Project
-## Repository Guidelines
-1) Don't push to the main branch directly
-2) Create a branch for the task or the change you want to make (This is to reduce conflicts)
-3) Create a pull request with every change you want to commit to the main branch
-4) **Unit tests**: We won't be able to handle a lot of functionality without Unit tests
-5) Do **NOT** push secrets (ex. api keys)
-6) Use meaningful names for commits
-7) Struggling with GIT? Ask **Pavly**
 
-## How to run?
-Ensure Python 3.10.6 and .NET 8 are installed
-You can run locally by executing the following command:
+# 🎓 FeedPulse – Graduation Project
 
-`python util/local_runner.py`
+**FeedPulse** addresses the growing challenge of managing and making sense of the overwhelming volume of user feedback generated on social media platforms. Businesses and organizations often struggle to extract timely and actionable insights from this unstructured data, which is continuously generated across various channels. Manual analysis is not only inefficient but also prone to bias and delay.
 
-This script will automatically install the dependencies needed (if not installed already) and run both the web api and the AI api.
+To solve this, FeedPulse leverages advanced AI and big data technologies to automate the process of feedback analysis. It performs near real-time sentiment and topic classification on incoming comments from Facebook and Instagram, enabling decision-makers to react quickly to public opinion, detect emerging issues, and measure the impact of their campaigns—all while ensuring data privacy and scalability.
 
-## Getting Started
+Additionally, FeedPulse features an interactive chatbot assistant that users can talk to in natural language. This chatbot can perform intelligent queries on the stored data, summarize key findings, and even generate visualizations such as sentiment charts or topic trends—making data exploration accessible to non-technical users.
 
-#### Clone the Repository
+---
 
-`git clone https://github.com/Pevooo/graduation-project.git`
+## 📑 Table of Contents
 
-### How to contribute?
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Setup Instructions](#setup-instructions)
+  - [Frontend (Angular)](#frontend-angular)
+  - [Web API (.NET)](#web-api-net)
+  - [AI API (Python/Spark)](#ai-api-pythonspark)
+  - [Twister (Android)](#twister-android)
+- [Running the System](#running-the-system)
+- [Dataset and Storage](#dataset-and-storage)
+- [Model Training](#model-training)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Screenshots](#screenshots)
+- [Team](#team)
+- [License](#license)
 
-#### Step 1A: Create a new branch
+---
 
-`git checkout -b "branch_name"`
+## 🧠 Overview
 
-#### Step 1B: Or switch to an existing branch
+You can access the live version of FeedPulse here: [https://feedpulse.vercel.app](https://feedpulse.vercel.app)
 
-`git checkout "existing_branch_name"`
 
-#### Step 2: Commit to the branch
+FeedPulse addresses the challenge of processing large volumes of user feedback on social media platforms. By leveraging AI and big data tools, the system delivers near real-time sentiment and topic classification, enabling timely and strategic decision-making.
 
-`git add .`
+---
 
-`git commit -m "Meaningful Commit Message"`
+## ✨ Features
 
-`git push --set-upstream origin "branch_name"`
+- Facebook & Instagram comment ingestion (via Graph API webhooks)
+- Near real-time sentiment and topic classification
+- Parallel data processing using Apache Spark
+- Auto-generated charts and summaries using Microsoft LIDA
+- Interactive chatbot for generating insights, visualizations, etc...
+- Android-based remote configuration tool (Twister)
+- Privacy-preserving: No user identifiers are stored
 
-**Note:** this should create a pull request with the changes
+---
 
-#### Step 3: Wait for review
-at least one review is needed
+## 🏗 Architecture
 
-#### Step 4: Merge :)
+```
+Angular (Vercel) <--> ASP.NET Web API (Azure App Service) <--> AI API (Azure VM with Spark)
+                                                              ↕
+                                                HDFS / Delta Lake / Trino
+                                                              ↕
+                                                   Twister (Android App)
+```
 
-## Project Architecture
+---
 
-![Project Archeticture](https://github.com/user-attachments/assets/467a8027-c5ad-44ed-8ec6-92e63ceeccdc)
+## 🧰 Tech Stack
 
-## Working Manual
+| Component | Technology |
+|-----------|----------|
+| Frontend  | Angular, TypeScript |
+| Web API   | ASP.NET Core (C#) |
+| AI API    | Python, Apache Spark, Delta Lake |
+| Storage   | Delta Lake |
+| CI/CD     | GitHub Actions |
+| Cloud     | Azure VM, Azure App Service, Vercel |
+| Twister   | Kotlin |
 
-### Flask Layer
-If working in the Flask Layer:
+---
 
-create an instance of `FeedPulseController` to communicate with other components 
-(reports handler, feedback classifier, topic detector, etc...).
-Do not directly use the Data Manipulation Layer components
-### API Controller Layer
-This layer works as a link between the Data Manipulation Layer and the Flask Layer
+## 💾 Dataset and Storage
 
-If working in the API Controller Layer:
+- Comments are ingested in real-time from the Facebook Graph API using the webhooks feature.
+- All raw and processed data is stored in Delta Lake format on a distributed file system for scalability and reliability.
+- **Redis** is used as an in-memory cache to enable fast and responsive interactions, especially for chatbot queries and visual exploration
+- **Microsoft LIDA** automatically generates visual summaries and insights from the processed data, aiding non-technical users in understanding trends and patterns.
 
-communicate with Data Manipulation Layer by using the provided instances of its components.
-Do not directly manipulate tha data units
+---
 
-### Data Manipulation Layer
-If working in the Data Manipulation Layer:
+## 🚀 CI/CD Pipeline
 
-Components in this layer directly manipulate the data and work with LLMs
+- GitHub Actions handle:
+  - Testing and linting
+  - Deployment to Azure App Service and Vercel
+---
 
-This layer consists of 4 main components which are:
-- **Data Providers**: responsible for fetching the data from social media platforms, organizing them in `DataUnits`
-- **Feedback Classification:** responsible for categorizing the feedback into positive and negative feedbacks
-- **Topic Detection:** responsible for extracting the topic(s) that the feedback relates to (given a set of topics)
-- **Report Handler:** responsible for creating the reports and sending them to the organization
+## 🖼 Screenshots
 
-### Angular App
-This layer represents the full functionality of the user interface
+🏠 Home Page
 
-### ASP.NET APP
-This layer represents the full backend functionality of storing data in database
+![Home](images/home.png)
+
+📊 Analytics Page
+
+![Analytics](images/analytics.png)
+
+🧩 Services
+
+![Services](images/services.png)
+
+🪜 Steps
+
+![Steps](images/steps.png)
+
+---
+
+## 👥 Team
+
+- **Pavly Samuel** – Project Lead, AI, Backend, Frontend & CI/CD
+- **John Ashraf** – Backend Lead
+- **Aya Abdullatif** – AI, Backend & Frontend
+- **Sara Khalifa** – AI, Backend, Frontend & CI/CD
+- **Abdelrahman Ayman** – Backend
+- **Marley Amged** – AI, Backend & CI/CD
+
+---
+
+## 📄 License
+
+This project is developed as part of a graduation requirement and is subject to the university's academic usage policy.
