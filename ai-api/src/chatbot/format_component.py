@@ -2,12 +2,17 @@ from typing import Type
 
 from src.chatbot.component import Component
 from src.chatbot.query_component import QueryComponent
-from src.chatbot.visualization_component import VisualizationComponent
 from src.models.global_model_provider import GlobalModelProvider
 from src.models.prompt import Prompt
+from src.utlity.util import log
 
 
 class FormatComponent(Component):
+    """
+    Takes the last 5 messages of the chat (already formatted as a USER/ASSISTANT text block)
+    and distills exactly what the user wants next into a single concise instruction.
+    Used to normalize inputs to QueryComponent or VisualizationComponent.
+    """
 
     def __init__(
         self, model_provider: GlobalModelProvider, target_component: Type[Component]
@@ -15,47 +20,53 @@ class FormatComponent(Component):
         self.model_provider = model_provider
         self.target_component = target_component
 
-    def run(self, input_text, dataset):
+    def run(self, input_text: str, dataset) -> str:
+        # input_text: a string with 5 turns of USER/ASSISTANT lines
+
+        # Determine task description based on target component
+        if self.target_component == QueryComponent:
+            target_desc = "a data query"
+        else:
+            target_desc = "a data visualization"
+
+        instructions = (
+            "You are a prompt extractor.\n"
+            "Given exactly five turns of USER/ASSISTANT dialogue, output one concise sentence describing "
+            f"what the user wants next for {target_desc}.\n"
+            "Respond with ONLY that single sentence."
+        )
+
         prompt = Prompt(
-            instructions=(
-                "You are a chatbot that is given the last 5 messages from a chat and based "
-                "on the chat you want to output a prompt from your understanding of what the user needs. "
-                f"Your prompt would be given to {self._get_target_description()}"
-                "Output the precise prompt to the agent. "
-                "Very Important note: In the chat there may be other questions before the last one, make sure to understand "
-                "what the user wants right now. "
-            ),
+            instructions=instructions,
             context=None,
             examples=self._get_relevant_examples(),
             input_text=input_text,
         )
 
         response = self.model_provider.generate_content(prompt).strip()
-
+        log(f"RESPONSE FROM FORMAT COMPONENT: {response}")
         return response
-
-    def _get_target_description(self) -> str:
-        if self.target_component == QueryComponent:
-            return "Query Agent which take the prompt and runs a query on the data. It can't make a visualization. "
-        elif self.target_component == VisualizationComponent:
-            return "Query Agent which takes the prompt and generated a visualization of the data based on the prompt. "
 
     def _get_relevant_examples(self) -> tuple[tuple[str, str], ...]:
         if self.target_component == QueryComponent:
             return (
                 (
-                    "User: Hello\n"
-                    "Assistant: Hello, I am your helpful assistant.\n"
-                    "User: How many positive comments are there?",
-                    "How many positive comments are there?",
+                    "USER: What’s total sales in Q1?\n"
+                    "ASSISTANT: $50k\n"
+                    "USER: And by region?\n"
+                    "ASSISTANT: North: $20k, South: $30k\n"
+                    "USER: Now compare to Q2",
+                    "Compare total sales by region between Q1 and Q2",
                 ),
             )
-        elif self.target_component == VisualizationComponent:
+        else:
             return (
                 (
-                    "User: Generate a chart of sentiments and time\n"
-                    "Assistant: Chart generated Successfully\n"
-                    "User: Not like this I want it to only have data from 2025",
-                    "Generate a chart of sentiments and time considering data from 2025 only",
+                    "USER: Show me a line chart of daily users.\n"
+                    "ASSISTANT: [chart]\n"
+                    "USER: Focus only on desktop users.\n"
+                    "ASSISTANT: Done.\n"
+                    "USER: Add a rolling average",
+                    "Generate a line chart of daily desktop users with rolling average",
                 ),
             )

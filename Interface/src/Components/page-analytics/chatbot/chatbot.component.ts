@@ -108,12 +108,12 @@ export class ChatbotComponent implements OnInit {
     const strings: string[] = [];
     this.messages.slice(-5).forEach((message) => {
       if (message.isUser) {
-        strings.push("User: " + message.content);
+        strings.push("USER: " + message.content);
       } else {
         if (message.isRaster) {
-          strings.push("Assistant: Chart generated successfully");
+          strings.push("ASSISTANT: [chart]");
         } else {
-          strings.push("Assistant: " + message.content);
+          strings.push("ASSISTANT: " + message.content);
         }
       }
     });

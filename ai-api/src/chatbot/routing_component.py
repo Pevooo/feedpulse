@@ -14,50 +14,47 @@ class RoutingComponent(Component):
     def run(self, input_text, dataset) -> tuple[str, int]:
         prompt = Prompt(
             instructions="""
-You are given the latest 5 messages from a chat between a user and an assistant and based on them you should do the following:
-You are classifying user questions or statements into four categories based on what they want. You should never choose the wrong number.
-Respond with only one number:
-1 — General conversation (chit-chat, greetings, opinions, advices about data)
-or Irrelevant or unclear text (nonsense, off-topic, or impossible to process)
-2 — Query (the user wants a data answer that needs a query on the data or insight from the dataset, even in natural language)
-3 — Data visualization (the user is asking for a chart or graph based on data)
-""",
-            context=None,
+        You are an intent classifier.  You receive exactly the last 5 turns of a conversation,
+        formatted like this:
+
+        USER: <user message>
+        ASSISTANT: <assistant message>
+        … (up to 5 alternating lines)
+
+        Your job is to decide **exactly one** of three modes:
+        1 — CHAT: general chit‑chat, greetings, casual conversation, opinions/advice about the data.
+        2 — QUERY: the user is asking for a data answer or insight that requires querying the dataset.
+        3 — VIZ: the user wants a chart or graph based on the data.
+
+        **Respond with ONLY the digit “1”, “2”, or “3” (no extra words, punctuation, or explanation).**
+        """,
             examples=(
-                ("User: Hello! How are you today?", "1"),
-                ("User: Tell me a joke about social media", "1"),
-                ("User: What are the most common complaints related to food?", "2"),
+                # chit‑chat → 1
                 (
-                    "User: What was the overall sentiment about healthcare in October?",
-                    "2",
-                ),
-                ("User: Draw a bar chart of complaints per platform", "3"),
-                ("User: I want a line chart showing food sentiment over time", "3"),
-                ("User: I miss pizza", "1"),
-                ("User: asdf123$@!", "1"),
-                (
-                    "User: Tell me which topic had the most negative feedback on Facebook",
-                    "2",
-                ),
-                ("User: Plot how sentiment about electricity changed in May", "3"),
-                (
-                    "User: Hello\n"
-                    "Assistant: Hi, how can I help you?\n"
-                    "User: How many comments are there\n"
-                    "Assistant: 12\n"
-                    "User: Nice, how can I increase my engagement?",
+                    "USER: Hello!\n"
+                    "ASSISTANT: Hi there, how can I help?\n"
+                    "USER: How’s the weather?\n"
+                    "ASSISTANT: It’s sunny today.\n"
+                    "USER: Thanks!",
                     "1",
                 ),
+                # data query → 2
                 (
-                    "User: Make me a visualization of sentiment and time\n"
-                    "Assistant: Chart generated Successfully\n"
-                    "User: Hmm nice! How many food related comments are there?\n"
-                    "Assistant: 4\n"
-                    "User: Nice, I now want a visualization of the topics",
+                    "USER: Show me total sales in April.\n"
+                    "ASSISTANT: April sales were $12,000.\n"
+                    "USER: And how does that compare to March?",
+                    "2",
+                ),
+                # visualization → 3
+                (
+                    "USER: I’d like a bar chart of monthly users.\n"
+                    "ASSISTANT: Generating chart…\n"
+                    "USER: Great, can you show it again focusing on desktop users?",
                     "3",
                 ),
             ),
-            input_text=input_text,
+            context=input_text,
+            input_text="",  # already included in context
         )
 
         response = self.model_provider.generate_content(prompt).strip()
