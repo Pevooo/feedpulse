@@ -1,23 +1,40 @@
-
 .gradient-custom {
   display: flex;
+  flex-direction: column; /* Stack items vertically */
   align-items: center; /* vertical alignment */
   justify-content: center;
-
-  position: relative;
-  height: 100vh;
-  background: url('../../assets/hero-bg.png');
-  background-position: right;
-  background-repeat: no-repeat;
-
-  max-width: 100%;
-  height: auto;
-
   background-color: #0a2640 ;/* #f9f9fc;*/
-  min-height: 90vh; /* or 100vh for full screen */
-  padding: 40px;
+  min-height: 50vh; /* or 100vh for full screen */
+  padding-top: 200px;
   gap: 40px;
 }
+
+/*----header------*/
+.text-center {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  color: white;
+}
+
+.text-center p{
+  color: #20c0bd;
+  font-size: 1.2rem;
+}
+
+.text-center h2 {
+  font-size: 28px;
+}
+
+/* -------deprecated------
+.description-text {
+  color: #ddd;
+  font-size: 2.985984rem;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}*/
+
 .dashboard-container {
   align-items: center; /* vertical alignment */
   justify-content: center;
@@ -27,28 +44,40 @@
   padding: 25px;
   background: #f7f8fc;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(32, 192, 189, 1);
 }
 
 .header {
   text-align: center;
-  margin-bottom: 20px;
 }
 
-button {
-  padding: 10px;
+.header button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 245px;
+  height: 55px;
+  padding: 15px 30px;
+  font-size: 1rem;
+  background-color: #20c0bd;
+  color: white;
+  font-weight: bold;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-  background: transparent;
-  color: white;
+  background: white;
+  color: #20c0bd;
+  i{
+    color: #20c0bd;
+  }
 }
 
-.connected-button {
-  background: green;
+i {
+  padding-right: 11px;
   color: white;
 }
 
@@ -97,25 +126,4 @@ li {
 .gif-button:hover img {
   transform: scale(1.1); /* Slight zoom on hover */
 }
-.facebook-button {
-      background-color: #1877F2; /* Facebook blue */
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
 
-    .facebook-button:hover {
-      background-color: #145dbf; /* Darker blue on hover */
-    }
-
-    .facebook-icon {
-      width: 20px;
-      height: 20px;
-    }
