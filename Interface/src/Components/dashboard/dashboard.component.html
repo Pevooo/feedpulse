@@ -5,8 +5,8 @@
   </div>
   
   <div class="header" *ngIf="!isConnected">
-      <button (click)="login()" class="facebook-button">
-        <i class="fa-brands fa-facebook-f facebook-icon"></i>
+      <button (click)="login()" class="facebook-btn">
+        <i class="fa-brands fa-facebook-f"></i>
         Connect to Facebook
       </button>
   </div>
@@ -31,7 +31,7 @@
     </div>
 
     <div *ngIf="registeredPages.length > 0">
-      <h4>Your registered pages:</h4>
+      <h4 style="color: #0a2640; font-size: 1.3rem;">Your registered pages:</h4>
       <ul>
         <li *ngFor="let page of pages">
           <b>{{ page.name || 'Unknown Page' }}</b>&nbsp;(ID: {{ page.id }})
@@ -43,8 +43,8 @@
     </div>
     
     <div class="header">
-        <button *ngIf="isConnected" (click)="logout()" class="facebook-btn connected-button">
-          <i class="fa-brands fa-facebook-f facebook-icon"></i>
+        <button *ngIf="isConnected" (click)="logout()" class="facebook-btn">
+          <i class="fa-brands fa-facebook-f"></i>
           Disconnect
       </button>
     </div>
