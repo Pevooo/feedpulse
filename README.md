@@ -13,7 +13,6 @@ Additionally, FeedPulse features an interactive chatbot assistant that users can
 
 - [Overview](#-overview)
 - [Features](#-features)
-- [Architecture](#-architecture)
 - [Tech Stack](#-tech-stack)
 - [Dataset and Storage](#-dataset-and-storage)
 - [CI/CD Pipeline](#-cicd-pipeline)
@@ -41,18 +40,6 @@ FeedPulse addresses the challenge of processing large volumes of user feedback o
 - Interactive chatbot for generating insights, visualizations, etc...
 - Android-based remote configuration tool (Twister)
 - Privacy-preserving: No user identifiers are stored
-
----
-
-## 🏗 Architecture
-
-```
-Angular (Vercel) <--> ASP.NET Web API (Azure App Service) <--> AI API (Azure VM with Spark)
-                                                              ↕
-                                                HDFS / Delta Lake / Trino
-                                                              ↕
-                                                   Twister (Android App)
-```
 
 ---
 
