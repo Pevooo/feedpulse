@@ -326,6 +326,7 @@ class DataManager(Updatable):
         )
 
         df["related_topics"] = df["related_topics"].apply(lambda x: ", ".join(x))
+        df["related_topics"] = df["related_topics"].replace("", "NONE")
         return df
 
     def update(self) -> None:
