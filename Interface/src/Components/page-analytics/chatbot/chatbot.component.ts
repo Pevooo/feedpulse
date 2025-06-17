@@ -106,7 +106,7 @@ export class ChatbotComponent implements OnInit {
   }
   get_last_5_messages(): string {
     const strings: string[] = [];
-    this.messages.slice(-5).forEach((message) => {
+    this.messages.slice(-3).forEach((message) => {
       if (message.isUser) {
         strings.push("USER: " + message.content);
       } else {
