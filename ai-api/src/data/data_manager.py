@@ -325,8 +325,13 @@ class DataManager(Updatable):
             .toPandas()
         )
 
-        df["related_topics"] = df["related_topics"].apply(lambda x: ", ".join(x))
-        return df
+        df["related_topics"] = df["related_topics"].apply(
+            lambda x: (
+                "No topic"
+                if not x or all(topic.strip() == "" for topic in x)
+                else ", ".join(x)
+            )
+        )
 
     def update(self) -> None:
         self.processing_batch_size = Settings.processing_batch_size
