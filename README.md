@@ -11,15 +11,15 @@ Additionally, FeedPulse features an interactive chatbot assistant that users can
 
 ## 📑 Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Dataset and Storage](#dataset-and-storage)
-- [CI/CD Pipeline](#cicd-pipeline)
-- [Screenshots](#screenshots)
-- [Team](#team)
-- [License](#license)
+- [Overview](#-overview)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Tech Stack](#-tech-stack)
+- [Dataset and Storage](#-dataset-and-storage)
+- [CI/CD Pipeline](#-cicd-pipeline)
+- [Screenshots](#-screenshots)
+- [Team](#-team)
+- [License](#-license)
 
 ---
 
