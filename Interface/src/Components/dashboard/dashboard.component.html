@@ -3,11 +3,15 @@
     <p>Connect with Facebook</p>
     <h2>Connect your account to Facebook to access additional features</h2>
   </div>
-  
+
   <div class="header" *ngIf="!isConnected">
       <button (click)="login()" class="facebook-btn">
         <i class="fa-brands fa-facebook-f"></i>
         Connect to Facebook
+      </button>
+      <br>
+      <button (click)="goToMockPage()" class="facebook-btn">
+        Try Mock Page
       </button>
   </div>
 
@@ -37,11 +41,11 @@
           <b>{{ page.name || 'Unknown Page' }}</b>&nbsp;(ID: {{ page.id }})
           <button (click)="goToAnalytics(page)" class="gif-button">
             <img src="assets/gif/report.gif" alt="Analytics">
-          </button> 
+          </button>
         </li>
       </ul>
     </div>
-    
+
     <div class="header">
         <button *ngIf="isConnected" (click)="logout()" class="facebook-btn">
           <i class="fa-brands fa-facebook-f"></i>
