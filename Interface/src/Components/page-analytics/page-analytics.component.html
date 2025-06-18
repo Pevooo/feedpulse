@@ -1,8 +1,11 @@
 <section class="main-section">
   <br><br>  <br><br>
-
+  <div class="text-center">
+    <p>Analytics Page</p>
+    <h2>Here you can view your performance and analytics once you're connected</h2>
+  </div>
   <div class="analytics-container">
-    <h2>Analytics Page</h2>
+    <!--<h2>Analytics Page</h2>-->
     <div class="input-container">
       <div class="input-group">
         <label for="startDate">Start Date:</label>
@@ -12,11 +15,13 @@
         <label for="endDate">End Date:</label>
         <input id="endDate" type="date" [(ngModel)]="endDate">
       </div>
-    </div>
-    <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
+      <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
       See Insights!
     </button>
+    </div>
+    
     <div *ngIf="!startDate || !endDate" class="empty-state">
+      <br>
       <p>Please select both start and end dates to proceed.</p>
     </div>
 
@@ -128,8 +133,8 @@
 
       <!-- Content on the right -->
       <div class="about-text">
-        <h2>GENERATE REPORTS</h2>
-        <h1>We Will Do Our Best To Grow Your Business</h1>
+        <p>Generate Reports</p>
+        <h2>We will do our best to grow your business</h2>
         <p class="description">
           At FeedPulse, we empower your brand by transforming customer feedback into actionable insights, fueling sustainable growth and innovation.
         </p>
