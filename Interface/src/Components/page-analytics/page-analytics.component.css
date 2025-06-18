@@ -1,22 +1,44 @@
 .main-section{
   height: 100%;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #0a2640); /* nice gradient */
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  padding-top: 130px;
 }
 
+/*----text above------*/
+.text-center {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  color: white;
+}
+
+.text-center p{
+  color: #20c0bd;
+  font-size: 1.2rem;
+}
+
+.text-center h2 {
+  font-size: 28px;
+  color: white;
+}
+
+/*analysis ana choosing date*/
 .analytics-container {
   max-width: 100%;
   margin: 50px auto;
   padding: 30px;
+  padding-bottom: 50px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   margin-top: 80px; /* Pushes the whole section down from the navbar */
+  padding-bottom: 0;
 }
 
 h2 {
@@ -36,19 +58,26 @@ h2 {
 }
 
 input[type="date"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 
-    font-size: 1rem;
-    color: #666;
+  font-size: 1rem;
+  color: #666;
     /*width: 45%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;*/
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  filter: invert(46%) sepia(42%) saturate(748%) hue-rotate(135deg) brightness(95%) contrast(95%);
+  cursor: pointer;
+
 }
 
 input:focus, textarea:focus, select:focus {
@@ -66,7 +95,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .get-analytics-btn {
-  margin: 20px auto; /* <<< This centers it horizontally */
+  /*margin: 20px auto; /* <<< This centers it horizontally */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,6 +110,7 @@ input:focus, textarea:focus, select:focus {
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;
+  margin-top: 40px;;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -88,38 +118,39 @@ input:focus, textarea:focus, select:focus {
   background-color: #0a2640;
 }
 
-  .get-analytics-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
+.get-analytics-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
 
-  .empty-state {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 1.2rem;
-    color: #999;
-  }
+.empty-state {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: #999;
+}
 
-  .report{
-    margin-top: 30px;
-    padding: 20px;
-    background: #f7f8fc;
-    border-radius: 10px;
-  }
-  .report h3 {
-    color: #0a2640;
-    margin-bottom: 20px;
-  }
+.report{
+  margin-top: 30px;
+  padding: 20px;
+  background: #f7f8fc;
+  border-radius: 10px;
+}
+  
+.report h3 {
+  color: #0a2640;
+  margin-bottom: 20px;
+}
 
-  .goals-section, .images-section {
-    margin-top: 30px;
-    text-align: left; /* left-align content inside sections */
-  }
+.goals-section, .images-section {
+  margin-top: 30px;
+  text-align: left; /* left-align content inside sections */
+}
 
-  .goals-section h4, .images-section h4 {
-    color: #20c0bd;
-    margin-bottom: 15px;
-  }
+.goals-section h4, .images-section h4 {
+  color: #20c0bd;
+  margin-bottom: 15px;
+}
 
   /*h4 {
     font-size: 1.5rem;
@@ -127,55 +158,54 @@ input:focus, textarea:focus, select:focus {
     color: #333;
   }*/
 
-  ul {
-    list-style-type: disc;
-    padding-left: 20px;
-  }
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
 
-  li {
-    margin-bottom: 10px;
-    font-size: 16px;
+li {
+  margin-bottom: 10px;
+  font-size: 16px;
     /*font-size: 1.1rem;
     margin: 5px 0;*/
-  }
+}
 
-  .images-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 10px;
+.images-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 10px;
     /*display: flex;
     flex-wrap: wrap;
     gap: 15px;
     justify-content: center;*/
-  }
+}
 
-  .image-wrapper {
+.image-wrapper {
     /*max-width: 300px;*/
 
-    width: 100%; /* Full width of container */
-    max-width: 500px; /* Set a bigger max width */
-    height: auto;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #f9f9f9;
-    padding: 10px;
+  width: 100%; /* Full width of container */
+  max-width: 500px; /* Set a bigger max width */
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f9f9f9;
+  padding: 10px;
+}
 
-  }
-
-  .analytics-image {
+.analytics-image {
     /*width: 100%;
     height: auto;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);*/
 
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    max-height: 500px;
-  }
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 500px;
+}
 
 /*------------------
 SECTION 2
