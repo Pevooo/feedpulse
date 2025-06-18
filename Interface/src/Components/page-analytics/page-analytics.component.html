@@ -139,9 +139,11 @@
 </section>
 
 <!-- Add Chatbot Component -->
+
 <app-chatbot
   [facebookId]="facebookId"
   [startDate]="startDate"
   [endDate]="endDate"
-  [showChatbot]="goals.length > 0">
+  [showChatbot]="goals.length > 0"
+  *ngIf="goals.length > 0">
 </app-chatbot>
