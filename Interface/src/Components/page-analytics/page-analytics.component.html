@@ -62,8 +62,8 @@
             <th>Count</th>
           </tr>
           <tr *ngFor="let topic of getMetricKeys('topic_counts')">
-            <ng-container *ngIf="topic">
-              <td>{{ topic }}</td>
+            <ng-container *ngIf="topic !== 'NONE'">
+              <td>{{ formatValue(topic) }}</td>
               <td>{{ metrics.topic_counts[topic] }}</td>
             </ng-container>
           </tr>
@@ -77,8 +77,8 @@
             <th>Count</th>
           </tr>
           <tr *ngFor="let topic of getMetricKeys('top_5_topics')">
-            <ng-container *ngIf="topic">
-              <td>{{ topic }}</td>
+            <ng-container *ngIf="topic !== 'NONE'">
+              <td>{{ formatValue(topic) }}</td>
               <td>{{ metrics.top_5_topics[topic] }}</td>
             </ng-container>
           </tr>
@@ -92,9 +92,9 @@
             <th>Sentiment</th>
           </tr>
           <tr *ngFor="let topic of getMetricKeys('most_freq_sentiment_per_topic')">
-            <ng-container *ngIf="topic">
-              <td>{{ topic }}</td>
-              <td>{{ metrics.most_freq_sentiment_per_topic[topic] }}</td>
+            <ng-container *ngIf="topic !== 'NONE'">
+              <td>{{ formatValue(topic) }}</td>
+              <td>{{ metrics.most_freq_sentiment_per_topic[topic].charAt(0).toUpperCase() + metrics.most_freq_sentiment_per_topic[topic].slice(1)}}</td>
             </ng-container>
           </tr>
         </table>
@@ -107,9 +107,9 @@
             <th>Topic</th>
           </tr>
           <ng-container *ngFor="let sentiment of getMetricKeys('most_freq_topic_per_sentiment')">
-            <tr *ngIf="metrics.most_freq_topic_per_sentiment[sentiment]">
-              <td>{{ sentiment }}</td>
-              <td>{{ metrics.most_freq_topic_per_sentiment[sentiment] }}</td>
+            <tr *ngIf="metrics.most_freq_topic_per_sentiment[sentiment] !== 'NONE'">
+              <td>{{ sentiment.charAt(0).toUpperCase() + sentiment.slice(1) }}</td>
+              <td>{{ formatValue(metrics.most_freq_topic_per_sentiment[sentiment]) }}</td>
             </tr>
           </ng-container>
         </table>
@@ -139,7 +139,7 @@
 </section>
 
 <!-- Add Chatbot Component -->
-<app-chatbot 
+<app-chatbot
   [facebookId]="facebookId"
   [startDate]="startDate"
   [endDate]="endDate"

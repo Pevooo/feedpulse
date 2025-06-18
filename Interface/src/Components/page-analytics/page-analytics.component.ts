@@ -23,11 +23,10 @@ export class PageAnalyticsComponent implements OnInit {
   facebookId = '';
   startDate = '';
   endDate = '';
-  images: string[] = [];
   chartImages: SafeUrl[] = [];
   goals: string[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metrics:any;
+  metrics: any;
   constructor(private route: ActivatedRoute,
      private http: HttpClient,
      private sanitizer: DomSanitizer
@@ -49,7 +48,7 @@ export class PageAnalyticsComponent implements OnInit {
     };
     const apiUrl = `https://feedpulse.francecentral.cloudapp.azure.com/report`; // replace with your actual API
     const body = {
-      page_id: this.facebookId,// this.facebookid;
+      page_id: this.facebookId,
       start_date: formatToPythonIso(this.startDate),
       end_date: formatToPythonIso(this.endDate)
     };
@@ -72,11 +71,18 @@ export class PageAnalyticsComponent implements OnInit {
       }
     });
   }
+
   getMetricKeys(metricKey: string): string[] {
   if (this.metrics && this.metrics[metricKey]) {
     return Object.keys(this.metrics[metricKey]);
   }
+
   return [];
 }
-
+  formatValue(value: string): string {
+    return value.split('_')
+      .map(
+        (v: string) => v[0].toUpperCase() + v.slice(1)
+      ).join(' ');
+  }
 }
