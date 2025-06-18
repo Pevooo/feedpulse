@@ -39,7 +39,7 @@
 
 .chat-header {
   padding: 15px;
-  background-color: #2196F3;
+  background-color: #20c0bd;
   color: white;
   display: flex;
   justify-content: space-between;
@@ -77,7 +77,7 @@
 
 .user-message {
   align-self: flex-end;
-  background-color: #2196F3;
+  background-color: #20c0bd;
   color: white;
   border-bottom-right-radius: 5px;
 }
@@ -115,7 +115,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #2196F3;
+  background-color: #20c0bd;
   border: none;
   color: white;
   cursor: pointer;
@@ -137,7 +137,7 @@
 .typing-indicator span {
   width: 8px;
   height: 8px;
-  background-color: #2196F3;
+  background-color: #20c0bd;
   border-radius: 50%;
   display: inline-block;
   animation: typing 1.4s infinite ease-in-out both;
