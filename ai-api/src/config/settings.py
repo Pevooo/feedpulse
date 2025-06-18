@@ -48,11 +48,11 @@ class Settings:
     polling_data_streamer_trigger_time: int = 60
 
     # Chatbot Component Temperatures
-    routing_component_temperature_x10: int = 10
-    chat_component_temperature_x10: int = 10
-    format_component_temperature_x10: int = 10
-    query_component_temperature_x10: int = 10
-    visualization_component_temperature_x10: int = 10
+    routing_component_temperature_x10: int = 3
+    chat_component_temperature_x10: int = 7
+    format_component_temperature_x10: int = 5
+    query_component_temperature_x10: int = 5
+    visualization_component_temperature_x10: int = 5
 
     @classmethod
     def register_observer(cls, observer: Updatable) -> None:
