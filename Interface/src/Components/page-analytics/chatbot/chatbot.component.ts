@@ -50,7 +50,8 @@ export class ChatbotComponent implements OnInit {
     const userMessage: ChatMessage = {
       content: this.newMessage,
       isUser: true,
-      timestamp: new Date()
+      timestamp: new Date(),
+      icon: 'fa-user'
     };
 
     this.messages.push(userMessage);
@@ -74,7 +75,8 @@ export class ChatbotComponent implements OnInit {
               : response.data.body.data,
             isUser: false,
             timestamp: new Date(),
-            isRaster: response.data.body.isRaster === 1
+            isRaster: response.data.body.isRaster === 1,
+            icon: 'fas fa-robot'
           };
           this.messages.push(botMessage);
           this.scrollToBottom();
@@ -87,7 +89,8 @@ export class ChatbotComponent implements OnInit {
           content: "An unexpected error occured. Please try again!",
           isUser: false,
           timestamp: new Date(),
-          isRaster: false
+          isRaster: false,
+          icon: 'fa-triangle-exclamation'        
         }
         this.messages.push(errorMessage);
         this.scrollToBottom();

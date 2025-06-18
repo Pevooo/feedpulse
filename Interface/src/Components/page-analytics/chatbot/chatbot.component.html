@@ -1,7 +1,7 @@
 <div class="chatbot-container" [class.open]="isOpen">
   <!-- Chat Toggle Button -->
   <button class="chat-toggle" (click)="toggleChat()">
-    <i class="fas" [class.fa-comments]="!isOpen" [class.fa-times]="isOpen"></i>
+    <i class="fas" [class.fa-robot]="!isOpen" [class.fa-times]="isOpen"></i>
   </button>
 
   <!-- Chat Window -->
@@ -20,14 +20,19 @@
            class="message"
            [class.user-message]="message.isUser"
            [class.bot-message]="!message.isUser">
+        <!-- ICON -->
+        <div class="message-icon">
+          <i *ngIf="message.icon" class="fas" [ngClass]="message.icon"></i>
+        </div>
+        <!--Message Content (Bubble)-->
         <div class="message-content">
           <ng-container *ngIf="!message.isRaster">
             {{ message.content }}
           </ng-container>
           <img *ngIf="message.isRaster" [src]="message.content" alt="Analytics Chart" class="message-image">
-        </div>
-        <div class="message-timestamp">
+          <div class="message-timestamp">
           {{ message.timestamp | date:'shortTime' }}
+          </div>
         </div>
       </div>
 
