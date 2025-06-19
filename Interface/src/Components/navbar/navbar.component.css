@@ -107,6 +107,16 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }*/
 
+.hamburger {
+  display: none;
+  font-size: 26px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-left: auto;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar {
@@ -120,9 +130,21 @@ body {
   }
 
   .navbar-links {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    display: flex;
     flex-direction: column;
-    gap: 10px;
     width: 100%;
+    gap: 10px;
+    padding-top: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease, padding-top 0.3s ease;
+  }
+
+  .navbar-links.open {
+    max-height: 500px; /* large enough to show everything */
+    opacity: 1;
+    padding-top: 10px;
   }
 
   .navbar-links li {
@@ -132,5 +154,9 @@ body {
 
   .navbar-links a {
     font-size: 0.9rem;
+  }
+
+  .hamburger {
+    display: block;
   }
 }

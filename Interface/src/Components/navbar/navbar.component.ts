@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 })
 export class NavbarComponent implements OnDestroy {
   isScrolled = false;
+  menuOpen = false;
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -49,5 +50,9 @@ export class NavbarComponent implements OnDestroy {
     this.isLoggedIn = this.authService.isLoggedIn(); // Manually update after logout
     this.cdr.detectChanges();
     this.router.navigate(['/login']);
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
   }
 }
