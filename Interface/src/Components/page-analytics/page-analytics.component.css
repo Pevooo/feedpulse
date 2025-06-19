@@ -136,7 +136,7 @@ input:focus, textarea:focus, select:focus {
   background: #f7f8fc;
   border-radius: 10px;
 }
-  
+
 .report h3 {
   color: #0a2640;
   margin-bottom: 20px;
@@ -301,3 +301,13 @@ h5 {
   font-size: 1.3rem;
 }
 
+@media (max-width: 768px) {
+  .input-container {
+    flex-direction: column;
+    align-items: stretch;     /* stretch full width */
+  }
+
+  .input-container > * {
+    width: 100%;
+  }
+}
