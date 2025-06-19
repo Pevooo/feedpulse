@@ -1,11 +1,12 @@
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LoginComponent } from "../Components/login/login.component";
 import { NavbarComponent } from "../Components/navbar/navbar.component";
 import { FooterComponent } from "../Components/footer/footer.component";
 import { SpinnerComponent } from '../Components/spinner/spinner.component';
 import { CommonModule } from '@angular/common';
+import {initFacebookSDK} from "./utils/facebook-sdk-loader";
 
 
 @Component({
@@ -16,6 +17,11 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'FeedPulse';
+
+  ngOnInit() {
+    initFacebookSDK();
+  }
+
 }
