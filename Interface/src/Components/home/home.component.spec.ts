@@ -4,6 +4,7 @@ import { HomeComponent } from './home.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -11,7 +12,7 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeComponent,HttpClientTestingModule],
+      imports: [HomeComponent,HttpClientTestingModule, TranslateModule.forRoot()],
       providers: [
         {
           provide: ActivatedRoute, // 👈 Provide a fake ActivatedRoute

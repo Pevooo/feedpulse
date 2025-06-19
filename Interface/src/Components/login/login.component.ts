@@ -7,8 +7,8 @@ import {
 } from '@angular/forms';
 import {
   Router,
-  RouterLink,
-  RouterOutlet,
+  /*RouterLink,
+  RouterOutlet,*/
 } from '@angular/router';
 
 import Swal from 'sweetalert2';
@@ -21,7 +21,7 @@ import { AuthService } from '../../app/services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports:[RouterLink, RouterOutlet,CommonModule,HttpClientModule,ReactiveFormsModule,FormsModule,TranslateModule],
+  imports:[CommonModule,HttpClientModule,ReactiveFormsModule,FormsModule,TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

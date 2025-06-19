@@ -2,13 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactusComponent } from './contactus.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 describe('ContactusComponent', () => {
   let component: ContactusComponent;
   let fixture: ComponentFixture<ContactusComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContactusComponent]
+      imports: [ContactusComponent, TranslateModule.forRoot()]
     })
     .compileComponents();
     
