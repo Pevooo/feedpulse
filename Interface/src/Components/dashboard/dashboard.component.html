@@ -14,7 +14,7 @@
     <button (click)="goToMockPage()" class="facebook-btn">
       Try Mock Page
     </button>
-
+  </div>
   <div class="dashboard-container" *ngIf="isConnected">
     <div *ngIf="userData">
       <h3 style="color: #13547a;">{{ 'WELCOME_USER' | translate }} {{ userData.name }}</h3>
@@ -51,6 +51,5 @@
         {{ 'DISCONNECT' | translate }}
       </button>
     </div>
-  </div>
   </div>
 </section>
