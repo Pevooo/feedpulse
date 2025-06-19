@@ -1,15 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Organization } from '../../app/interfaces/Organization';
-import { OrganizationService } from '../../app/services/organization.service';
+import {
+  ActivatedRoute,
+  Router,
+} from '@angular/router';
+
 import Swal from 'sweetalert2';
 
+import { TranslateModule } from '@ngx-translate/core';
+
+import { Organization } from '../../app/interfaces/Organization';
+import { OrganizationService } from '../../app/services/organization.service';
 
 @Component({
   selector: 'app-add-organization',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule,TranslateModule],
   templateUrl: './add-organization.component.html',
   styleUrls: ['./add-organization.component.css']
 })

@@ -1,14 +1,25 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FacebookService } from '../../app/services/facebook.service';
-import { FacebookPage } from '../../app/interfaces/Facebook_Page';
+import {
+  CommonModule,
+  isPlatformBrowser,
+} from '@angular/common';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { Router } from '@angular/router';
 
+import { TranslateModule } from '@ngx-translate/core';
+
+import { FacebookPage } from '../../app/interfaces/Facebook_Page';
+import { FacebookService } from '../../app/services/facebook.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslateModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // ✅ Allow Custom Elements

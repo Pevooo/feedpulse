@@ -1,4 +1,6 @@
 /* General Reset */
+
+
 * {
   margin: 0;
   padding: 0;
@@ -133,4 +135,50 @@ body {
   .navbar-links a {
     font-size: 0.9rem;
   }
+}
+
+.language-switcher {
+  margin-left: auto;
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.language-switcher select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 6px 40px 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #0a2640;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  position: relative;
+  min-width: 120px;
+
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 8px;
+}
+
+.language-switcher select:hover {
+  color: #20c0bd;
+  border-color: #20c0bd;
+}
+
+:root[dir='rtl'] .language-switcher select {
+  direction: rtl;
+  text-align: right;
+  background-position: left 10px center;
+  padding: 6px 12px 6px 40px; /* عكس الـ padding */
+}
+
+:root[dir='ltr'] .language-switcher select {
+  direction: ltr;
+  text-align: left;
 }

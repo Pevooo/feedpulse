@@ -1,33 +1,33 @@
 <section class="vh-100 gradient-custom">
- 
+
   <div class="container py-5 h-100">
     <div class="row justify-content-center align-items-center h-100">
       <div class="col-12 col-lg-9 col-xl-7">
         <div class="card shadow-2-strong card-registration">
           <div class="card-body p-4 p-md-5">
-            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Sign-up</h3>
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">{{ 'SIGNUP' | translate }}</h3>
             <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
               <!-- Full Name and User Name -->
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="text" name="fullName" [(ngModel)]="registration.fullName" required minlength="3" maxlength="50" #fullName="ngModel" />
-                    <label for="fullName"><i class="fa fa-user me-2"></i>Full Name*</label>
+                    <label for="fullName"><i class="fa fa-user me-2"></i>{{ 'FULL_NAME' | translate }}*</label>
                     <div *ngIf="fullName.invalid && (fullName.dirty || fullName.touched)">
-                      <small class="text-danger" *ngIf="fullName.errors!['required']">Full Name is required.</small>
-                      <small class="text-danger" *ngIf="fullName.errors!['minlength']">Full Name must be at least 3 characters long.</small>
-                      <small class="text-danger" *ngIf="fullName.errors!['maxlength']">Full Name cannot exceed 50 characters.</small>
+                      <small class="text-danger" *ngIf="fullName.errors!['required']">{{ 'FULL_NAME' | translate }} {{ 'REQUIRED' | translate }}</small>
+                      <small class="text-danger" *ngIf="fullName.errors!['minlength']">{{ 'FULL_NAME' | translate }} {{ 'MIN_LENGTH' | translate:{length: 3} }}</small>
+                      <small class="text-danger" *ngIf="fullName.errors!['maxlength']">{{ 'FULL_NAME' | translate }} {{ 'MAX_LENGTH' | translate:{length: 50} }}</small>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group mb-3">
                     <input type="text" name="userName" [(ngModel)]="registration.userName" required minlength="3" maxlength="20" #userName="ngModel" />
-                    <label for="userName"><i class="fa fa-id-badge me-2"></i>User Name*</label>
+                    <label for="userName"><i class="fa fa-id-badge me-2"></i>{{ 'USER_NAME' | translate }}*</label>
                     <div *ngIf="userName.invalid && (userName.dirty || userName.touched)">
-                      <small class="text-danger" *ngIf="userName.errors!['required']">User Name is required.</small>
-                      <small class="text-danger" *ngIf="userName.errors!['minlength']">User Name must be at least 3 characters long.</small>
-                      <small class="text-danger" *ngIf="userName.errors!['maxlength']">User Name cannot exceed 20 characters.</small>
+                      <small class="text-danger" *ngIf="userName.errors!['required']">{{ 'USER_NAME' | translate }} {{ 'REQUIRED' | translate }}</small>
+                      <small class="text-danger" *ngIf="userName.errors!['minlength']">{{ 'USER_NAME' | translate }} {{ 'MIN_LENGTH' | translate:{length: 3} }}</small>
+                      <small class="text-danger" *ngIf="userName.errors!['maxlength']">{{ 'USER_NAME' | translate }} {{ 'MAX_LENGTH' | translate:{length: 20} }}</small>
                     </div>
                   </div>
                 </div>
@@ -38,20 +38,20 @@
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="email" name="email" [(ngModel)]="registration.email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" #email="ngModel" />
-                    <label for="email"><i class="fa fa-envelope me-2"></i>Email*</label>
+                    <label for="email"><i class="fa fa-envelope me-2"></i>{{ 'EMAIL' | translate }}*</label>
                     <div *ngIf="email.invalid && (email.dirty || email.touched)">
-                      <small class="text-danger" *ngIf="email.errors!['required']">Email is required.</small>
-                      <small class="text-danger" *ngIf="email.errors!['pattern']">Please enter a valid email address.</small>
+                      <small class="text-danger" *ngIf="email.errors!['required']">{{ 'EMAIL' | translate }} {{ 'REQUIRED' | translate }}</small>
+                      <small class="text-danger" *ngIf="email.errors!['pattern']">{{ 'INVALID_EMAIL' | translate }}</small>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="tel" name="phoneNumber" [(ngModel)]="registration.phoneNumber" required pattern="[0-9]{11}" #phoneNumber="ngModel" />
-                    <label for="phoneNumber"><i class="fa fa-phone me-2"></i>Phone Number*</label>
+                    <label for="phoneNumber"><i class="fa fa-phone me-2"></i>{{ 'PHONE_NUMBER' | translate }}*</label>
                     <div *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)">
-                      <small class="text-danger" *ngIf="phoneNumber.errors!['required']">Phone Number is required.</small>
-                      <small class="text-danger" *ngIf="phoneNumber.errors!['pattern']">Please enter a valid 10-digit phone number.</small>
+                      <small class="text-danger" *ngIf="phoneNumber.errors!['required']">{{ 'PHONE_NUMBER' | translate }} {{ 'REQUIRED' | translate }}</small>
+                      <small class="text-danger" *ngIf="phoneNumber.errors!['pattern']">{{ 'INVALID_PHONE' | translate }}</small>
                     </div>
                   </div>
                 </div>
@@ -62,22 +62,22 @@
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="password" name="password" [(ngModel)]="registration.password" required minlength="8" #password="ngModel" />
-                    <label for="password"><i class="fa fa-lock me-2"></i>Password*</label>
+                    <label for="password"><i class="fa fa-lock me-2"></i>{{ 'PASSWORD' | translate }}*</label>
                     <div *ngIf="password.invalid && (password.dirty || password.touched)">
-                      <small class="text-danger" *ngIf="password.errors!['required']">Password is required.</small>
-                      <small class="text-danger" *ngIf="password.errors!['minlength']">Password must be at least 8 characters long.</small>
+                      <small class="text-danger" *ngIf="password.errors!['required']">{{ 'PASSWORD' | translate }} {{ 'REQUIRED' | translate }}</small>
+                      <small class="text-danger" *ngIf="password.errors!['minlength']">{{ 'PASSWORD' | translate }} {{ 'MIN_LENGTH' | translate:{length: 8} }}</small>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="password" name="confirmPassword" [(ngModel)]="registration.confirmPassword" required #confirmPassword="ngModel" />
-                    <label for="confirmPassword"><i class="fa fa-lock me-2"></i>Confirm Password*</label>
+                    <label for="confirmPassword"><i class="fa fa-lock me-2"></i>{{ 'CONFIRM_PASSWORD' | translate }}*</label>
                     <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)">
-                      <small class="text-danger" *ngIf="confirmPassword.errors!['required']">Confirm Password is required.</small>
+                      <small class="text-danger" *ngIf="confirmPassword.errors!['required']">{{ 'CONFIRM_PASSWORD' | translate }} {{ 'REQUIRED' | translate }}</small>
                     </div>
                     <small class="text-danger" *ngIf="registration.password !== registration.confirmPassword && confirmPassword.touched">
-                      Passwords do not match.
+                      {{ 'PASSWORD_NOT_MATCH' | translate }}
                     </small>
                   </div>
                 </div>
@@ -88,21 +88,21 @@
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <select name="country" [(ngModel)]="registration.country" required #country="ngModel">
-                      <option value="" disabled selected>Choose Country</option>
+                      <option value="" disabled selected>{{ 'CHOOSE_COUNTRY' | translate }}</option>
                       <option value="USA">United States</option>
                       <option value="UK">United Kingdom</option>
                       <option value="Canada">Canada</option>
                     </select>
-                    <label for="country"><i class="fa fa-globe me-2"></i>Country</label>
+                    <label for="country"><i class="fa fa-globe me-2"></i>{{ 'COUNTRY' | translate }}</label>
                     <div *ngIf="country.invalid && (country.dirty || country.touched)">
-                      <small class="text-danger" *ngIf="country.errors!['required']">Country is required.</small>
+                      <small class="text-danger" *ngIf="country.errors!['required']">{{ 'COUNTRY' | translate }} {{ 'REQUIRED' | translate }}</small>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <input type="text" name="address" [(ngModel)]="registration.address" #address="ngModel" />
-                    <label for="address"><i class="fa fa-map-marker-alt me-2"></i>Address</label>
+                    <label for="address"><i class="fa fa-map-marker-alt me-2"></i>{{ 'ADDRESS' | translate }}</label>
                   </div>
                 </div>
               </div>
@@ -112,14 +112,14 @@
                 <div class="col-md-12">
                   <div class="form-group">
                     <input type="file" name="photo" (change)="onFileChange($event)" [(ngModel)]="registration.photo" />
-                    <label for="photo"><i class="fa fa-image me-2"></i>Photo</label>
+                    <label for="photo"><i class="fa fa-image me-2"></i>{{ 'PHOTO' | translate }}</label>
                   </div>
                 </div>
               </div>
 
               <!-- Submit Button -->
               <div class="mt-4 pt-2">
-                <button type="submit" class="btn btn-primary btn-lg" [disabled]="signupForm.invalid">Register</button>
+                <button type="submit" class="btn btn-primary btn-lg" [disabled]="signupForm.invalid">{{ 'REGISTER' | translate }}</button>
               </div>
             </form>
           </div>

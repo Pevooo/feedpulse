@@ -1,19 +1,19 @@
+
 <section class="split-container">
   <div class="left-side">
-    <!-- Single conditional block for logged-in/not logged-in state -->
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">
-      <h1 style="color: #20c0bd;">Welcome to FeedPulse</h1>
-      <p style="color: #f7f8fc;">We analyze real social media feedback to help your business grow smarter</p>
-      <button class="gif-button" (click)="onButtonClick()" routerLink="/dashboard"  routerLinkActive="active" style="color: #f7f8fc;">
-        <img src="assets/gif/report.gif" alt="Button GIF"> Create Report
+      <h1 style="color: #20c0bd;">{{ 'WELCOME_TITLE' | translate }}</h1>
+      <p style="color: #f7f8fc;">{{ 'WELCOME_SUBTITLE' | translate }}</p>
+      <button class="gif-button" (click)="onButtonClick()" routerLink="/dashboard" routerLinkActive="active" style="color: #f7f8fc;">
+        <img src="assets/gif/report.gif" alt="Button GIF"> {{ 'CREATE_REPORT' | translate }}
       </button>
     </ng-container>
     <ng-template #notLoggedIn>
       <h1>FeedPulse</h1>
-      <p>We analyze real social media feedback to help your business grow smarter</p>
-      <a routerLink="/signup"  routerLinkActive="active" class="btn">Get Started</a>
+      <p>{{ 'WELCOME_SUBTITLE' | translate }}</p>
+      <a routerLink="/signup" routerLinkActive="active" class="btn">{{ 'GET_STARTED' | translate }}</a>
       <button class="gif-button" (click)="onButtonClick()">
-        <img src="assets/gif/video.gif" alt="Button GIF"> Watch Video
+        <img src="assets/gif/video.gif" alt="Button GIF"> {{ 'WATCH_VIDEO' | translate }}
       </button>
     </ng-template>
   </div>
@@ -24,122 +24,93 @@
 
 <app-services></app-services>
 
+<section class="timeline-section section-padding">
+  <div class="section-overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <p style="font-size: 1.2rem; color:white;">{{ 'PROCESS' | translate }}</p>
+        <h2 class="text-white mb-4" style="font-size: 2.985984rem;">{{ 'HOW_IT_WORKS' | translate }}</h2>
+      </div>
 
+      <div class="col-lg-10 col-12 mx-auto">
+        <div class="timeline-container">
+          <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
+            <div class="list-progress"><div class="inner"></div></div>
 
-  <section class="timeline-section section-padding">
-    <div class="section-overlay"></div>
+            <li>
+              <h4 class="text-white mb-3">{{ 'STEP_REGISTER_TITLE' | translate }}</h4>
+              <p class="text-white">{{ 'STEP_REGISTER_DESC' | translate }}</p>
+              <div class="icon-holder">
+                <img src="assets/icons/register-icon.png" class="icon" alt="email-icon">
+              </div>
+            </li>
 
-    <div class="container">
-        <div class="row">
+            <li>
+              <h4 class="text-white mb-3">{{ 'STEP_FB_TITLE' | translate }}</h4>
+              <p class="text-white">{{ 'STEP_FB_DESC' | translate }}</p>
+              <div class="icon-holder">
+                <img src="assets/icons/social-media-icon.png" class="icon" alt="email-icon">
+              </div>
+            </li>
 
-            <div class="col-12 text-center">
-                <p style="font-size: 1.2rem; color:white;">Process</p>
-                <h2 class="text-white mb-4" style="font-size: 2.985984rem;">How does it work?</h2>
-            </div>
-
-            <div class="col-lg-10 col-12 mx-auto">
-                <div class="timeline-container">
-                    <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
-                        <div class="list-progress">
-                            <div class="inner"></div>
-                        </div>
-
-                        <li>
-                            <h4 class="text-white mb-3" >Register</h4>
-
-                            <p class="text-white">Please complete the registration process to get started.</p>
-
-                            <div class="icon-holder">
-                              <img src="assets/icons/register-icon.png" class="icon" alt="email-icon">
-                            </div>
-                        </li>
-
-                        <li>
-                            <h4 class="text-white mb-3" >Connect to Facebook</h4>
-
-                            <p class="text-white">Connect your account to Facebook to access additional features.</p>
-
-                            <div class="icon-holder">
-                              <img src="assets/icons/social-media-icon.png" class="icon" alt="email-icon">
-                            </div>
-                        </li>
-
-                        <li>
-                            <h4 class="text-white mb-3" >See your insights!</h4>
-
-                            <p class="text-white">View your performance and analytics once you're connected.</p>
-
-                            <div class="icon-holder">
-                              <img src="assets/icons/monitor-icon.png" class="icon" alt="email-icon">
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-12 text-center mt-5">
-              <p class="text-white">
-                  Want to learn more?
-                  <button class="gif-button" (click)="onButtonClick()">
-                    <img src="assets/gif/video.gif" alt="Button GIF">
-                    Check out video
-                  </button>
-              </p>
-          </div>
+            <li>
+              <h4 class="text-white mb-3">{{ 'STEP_INSIGHTS_TITLE' | translate }}</h4>
+              <p class="text-white">{{ 'STEP_INSIGHTS_DESC' | translate }}</p>
+              <div class="icon-holder">
+                <img src="assets/icons/monitor-icon.png" class="icon" alt="email-icon">
+              </div>
+            </li>
+          </ul>
         </div>
+      </div>
+
+      <div class="col-12 text-center mt-5">
+        <p class="text-white">
+          {{ 'LEARN_MORE' | translate }}
+          <button class="gif-button" (click)="onButtonClick()">
+            <img src="assets/gif/video.gif" alt="Button GIF">
+            {{ 'CHECK_VIDEO' | translate }}
+          </button>
+        </p>
+      </div>
     </div>
+  </div>
 </section>
 
 <section class="about-feedpulse">
   <div class="container">
     <div class="about-content">
-      <!-- Image on the left -->
-      <!--<div class="about-image">
-        <img src="assets/analytics.png" alt="About FeddPulse">
-      </div>-->
-
-      <!-- Content on the right -->
       <div class="about-text">
-        <p>About FeedPulse</p>
-        <h2>We Will Do Our Best To Grow Your Business</h2>
-        <p class="description">
-          At FeedPulse, we empower your brand by transforming customer feedback into actionable insights, fueling sustainable growth and innovation.
-        </p>
+        <p>{{ 'ABOUT_FEEDPULSE' | translate }}</p>
+        <h2>{{ 'GROW_BUSINESS' | translate }}</h2>
+        <p class="description">{{ 'DESCRIPTION' | translate }}</p>
+
         <div class="vision-mission-container">
           <div class="vision">
-            <h3>Our Vision</h3>
-            <ul>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                To be the leading platform.
-              </li>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                Makes real-time customer insights.
-              </li>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                Enables organizations to make smarter decisions.
-              </li>
+            <h3>{{ 'OUR_VISION' | translate }}</h3>
+            <ul >
+              <li><img src="assets/icons/checklist.png" class="icon"alt="."> {{ 'VISION_1' | translate }}</li>
+              <li><img src="assets/icons/checklist.png" class="icon"alt="."> {{ 'VISION_2' | translate }}</li>
+              <li><img src="assets/icons/checklist.png" class="icon"alt="."> {{ 'VISION_3' | translate }}</li>
             </ul>
           </div>
           <div class="mission">
-            <h3>Our Mission</h3>
+            <h3>{{ 'OUR_MISSION' | translate }}</h3>
             <ul>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                To simplify feedback analysis with intelligent technology.
-              </li>
-              <li>
-                <img src="assets/icons/checklist.png" class="icon" alt="checklist-icon">
-                To help businesses thrive by understanding and acting on customer voices.
-              </li>
+              <li><img src="assets/icons/checklist.png" class="icon"alt="."> {{ 'MISSION_1' | translate }}</li>
+              <li><img src="assets/icons/checklist.png" class="icon"alt="."> {{ 'MISSION_2' | translate }}</li>
             </ul>
           </div>
         </div>
+
         <div class="story">
-          <a routerLink="/about"  routerLinkActive="active" class="btn-secondary">Our Story</a>
+          <a routerLink="/about" routerLinkActive="active" class="btn-secondary">
+            {{ 'OUR_STORY' | translate }}
+          </a>
         </div>
       </div>
     </div>
   </div>
 </section>
+

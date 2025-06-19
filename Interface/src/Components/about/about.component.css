@@ -1,3 +1,13 @@
+html[dir='rtl'] .some-class {
+  text-align: right;
+  direction: rtl;
+}
+
+html[dir='ltr'] .some-class {
+  text-align: left;
+  direction: ltr;
+}
+
 .responsive-container-block {
   min-height: 75px;
   height: fit-content;
