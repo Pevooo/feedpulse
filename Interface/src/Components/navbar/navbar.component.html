@@ -7,15 +7,15 @@
       &#9776;
     </button>
   </div>
-  <ul class="navbar-links" [ngClass]="{ 'open': menuOpen }">
-    <li>
-      <a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-    </li>
-    <li>
-      <a routerLink="/about" routerLinkActive="active active-link">About us</a>
-    </li>
 
-  <ul class="navbar-links">
+
+  <ul class="navbar-links" [ngClass]="{ 'open': menuOpen }">
+    <div class="language-switcher">
+      <select (change)="switchLanguage($any($event.target).value)">
+        <option value="en">🌐English</option>
+        <option value="ar">🌐العربية</option>
+      </select>
+    </div>
     <li><a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">{{ 'HOME' | translate }}</a></li>
     <li><a routerLink="/about" routerLinkActive="active active-link">{{ 'ABOUT_US' | translate }}</a></li>
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">
@@ -27,11 +27,4 @@
       <li><a routerLink="/signup" routerLinkActive="active active-link">{{ 'SIGNUP' | translate }}</a></li>
     </ng-template>
   </ul>
-    
-  <div class="language-switcher">
-    <select (change)="switchLanguage($any($event.target).value)">
-      <option value="en">🌐English</option>
-      <option value="ar">🌐العربية</option>
-    </select>
-  </div>
 </nav>

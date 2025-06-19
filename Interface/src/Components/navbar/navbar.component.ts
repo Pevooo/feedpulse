@@ -30,11 +30,6 @@ export class NavbarComponent implements OnDestroy {
   isScrolled = false;
   menuOpen = false;
 
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    this.isScrolled = window.scrollY > 50; // Change 50 to any value you want
-  }
-
   isLoggedIn = this.authService.isLoggedIn(); // Initialize with current state
 
   private routerSubscription: Subscription;

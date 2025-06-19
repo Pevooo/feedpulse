@@ -20,13 +20,14 @@
       {{ 'SEE_INSIGHTS' | translate }}
     </button>
     </div>
-    
+
     <div *ngIf="!startDate || !endDate" class="empty-state">
       <p>{{ 'SELECT_DATES_WARNING' | translate }}</p>
     </div>
 
     <div class="report">
       <div *ngIf="goals.length > 0" class="goals-section">
+        <br>
         <h3>{{ 'REPORT_FROM' | translate }} {{ startDate }} {{ 'TO' | translate }} {{ endDate }}</h3>
         <h4>{{ 'GOALS' | translate }}:</h4>
         <ul>
@@ -120,7 +121,6 @@
         </table>
       </div>
     </div>
-  </div>
 </section>
 
 <section class="about-feedpulse">
