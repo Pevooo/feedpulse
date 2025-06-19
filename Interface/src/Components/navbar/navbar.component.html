@@ -1,15 +1,20 @@
 <nav [ngClass]="{'navbar': true, 'scrolled': isScrolled}">
   <div class="navbar-brand">
     <img src="assets/logo.png" alt="FeedPulse Logo" class="logo-img">
+
+        <!-- Hamburger (mobile only) -->
+    <button class="hamburger" (click)="toggleMenu()" aria-label="Toggle menu">
+      &#9776;
+    </button>
   </div>
-  <ul class="navbar-links">
+  <ul class="navbar-links" [ngClass]="{ 'open': menuOpen }">
     <li>
       <a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
     </li>
     <li>
       <a routerLink="/about" routerLinkActive="active active-link">About us</a>
     </li>
-    
+
 
     <!-- Single conditional block for logged-in/not logged-in state -->
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">
