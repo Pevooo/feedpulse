@@ -13,10 +13,10 @@
       </div>
       <div class="input-group">
         <label for="endDate">End Date:</label>
-        <input id="endDate" type="date" [(ngModel)]="endDate">
+        <input id="endDate" type="date" [(ngModel)]="endDate" style="border-top-left-radius:5px;">
       </div>
       <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
-      See Insights!
+      See Insights
     </button>
     </div>
     
@@ -27,21 +27,30 @@
 
     <div class="report">
       <div *ngIf="goals.length > 0" class="goals-section">
-        <h3>Report from {{ startDate }} to {{ endDate }}</h3>
+        <h3>{{pageName}} Impact Report</h3>
+        <h3>from 
+          <span class="date-style">{{ startDate }}</span> 
+          to 
+          <span class="date-style">{{ endDate }}</span>
+        </h3>
         <h4>Goals:</h4>
         <ul>
-          <li *ngFor="let goal of goals">{{ goal }}</li>
+          <li class="custom-list" *ngFor="let goal of goals">{{ goal }}</li>
         </ul>
-      </div>
+        <hr style="border-top: 2px solid #e0f7f6; margin: 30px 0;" />
+      <!--</div>-->
 
       <div *ngIf="chartImages.length > 0" class="images-section">
         <h4>Analytics Images:</h4>
         <div class="images-container">
           <div *ngFor="let img of chartImages" class="image-wrapper">
             <img [src]="img" alt="Analytics Chart" class="analytics-image" />
+            <div class="caption">Figure 2: Topic Distribution by Sentiment</div>
           </div>
         </div>
       </div>
+
+      <hr>
 
       <div *ngIf="metrics" class="goals-section">
         <h4>Metrics:</h4>
@@ -120,6 +129,7 @@
         </table>
       </div>
     </div>
+  </div>
   </div>
 </section>
 

@@ -27,7 +27,7 @@
   color: white;
 }
 
-/*analysis ana choosing date*/
+/*choosing date*/
 .analytics-container {
   max-width: 100%;
   margin: 50px auto;
@@ -52,42 +52,32 @@ h2 {
   display: flex;
   gap: 20px;
   margin-bottom: 20px;
-    /*display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;*/
 }
 
 input[type="date"] {
   width: 100%;
   padding: 10px;
-  margin-top: 5px;
+  margin-top: 5px !important;
   border: 1px solid #ccc;
-  border-radius: 5px;
-
+  border-radius: 5px !important;
   font-size: 1rem;
   color: #666;
-    /*width: 45%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;*/
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 1;
   filter: invert(46%) sepia(42%) saturate(748%) hue-rotate(135deg) brightness(95%) contrast(95%);
   cursor: pointer;
-
 }
 
 input:focus, textarea:focus, select:focus {
-    border-color: #20c0bd; /* your custom border color */
-    outline: none; /* remove extra outline if any */
+  border-color: #20c0bd; /* your custom border color */
+  outline: none; /* remove extra outline if any */
 }
 
 .input-group{
-    flex: 1; /* Each date input will take 50% */
-    display: flex;
+  flex: 1; /* Each date input will take 50% */
+  display: flex;
 }
 
 .input-group label{
@@ -140,8 +130,13 @@ input:focus, textarea:focus, select:focus {
 .report h3 {
   color: #0a2640;
   margin-bottom: 20px;
-}
+  font-weight: bold;
 
+}
+.report .date-style{
+  color: #20c0bd;
+  font-style: italic;
+}
 .goals-section, .images-section {
   margin-top: 30px;
   text-align: left; /* left-align content inside sections */
