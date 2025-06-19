@@ -9,7 +9,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' https://vercel.live; script-src 'self' https://vercel.live https://connect.facebook.net 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://feedpulse.francecentral.cloudapp.azure.com https://connect.facebook.net https://www.facebook.com https://feedpulse-d0ebhmb4gucybhdg.italynorth-01.azurewebsites.net; object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
+          "value": "default-src 'self' https://vercel.live; script-src 'self' https://vercel.live https://connect.facebook.net 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://feedpulse.francecentral.cloudapp.azure.com https://connect.facebook.net https://www.facebook.com https://feedpulse-d0ebhmb4gucybhdg.italynorth-01.azurewebsites.net; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; img-src 'self' data:;"
         },
         {
           "key": "X-Frame-Options",
