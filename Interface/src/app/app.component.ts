@@ -6,7 +6,7 @@ import { initFacebookSDK } from "./utils/facebook-sdk-loader";
 
 import {
   LanguageService,
-} from '../app/services/language.service';
+} from './services/language.service';
 import { FooterComponent } from '../Components/footer/footer.component';
 import { LoginComponent } from '../Components/login/login.component';
 import { NavbarComponent } from '../Components/navbar/navbar.component';
@@ -17,10 +17,7 @@ import { SpinnerComponent } from '../Components/spinner/spinner.component';
   standalone: true,
   imports: [
     RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
     HttpClientModule,
-    LoginComponent,
     NavbarComponent,
     FooterComponent,
     SpinnerComponent,
