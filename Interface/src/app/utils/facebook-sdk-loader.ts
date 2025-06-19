@@ -1,11 +1,7 @@
-declare global {
-  interface Window {
-    fbAsyncInit: () => void;
-  }
-}
+declare const FB: any;
 
 export function initFacebookSDK(): void {
-  window.fbAsyncInit = function () {
+  (window as any).fbAsyncInit = function () {
     FB.init({
       appId: '1213236544138432',
       cookie: true,
@@ -22,7 +18,6 @@ export function initFacebookSDK(): void {
   script.crossOrigin = 'anonymous';
   script.id = 'facebook-jssdk';
 
-  // Only append if not already added
   if (!document.getElementById('facebook-jssdk')) {
     document.body.appendChild(script);
   }
