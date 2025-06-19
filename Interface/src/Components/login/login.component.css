@@ -30,7 +30,6 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 5px #20c0bd; /* remove the blue glowing shadow */
   outline: none; /* remove extra outline if any */
 }
-
 .btn-primary {
   width: 100%;
   max-width: 180px;
@@ -47,7 +46,6 @@ input:focus, textarea:focus, select:focus {
   margin: 20px auto; /* <<< This centers it horizontally */
 
 }
-
 .btn-primary:hover {
   background-color: #0a2640;
   color: white;
