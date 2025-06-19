@@ -28,7 +28,15 @@ import { LanguageService } from '../../app/services/language.service';
 })
 export class NavbarComponent implements OnDestroy {
   isScrolled = false;
-  isLoggedIn = this.authService.isLoggedIn();
+  menuOpen = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 50; // Change 50 to any value you want
+  }
+
+  isLoggedIn = this.authService.isLoggedIn(); // Initialize with current state
+
   private routerSubscription: Subscription;
 
 
@@ -65,8 +73,12 @@ export class NavbarComponent implements OnDestroy {
   }
 
 
+
   switchLanguage(lang: string) {
     this.languageService.switchLang(lang);
+  }
 
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
   }
 }

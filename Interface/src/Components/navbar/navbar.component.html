@@ -1,15 +1,19 @@
 <nav [ngClass]="{'navbar': true, 'scrolled': isScrolled}">
   <div class="navbar-brand">
-    <img src="assets/logo.png" alt="FeedPulse Logo" class="logo-img" />
-  </div>
+    <img src="assets/logo.png" alt="FeedPulse Logo" class="logo-img">
 
-  <div class="language-switcher">
-    <select (change)="switchLanguage($any($event.target).value)">
-      <option value="en">🌐English</option>
-      <option value="ar">🌐العربية</option>
-    </select>
+        <!-- Hamburger (mobile only) -->
+    <button class="hamburger" (click)="toggleMenu()" aria-label="Toggle menu">
+      &#9776;
+    </button>
   </div>
-
+  <ul class="navbar-links" [ngClass]="{ 'open': menuOpen }">
+    <li>
+      <a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    </li>
+    <li>
+      <a routerLink="/about" routerLinkActive="active active-link">About us</a>
+    </li>
 
   <ul class="navbar-links">
     <li><a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">{{ 'HOME' | translate }}</a></li>
@@ -23,4 +27,11 @@
       <li><a routerLink="/signup" routerLinkActive="active active-link">{{ 'SIGNUP' | translate }}</a></li>
     </ng-template>
   </ul>
+    
+  <div class="language-switcher">
+    <select (change)="switchLanguage($any($event.target).value)">
+      <option value="en">🌐English</option>
+      <option value="ar">🌐العربية</option>
+    </select>
+  </div>
 </nav>

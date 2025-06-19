@@ -1,6 +1,9 @@
 <section class="main-section">
   <br><br>  <br><br>
-
+  <div class="text-center">
+    <p>Analytics Page</p>
+    <h2>Here you can view your performance and analytics once you're connected</h2>
+  </div>
   <div class="analytics-container">
     <h2>{{ 'ANALYTICS_PAGE' | translate }}</h2>
     <div class="input-container">
@@ -14,8 +17,10 @@
       </div>
     </div>
     <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
-      {{ 'SEE_INSIGHTS' | translate }}!
+      {{ 'SEE_INSIGHTS' | translate }}
     </button>
+    </div>
+    
     <div *ngIf="!startDate || !endDate" class="empty-state">
       <p>{{ 'SELECT_DATES_WARNING' | translate }}</p>
     </div>
@@ -128,8 +133,8 @@
 
       <!-- Content on the right -->
       <div class="about-text">
-        <h2>{{ 'GENERATE_REPORTS' | translate }}</h2>
-        <h1>{{ 'WE_WILL_GROW_BUSINESS' | translate }}</h1>
+        <p>{{ 'GENERATE_REPORTS' | translate }}</p>
+        <h2>{{ 'WE_WILL_GROW_BUSINESS' | translate }}</h2>
         <p class="description">
           {{ 'FEEDPULSE_DESCRIPTION' | translate }}
         </p>
@@ -139,9 +144,11 @@
 </section>
 
 <!-- Add Chatbot Component -->
+
 <app-chatbot
   [facebookId]="facebookId"
   [startDate]="startDate"
   [endDate]="endDate"
-  [showChatbot]="goals.length > 0">
+  [showChatbot]="goals.length > 0"
+  *ngIf="goals.length > 0">
 </app-chatbot>

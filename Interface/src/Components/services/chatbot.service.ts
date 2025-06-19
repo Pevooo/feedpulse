@@ -11,6 +11,7 @@ export interface ChatMessage {
   isUser: boolean;
   timestamp: Date;
   isRaster?: boolean;
+  icon?: string;
 }
 
 export interface ChatRequest {

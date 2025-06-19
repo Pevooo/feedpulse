@@ -5,10 +5,16 @@
   </div>
 
   <div class="header" *ngIf="!isConnected">
+
     <button (click)="login()" class="facebook-btn">
       <i class="fa-brands fa-facebook-f"></i>
       {{ 'FB_CONNECT_BUTTON' | translate }}
     </button>
+    <br>
+    <button (click)="goToMockPage()" class="facebook-btn">
+      Try Mock Page
+    </button>
+
   </div>
 
   <div class="dashboard-container" *ngIf="isConnected">

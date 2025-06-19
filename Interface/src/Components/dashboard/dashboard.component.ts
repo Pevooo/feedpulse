@@ -165,6 +165,14 @@ export class DashboardComponent implements OnInit{
       queryParams: { facebookId }
     });
   }
+
+  goToMockPage() {
+    const facebookId = "448242228374517";
+    this.router.navigate(['/page-analytics'], {
+      queryParams: { facebookId }
+    });
+  }
+
   private calculateRegisteredPages(): void {
     const unregisteredIds = new Set(this.unregisteredPages.map(p => p.id));
     this.registeredPages = this.pages.filter(p => !unregisteredIds.has(p.id));
