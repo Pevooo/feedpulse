@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { initFacebookSDK } from "./utils/facebook-sdk-loader";
 
 import {
   LanguageService,
 } from './services/language.service';
 import { FooterComponent } from '../Components/footer/footer.component';
-import { LoginComponent } from '../Components/login/login.component';
 import { NavbarComponent } from '../Components/navbar/navbar.component';
 import { SpinnerComponent } from '../Components/spinner/spinner.component';
 
