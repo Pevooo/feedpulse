@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';  // If you're using reacti
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SignupComponent', () => {
   let component: SignupComponent;
@@ -11,7 +12,7 @@ describe('SignupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignupComponent, ReactiveFormsModule,HttpClientTestingModule],  // Add necessary imports
+      imports: [SignupComponent, ReactiveFormsModule,HttpClientTestingModule, TranslateModule.forRoot()],  // Add necessary imports
       providers: [
         {
           provide: ActivatedRoute, // 👈 Provide a fake ActivatedRoute

@@ -3,6 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AddOrganizationComponent } from './add-organization.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AddOrganizationComponent', () => {
   let component: AddOrganizationComponent;
@@ -13,6 +14,7 @@ describe('AddOrganizationComponent', () => {
       imports: [
         HttpClientTestingModule,
         AddOrganizationComponent, // ✅ Standalone component
+        TranslateModule.forRoot()
       ],
       providers: [
         {

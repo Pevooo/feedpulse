@@ -5,13 +5,15 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { provideRouter } from '@angular/router';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavbarComponent,HttpClientTestingModule],
+      imports: [NavbarComponent,HttpClientTestingModule, TranslateModule.forRoot()],
     
       providers: [provideRouter([])],
     })

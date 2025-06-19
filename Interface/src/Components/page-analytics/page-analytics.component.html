@@ -1,41 +1,41 @@
 <section class="main-section">
   <br><br>  <br><br>
   <div class="text-center">
-    <p>Analytics Page</p>
-    <h2>Here you can view your performance and analytics once you're connected</h2>
+    <p>{{ 'ANALYTICS_PAGE' | translate }}</p>
+    <h2>{{ 'ANALYTICS_PAGE_DESCRIPTION' | translate }}</h2>
   </div>
   <div class="analytics-container">
     <!--<h2>Analytics Page</h2>-->
     <div class="input-container">
       <div class="input-group">
-        <label for="startDate">Start Date:</label>
+        <label for="startDate">{{ 'START_DATE' | translate }}:</label>
         <input id="startDate" type="date" [(ngModel)]="startDate">
       </div>
       <div class="input-group">
-        <label for="endDate">End Date:</label>
+        <label for="endDate">{{ 'END_DATE' | translate }}:</label>
         <input id="endDate" type="date" [(ngModel)]="endDate">
       </div>
       <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
-      See Insights!
+      {{ 'SEE_INSIGHTS' | translate }}
     </button>
     </div>
-    
+
     <div *ngIf="!startDate || !endDate" class="empty-state">
       <br>
-      <p>Please select both start and end dates to proceed.</p>
+      <p> {{'SELECT_DATES_WARNING' | translate }}</p>
     </div>
 
     <div class="report">
       <div *ngIf="goals.length > 0" class="goals-section">
-        <h3>Report from {{ startDate }} to {{ endDate }}</h3>
-        <h4>Goals:</h4>
+        <h3>{{ 'REPORT_FROM' | translate }} {{ startDate }} {{ 'TO' | translate }} {{ endDate }}</h3>
+        <h4>{{ 'GOALS' | translate }}:</h4>
         <ul>
           <li *ngFor="let goal of goals">{{ goal }}</li>
         </ul>
       </div>
 
       <div *ngIf="chartImages.length > 0" class="images-section">
-        <h4>Analytics Images:</h4>
+        <h4>{{ 'ANALYTICS_IMAGES' | translate }}:</h4>
         <div class="images-container">
           <div *ngFor="let img of chartImages" class="image-wrapper">
             <img [src]="img" alt="Analytics Chart" class="analytics-image" />
@@ -44,14 +44,14 @@
       </div>
 
       <div *ngIf="metrics" class="goals-section">
-        <h4>Metrics:</h4>
+        <h4>{{ 'METRICS' | translate }}:</h4>
 
         <!-- Sentiment Counts -->
-        <h5>Sentiment Counts</h5>
+        <h5>{{ 'SENTIMENT_COUNTS' | translate }}</h5>
         <table>
           <tr>
-            <th>Sentiment</th>
-            <th>Count</th>
+            <th>{{ 'SENTIMENT' | translate }}</th>
+            <th>{{ 'COUNT' | translate }}</th>
           </tr>
           <tr *ngFor="let sentiment of getMetricKeys('sentiment_counts')">
             <td>{{ sentiment.charAt(0).toUpperCase() + sentiment.slice(1) }}</td>
@@ -60,11 +60,11 @@
         </table>
 
         <!-- Topic Counts -->
-        <h5>Topic Counts</h5>
+        <h5>{{ 'TOPIC_COUNTS' | translate }}</h5>
         <table>
           <tr>
-            <th>Topic</th>
-            <th>Count</th>
+            <th>{{ 'TOPIC' | translate }}</th>
+            <th>{{ 'COUNT' | translate }}</th>
           </tr>
           <tr *ngFor="let topic of getMetricKeys('topic_counts')">
             <ng-container *ngIf="topic !== 'NONE'">
@@ -75,11 +75,11 @@
         </table>
 
         <!-- Top 5 Topics -->
-        <h5>Top 5 Topics</h5>
+        <h5>{{ 'TOP_5_TOPICS' | translate }}</h5>
         <table>
           <tr>
-            <th>Topic</th>
-            <th>Count</th>
+            <th>{{ 'TOPIC' | translate }}</th>
+            <th>{{ 'COUNT' | translate }}</th>
           </tr>
           <tr *ngFor="let topic of getMetricKeys('top_5_topics')">
             <ng-container *ngIf="topic !== 'NONE'">
@@ -90,11 +90,11 @@
         </table>
 
         <!-- Most Frequent Sentiment Per Topic -->
-        <h5>Most Frequent Sentiment Per Topic</h5>
+        <h5>{{ 'MOST_FREQ_SENTIMENT_PER_TOPIC' | translate }}</h5>
         <table>
           <tr>
-            <th>Topic</th>
-            <th>Sentiment</th>
+            <th>{{ 'TOPIC' | translate }}</th>
+            <th>{{ 'SENTIMENT' | translate }}</th>
           </tr>
           <tr *ngFor="let topic of getMetricKeys('most_freq_sentiment_per_topic')">
             <ng-container *ngIf="topic !== 'NONE'">
@@ -105,11 +105,11 @@
         </table>
 
         <!-- Most Frequent Topic Per Sentiment -->
-        <h5>Most Frequent Topic Per Sentiment</h5>
+        <h5>{{ 'MOST_FREQ_TOPIC_PER_SENTIMENT' | translate }}</h5>
         <table>
           <tr>
-            <th>Sentiment</th>
-            <th>Topic</th>
+            <th>{{ 'SENTIMENT' | translate }}</th>
+            <th>{{ 'TOPIC' | translate }}</th>
           </tr>
           <ng-container *ngFor="let sentiment of getMetricKeys('most_freq_topic_per_sentiment')">
             <tr *ngIf="metrics.most_freq_topic_per_sentiment[sentiment] !== 'NONE'">
@@ -128,15 +128,15 @@
     <div class="about-content">
       <!-- Image on the left -->
       <div class="about-image">
-        <img src="assets/analysis.png" alt="About FeddPulse">
+        <img src="assets/analysis.png" alt="About FeedPulse">
       </div>
 
       <!-- Content on the right -->
       <div class="about-text">
-        <p>Generate Reports</p>
-        <h2>We will do our best to grow your business</h2>
+        <p>{{ 'GENERATE_REPORTS' | translate }}</p>
+        <h2>{{ 'WE_WILL_GROW_BUSINESS' | translate }}</h2>
         <p class="description">
-          At FeedPulse, we empower your brand by transforming customer feedback into actionable insights, fueling sustainable growth and innovation.
+          {{ 'FEEDPULSE_DESCRIPTION' | translate }}
         </p>
       </div>
     </div>

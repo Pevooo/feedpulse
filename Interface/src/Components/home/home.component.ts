@@ -1,13 +1,20 @@
-import { Component, HostListener, OnDestroy  } from '@angular/core';
-import { RouterLink} from '@angular/router';
-import { AuthService } from '../../app/services/auth.service';
 import { CommonModule } from '@angular/common';  // Import CommonModule
+import {
+  Component,
+  HostListener,
+  OnDestroy,
+} from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+import { TranslateModule } from '@ngx-translate/core';
+
+import { AuthService } from '../../app/services/auth.service';
 import { ServicesComponent } from '../services/services.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, ServicesComponent],
+  imports: [CommonModule, RouterLink, ServicesComponent,TranslateModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

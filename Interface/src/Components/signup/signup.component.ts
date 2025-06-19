@@ -1,16 +1,28 @@
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import {  NgForm,ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { IRegistrationModel } from '../../app/interfaces/IRegisterModel';
-import { CommonModule } from '@angular/common';
-import { AuthService } from '../../app/services/auth.service';
+import {
+  FormsModule,
+  NgForm,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  Router,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
+
 import Swal from 'sweetalert2';
+
+import { TranslateModule } from '@ngx-translate/core';
+
+import { IRegistrationModel } from '../../app/interfaces/IRegisterModel';
+import { AuthService } from '../../app/services/auth.service';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [RouterLink,RouterOutlet,CommonModule,ReactiveFormsModule,FormsModule],
+  imports: [RouterLink,RouterOutlet,CommonModule,ReactiveFormsModule,FormsModule,TranslateModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -27,7 +39,7 @@ export class SignupComponent  {
     photo: undefined // Initialize as undefined instead of null
   };
   constructor(private http: HttpClient,private service:AuthService,private router:Router){
-   
+
   }
 
   onSubmit(form: NgForm): void {
@@ -94,5 +106,5 @@ export class SignupComponent  {
     return file && acceptedImageTypes.includes(file.type);
   }
 
-  
+
 }

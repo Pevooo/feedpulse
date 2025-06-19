@@ -1,15 +1,28 @@
-import { Component, OnDestroy, HostListener  } from '@angular/core';
-import { AuthService } from '../../app/services/auth.service';
-import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnDestroy,
+} from '@angular/core';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
+
 import { Subscription } from 'rxjs';
+
+import { TranslateModule } from '@ngx-translate/core';
+
+import { AuthService } from '../../app/services/auth.service';
+import { LanguageService } from '../../app/services/language.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -17,27 +30,29 @@ export class NavbarComponent implements OnDestroy {
   isScrolled = false;
   menuOpen = false;
 
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    this.isScrolled = window.scrollY > 50; // Change 50 to any value you want
-  }
-
   isLoggedIn = this.authService.isLoggedIn(); // Initialize with current state
+
   private routerSubscription: Subscription;
+
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private languageService: LanguageService
   ) {
-    // Subscribe to router events to update isLoggedIn on navigation
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.isLoggedIn = this.authService.isLoggedIn();
         this.cdr.detectChanges();
-        console.log('Navigation occurred, isLoggedIn:', this.isLoggedIn); // Debug log
+        console.log('Navigation occurred, isLoggedIn:', this.isLoggedIn);
       }
     });
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 50;
   }
 
   ngOnDestroy(): void {
@@ -47,9 +62,15 @@ export class NavbarComponent implements OnDestroy {
   onLogout(event: Event): void {
     event.preventDefault();
     this.authService.logout();
-    this.isLoggedIn = this.authService.isLoggedIn(); // Manually update after logout
+    this.isLoggedIn = this.authService.isLoggedIn();
     this.cdr.detectChanges();
     this.router.navigate(['/login']);
+  }
+
+
+
+  switchLanguage(lang: string) {
+    this.languageService.switchLang(lang);
   }
 
   toggleMenu() {

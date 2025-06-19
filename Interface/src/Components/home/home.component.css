@@ -1,3 +1,24 @@
+/* RTL layout for vertical timeline */
+html[dir='rtl'] .timeline-container .vertical-scrollable-timeline li {
+  padding: 20px 145px 65px 0;
+  text-align: right;
+}
+
+html[dir='rtl'] .timeline-container .vertical-scrollable-timeline li .icon-holder {
+  left: auto;
+  right: 0;
+}
+
+html[dir='rtl'] .timeline-container .vertical-scrollable-timeline .list-progress {
+  left: auto;
+  right: 52px;
+}
+
+html[dir='rtl'] .timeline-container .vertical-scrollable-timeline li::before {
+  left: auto;
+  right: 52px;
+}
+
 .split-container {
   display: flex;
   align-items: center; /* vertical alignment */

@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';  // For reactive forms
 import { HttpClientModule } from '@angular/common/http';  // Import HttpClientModule to provide HttpClient
 import { AuthService } from '../../app/services/auth.service';  // Import AuthService for dependency injection
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -11,7 +12,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, ReactiveFormsModule, HttpClientModule],  // Add HttpClientModule here
+      imports: [LoginComponent, ReactiveFormsModule, HttpClientModule,TranslateModule.forRoot()],  // Add HttpClientModule here
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: {} } } },  // Mock ActivatedRoute
         AuthService  // Provide AuthService
