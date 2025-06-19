@@ -1,11 +1,11 @@
 <section class="main-section">
   <br><br>  <br><br>
   <div class="text-center">
-    <p>Analytics Page</p>
-    <h2>Here you can view your performance and analytics once you're connected</h2>
+    <p>{{ 'ANALYTICS_PAGE' | translate }}</p>
+    <h2>{{ 'ANALYTICS_PAGE_DESCRIPTION' | translate }}</h2>
   </div>
   <div class="analytics-container">
-    <h2>{{ 'ANALYTICS_PAGE' | translate }}</h2>
+    <!--<h2>Analytics Page</h2>-->
     <div class="input-container">
       <div class="input-group">
         <label for="startDate">{{ 'START_DATE' | translate }}:</label>
@@ -15,19 +15,18 @@
         <label for="endDate">{{ 'END_DATE' | translate }}:</label>
         <input id="endDate" type="date" [(ngModel)]="endDate">
       </div>
-    </div>
-    <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
+      <button (click)="getAnalytics()" [disabled]="!startDate || !endDate" class="get-analytics-btn">
       {{ 'SEE_INSIGHTS' | translate }}
     </button>
     </div>
 
     <div *ngIf="!startDate || !endDate" class="empty-state">
-      <p>{{ 'SELECT_DATES_WARNING' | translate }}</p>
+      <br>
+      <p> {{'SELECT_DATES_WARNING' | translate }}</p>
     </div>
 
     <div class="report">
       <div *ngIf="goals.length > 0" class="goals-section">
-        <br>
         <h3>{{ 'REPORT_FROM' | translate }} {{ startDate }} {{ 'TO' | translate }} {{ endDate }}</h3>
         <h4>{{ 'GOALS' | translate }}:</h4>
         <ul>
@@ -100,7 +99,7 @@
           <tr *ngFor="let topic of getMetricKeys('most_freq_sentiment_per_topic')">
             <ng-container *ngIf="topic !== 'NONE'">
               <td>{{ formatValue(topic) }}</td>
-              <td>{{ metrics.most_freq_sentiment_per_topic[topic].charAt(0).toUpperCase() + metrics.most_freq_sentiment_per_topic[topic].slice(1) }}</td>
+              <td>{{ metrics.most_freq_sentiment_per_topic[topic].charAt(0).toUpperCase() + metrics.most_freq_sentiment_per_topic[topic].slice(1)}}</td>
             </ng-container>
           </tr>
         </table>
@@ -121,6 +120,7 @@
         </table>
       </div>
     </div>
+  </div>
 </section>
 
 <section class="about-feedpulse">
