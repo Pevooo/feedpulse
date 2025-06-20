@@ -67,7 +67,9 @@ export class NavbarComponent implements OnDestroy {
     this.router.navigate(['/login']);
   }
 
-
+  getCurrentLanguage(): string {
+    return this.languageService.getCurrentLang();
+  }
 
   switchLanguage(lang: string) {
     this.languageService.switchLang(lang);

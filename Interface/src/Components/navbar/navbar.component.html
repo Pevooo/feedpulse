@@ -11,7 +11,7 @@
 
   <ul class="navbar-links" [ngClass]="{ 'open': menuOpen }">
     <div class="language-switcher">
-      <select (change)="switchLanguage($any($event.target).value)">
+      <select [value]="getCurrentLanguage()" (change)="switchLanguage($any($event.target).value)">
         <option value="en">🌐English</option>
         <option value="ar">🌐العربية</option>
       </select>
