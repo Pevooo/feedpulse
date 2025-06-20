@@ -135,5 +135,6 @@
   "WELCOME_BACK": "¡Bienvenido de nuevo!",
   "LOGIN_FAILED": "Error al Iniciar Sesión",
   "INVALID_CREDENTIALS": "Credenciales inválidas",
-  "OK": "Aceptar"
+  "OK": "Aceptar",
+  "IMPACT_REPORT": "INFORME DE IMPACTO"
 }

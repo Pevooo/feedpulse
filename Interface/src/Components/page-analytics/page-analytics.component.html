@@ -27,6 +27,7 @@
 
     <div class="report">
       <div *ngIf="goals.length > 0" class="goals-section">
+        <h3> {{pageName}} {{'IMPACT_REPORT' | translate}}</h3>
         <h3>{{ 'REPORT_FROM' | translate }} {{ startDate }} {{ 'TO' | translate }} {{ endDate }}</h3>
         <h4>{{ 'GOALS' | translate }}:</h4>
         <ul>

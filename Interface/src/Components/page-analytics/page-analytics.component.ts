@@ -28,6 +28,7 @@ export class PageAnalyticsComponent implements OnInit {
   endDate = '';
   chartImages: SafeUrl[] = [];
   goals: string[] = [];
+  pageName = '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metrics: any;
   constructor(private route: ActivatedRoute,
@@ -38,6 +39,7 @@ export class PageAnalyticsComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.facebookId = params['facebookId'];
+      this.pageName = params['pageName'];
     });
   }
 

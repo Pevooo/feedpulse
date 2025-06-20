@@ -135,5 +135,6 @@
   "WELCOME_BACK": "Welcome back!",
   "LOGIN_FAILED": "Login Failed",
   "INVALID_CREDENTIALS": "Invalid credentials",
-  "OK": "Ok"
+  "OK": "Ok",
+  "IMPACT_REPORT": "Impact Report"
 }

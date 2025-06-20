@@ -135,5 +135,6 @@
   "WELCOME_BACK": "Content de vous revoir !",
   "LOGIN_FAILED": "Échec de la Connexion",
   "INVALID_CREDENTIALS": "Identifiants invalides",
-  "OK": "Ok"
+  "OK": "Ok",
+  "IMPACT_REPORT": "RAPPORT D'IMPACT"
 }

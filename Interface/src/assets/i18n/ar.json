@@ -135,5 +135,6 @@
   "WELCOME_BACK": "مرحبًا بعودتك!",
   "LOGIN_FAILED": "فشل تسجيل الدخول",
   "INVALID_CREDENTIALS": "بيانات الاعتماد غير صحيحة",
-  "OK": "حسنًا"
+  "OK": "حسنًا",
+  "IMPACT_REPORT": "IMPACT_REPORT"
 }
