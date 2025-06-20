@@ -1,20 +1,20 @@
 /* RTL layout for vertical timeline */
-html[dir='rtl'] .timeline-container .vertical-scrollable-timeline li {
-  padding: 20px 145px 65px 0;
+:host-context([dir='rtl']) .timeline-container .vertical-scrollable-timeline li {
+  padding-right: 145px;
   text-align: right;
 }
 
-html[dir='rtl'] .timeline-container .vertical-scrollable-timeline li .icon-holder {
+:host-context([dir='rtl']) .timeline-container .vertical-scrollable-timeline li .icon-holder {
   left: auto;
   right: 0;
 }
 
-html[dir='rtl'] .timeline-container .vertical-scrollable-timeline .list-progress {
+:host-context([dir='rtl']) .timeline-container .vertical-scrollable-timeline .list-progress {
   left: auto;
-  right: 52px;
+  right: 85px;
 }
 
-html[dir='rtl'] .timeline-container .vertical-scrollable-timeline li::before {
+:host-context([dir='rtl']) .timeline-container .vertical-scrollable-timeline li::before {
   left: auto;
   right: 52px;
 }
@@ -62,23 +62,45 @@ html[dir='rtl'] .timeline-container .vertical-scrollable-timeline li::before {
 .gif-button {
   background: transparent;
   border: none;
-  padding-left: 20px;
-  padding-bottom: 20;
   cursor: pointer;
   outline: none;
   color: white;
+
+  display: flex;
+  align-items: center;       /* vertical center */
+  justify-content: center;   /* horizontal center */
+  padding: 0;                /* reset any offset */
 }
 
+.gif-button video,
 .gif-button img {
-  width: 75px; /* Adjust the size you want */
-  height: auto;
+  width: 75px;
+  height: 75px;
+  margin-bottom: 20px;
   transition: transform 0.3s ease;
-  padding-bottom: 20px;
-
 }
 
 .gif-button:hover img {
   transform: scale(1.1); /* Slight zoom on hover */
+}
+
+.gif-button:hover video {
+  transform: scale(1.1); /* Slight zoom on hover */
+}
+
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.text-and-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap; /* optional: makes it wrap on small screens */
 }
 
 /*---------- buttons --------*/
@@ -94,6 +116,7 @@ html[dir='rtl'] .timeline-container .vertical-scrollable-timeline li::before {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  white-space: nowrap;
 }
 
 .btn:hover {

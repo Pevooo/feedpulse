@@ -39,7 +39,7 @@
         <li *ngFor="let page of pages">
           <b>{{ page.name || ('UNKNOWN_PAGE' | translate) }}</b>&nbsp;(ID: {{ page.id }})
           <button (click)="goToAnalytics(page)" class="gif-button">
-            <img src="assets/gif/report.webp" alt="Analytics">
+            <video src="assets/gif/report.webm" autoplay loop muted playsinline width="48" height="48" aria-label="Analytics"></video>
           </button>
         </li>
       </ul>

@@ -5,17 +5,25 @@
       <h1 style="color: #20c0bd;">{{ 'WELCOME_TITLE' | translate }}</h1>
       <p style="color: #f7f8fc;">{{ 'WELCOME_SUBTITLE' | translate }}</p>
       <button class="gif-button" (click)="onButtonClick()" routerLink="/dashboard" routerLinkActive="active" style="color: #f7f8fc;">
-        <img src="assets/gif/report.webp" alt="Button GIF"> {{ 'CREATE_REPORT' | translate }}
+        <video src="assets/gif/report.webm" autoplay loop muted playsinline></video>
+        {{ 'CREATE_REPORT' | translate }}
       </button>
     </ng-container>
-    <ng-template #notLoggedIn>
-      <h1>FeedPulse</h1>
-      <p>{{ 'WELCOME_SUBTITLE' | translate }}</p>
-      <a routerLink="/signup" routerLinkActive="active" class="btn">{{ 'GET_STARTED' | translate }}</a>
-      <button class="gif-button" (click)="onButtonClick()">
-        <img src="assets/gif/video.webp" alt="Button GIF"> {{ 'WATCH_VIDEO' | translate }}
-      </button>
-    </ng-template>
+<ng-template #notLoggedIn>
+  <h1>FeedPulse</h1>
+  <p>{{ 'WELCOME_SUBTITLE' | translate }}</p>
+
+  <div class="button-row">
+    <a routerLink="/signup" routerLinkActive="active" class="btn">
+      {{ 'GET_STARTED' | translate }}
+    </a>
+
+    <button class="gif-button" (click)="onButtonClick()">
+      <video src="assets/gif/video.webm" autoplay loop muted playsinline aria-label="Button GIF" width="75" height="75"></video>
+      <span>{{ 'WATCH_VIDEO' | translate }}</span>
+    </button>
+  </div>
+</ng-template>
   </div>
   <div class="right-side">
     <img src="assets/GenericHero.png" alt="Description">
@@ -66,13 +74,13 @@
       </div>
 
       <div class="col-12 text-center mt-5">
-        <p class="text-white">
-          {{ 'LEARN_MORE' | translate }}
+        <div class="text-and-button">
+          <span class="text-white">{{ 'LEARN_MORE' | translate }}</span>
           <button class="gif-button" (click)="onButtonClick()">
-            <img src="assets/gif/video.webp" alt="Button GIF">
+            <video src="assets/gif/video.webm" autoplay loop muted playsinline aria-label="Button GIF" width="24" height="24"></video>
             {{ 'CHECK_VIDEO' | translate }}
           </button>
-        </p>
+        </div>
       </div>
     </div>
   </div>

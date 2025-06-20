@@ -44,7 +44,6 @@
     "report": "تقارير مرنة ومرئية مخصصة",
     "chatbot": "روبوت محادثة"
   },
-
   "CONTACT_GET_IN_TOUCH": "تواصل معنا",
   "CONTACT_WORK_WITH_US": "نحن دائمًا نبحث عن العمل مع عملاء جدد.",
   "CONTACT_FULLNAME": "الاسم الكامل",
@@ -109,7 +108,6 @@
   "INVALID_PHONE": "يرجى إدخال رقم مكوّن من 11 رقمًا.",
   "PASSWORD_NOT_MATCH": "كلمتا المرور غير متطابقتين.",
   "CHOOSE_COUNTRY": "اختر الدولة",
-
   "ANALYTICS_PAGE": "صفحة التحليلات",
   "START_DATE": "تاريخ البدء",
   "END_DATE": "تاريخ الانتهاء",
@@ -134,4 +132,3 @@
   "ANALYTICS_PAGE_DESCRIPTION": "هنا يمكنك عرض أدائك وتحليلاتك بمجرد اتصالك",
   "TRY_MOCK_PAGE": "جرّب صفحة وهمية"
 }
-

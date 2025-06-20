@@ -8,7 +8,10 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div *ngIf="isLoading$ | async" class="spinner-overlay">
-      <img src="assets/gif/spinner.gif" alt="Loading..." class="spinner-gif">
+      <video class="spinner-gif" autoplay loop muted playsinline>
+        <source src="assets/gif/spinner.webm" type="video/webm">
+        Loading...
+      </video>
     </div>
   `,
   styles: [`
