@@ -12,7 +12,7 @@
     </button>
     <br>
     <button (click)="goToMockPage()" class="facebook-btn">
-      Try Mock Page
+      {{ 'TRY_MOCK_PAGE' | translate }}
     </button>
   </div>
   <div class="dashboard-container" *ngIf="isConnected">
@@ -39,7 +39,7 @@
         <li *ngFor="let page of pages">
           <b>{{ page.name || ('UNKNOWN_PAGE' | translate) }}</b>&nbsp;(ID: {{ page.id }})
           <button (click)="goToAnalytics(page)" class="gif-button">
-            <img src="assets/gif/report.gif" alt="Analytics">
+            <img src="assets/gif/report.webp" alt="Analytics">
           </button>
         </li>
       </ul>
