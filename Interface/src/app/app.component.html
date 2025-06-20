@@ -6,7 +6,7 @@
 <title>{{ title }}</title>
 </head>
 <body>
-<div [attr.dir]="languageService.getCurrentLang() === 'ar' ? 'rtl' : 'ltr'" [attr.lang]="languageService.getCurrentLang()">
+<div [attr.lang]="languageService.getCurrentLang()">
   <app-navbar></app-navbar>
   <app-spinner></app-spinner>
   <router-outlet></router-outlet>
