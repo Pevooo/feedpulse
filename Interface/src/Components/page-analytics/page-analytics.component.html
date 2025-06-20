@@ -26,17 +26,28 @@
     </div>
 
     <div class="report">
+      
       <div *ngIf="goals.length > 0" class="goals-section">
-        <h3> {{pageName}} {{'IMPACT_REPORT' | translate}}</h3>
-        <h3>{{ 'REPORT_FROM' | translate }} {{ startDate }} {{ 'TO' | translate }} {{ endDate }}</h3>
-        <h4>{{ 'GOALS' | translate }}:</h4>
+
+        <!--Report Header-->
+        <h3 style="text-align: center;">{{pageName}} {{'IMPACT_REPORT' | translate}}</h3>
+        <h3 style="text-align: center;">
+          {{ 'REPORT_FROM' | translate }} 
+          <span class="date-style">{{ startDate }}</span>
+          {{ 'TO' | translate }} 
+          <span class="date-style">{{ endDate }}</span>  
+        </h3>
+
+        <!--Goals section-->
+        <h4><img src="assets/icons/dot-arrow.png">{{ 'GOALS' | translate }}:</h4>
         <ul>
           <li *ngFor="let goal of goals">{{ goal }}</li>
         </ul>
       </div>
 
+      <!--Images Section-->
       <div *ngIf="chartImages.length > 0" class="images-section">
-        <h4>{{ 'ANALYTICS_IMAGES' | translate }}:</h4>
+        <h4><img src="assets/icons/dot-arrow.png">{{ 'ANALYTICS_IMAGES' | translate }}:</h4>
         <div class="images-container">
           <div *ngFor="let img of chartImages" class="image-wrapper">
             <img [src]="img" alt="Analytics Chart" class="analytics-image" />
@@ -44,8 +55,9 @@
         </div>
       </div>
 
+      <!--Tables-->
       <div *ngIf="metrics" class="goals-section">
-        <h4>{{ 'METRICS' | translate }}:</h4>
+        <h4><img src="assets/icons/dot-arrow.png">{{ 'METRICS' | translate }}:</h4>
 
         <!-- Sentiment Counts -->
         <h5>{{ 'SENTIMENT_COUNTS' | translate }}</h5>
