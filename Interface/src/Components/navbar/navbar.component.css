@@ -173,7 +173,6 @@ body {
 
 .language-switcher select {
   appearance: none;
-  -webkit-appearance: none;
   -moz-appearance: none;
   padding: 6px 40px 6px 12px;
   border-radius: 6px;
@@ -185,6 +184,7 @@ body {
   cursor: pointer;
   position: relative;
   min-width: 120px;
+  margin-bottom: 10px;
 
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;

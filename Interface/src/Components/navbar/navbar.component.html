@@ -11,12 +11,11 @@
 
   <ul class="navbar-links" [ngClass]="{ 'open': menuOpen }">
     <li class="language-switcher">
-        <label for="language-selector">🌐 &nbsp;</label>
         <select [value]="getCurrentLanguage()" (change)="switchLanguage($any($event.target).value)" id="language-selector">
-          <option value="en">English</option>
-          <option value="ar">العربية</option>
-          <option value="fr">français</option>
-          <option value="es">español</option>
+          <option value="en">🌍 English</option>
+          <option value="ar"> 🌍 العربية</option>
+          <option value="fr">🌍 français</option>
+          <option value="es">🌍 español</option>
         </select>
     </li>
     <li><a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">{{ 'HOME' | translate }}</a></li>
