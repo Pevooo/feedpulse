@@ -160,9 +160,10 @@ export class DashboardComponent implements OnInit{
 
   goToAnalytics(page: FacebookPage) {
     const facebookId = page.id;
+    const pageName = page.name;
     console.log('Navigating to page-analytics with ID:', facebookId);
     this.router.navigate(['/page-analytics'], {
-      queryParams: { facebookId }
+      queryParams: { facebookId, pageName }
     });
   }
 

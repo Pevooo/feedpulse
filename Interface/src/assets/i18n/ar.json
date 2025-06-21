@@ -113,7 +113,7 @@
   "END_DATE": "تاريخ الانتهاء",
   "SEE_INSIGHTS": "عرض التحليلات",
   "SELECT_DATES_WARNING": "يرجى تحديد كل من تاريخ البدء والانتهاء للمتابعة.",
-  "REPORT_FROM": "تقرير من",
+  "REPORT_FROM": "من",
   "TO": "إلى",
   "GOALS": "الأهداف",
   "ANALYTICS_IMAGES": "صور التحليلات",
@@ -135,5 +135,9 @@
   "WELCOME_BACK": "مرحبًا بعودتك!",
   "LOGIN_FAILED": "فشل تسجيل الدخول",
   "INVALID_CREDENTIALS": "بيانات الاعتماد غير صحيحة",
-  "OK": "حسنًا"
+  "OK": "حسنًا",
+  "IMPACT_REPORT": "تقرير تأثير",
+  "NEGATIVE": "سلبي",
+  "POSITIVE": "إيجابي",
+  "NEUTRAL": "محايد"
 }

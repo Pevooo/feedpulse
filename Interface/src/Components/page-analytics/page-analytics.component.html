@@ -26,16 +26,30 @@
     </div>
 
     <div class="report">
+      
       <div *ngIf="goals.length > 0" class="goals-section">
-        <h3>{{ 'REPORT_FROM' | translate }} {{ startDate }} {{ 'TO' | translate }} {{ endDate }}</h3>
-        <h4>{{ 'GOALS' | translate }}:</h4>
+
+        <!--Report Header-->
+        <h3 style="text-align: center; font-weight: bold; margin-top: 50px;">{{pageName}} {{'IMPACT_REPORT' | translate}}</h3>
+        <h3 style="text-align: center; font-weight: bold;">
+          {{ 'REPORT_FROM' | translate }} 
+          <span class="date-style">{{ startDate }}</span>
+          {{ 'TO' | translate }} 
+          <span class="date-style">{{ endDate }}</span>  
+        </h3>
+
+        <!--Goals section-->
+        <h4><img src="assets/icons/dot-arrow.png" alt="icon" style="width: 24px; height: 24px; margin-right: 10px;">{{ 'GOALS' | translate }}:</h4>
         <ul>
-          <li *ngFor="let goal of goals">{{ goal }}</li>
+          <li *ngFor="let goal of goals" class="custom-list">{{ goal }}</li>
         </ul>
       </div>
 
+      <hr>
+
+      <!--Images Section-->
       <div *ngIf="chartImages.length > 0" class="images-section">
-        <h4>{{ 'ANALYTICS_IMAGES' | translate }}:</h4>
+        <h4><img src="assets/icons/dot-arrow.png" alt="icon" style="width: 24px; height: 24px; margin-right: 10px;">{{ 'ANALYTICS_IMAGES' | translate }}:</h4>
         <div class="images-container">
           <div *ngFor="let img of chartImages" class="image-wrapper">
             <img [src]="img" alt="Analytics Chart" class="analytics-image" />
@@ -43,54 +57,66 @@
         </div>
       </div>
 
+      <hr>
+
+      <!--Tables-->
+
       <div *ngIf="metrics" class="goals-section">
-        <h4>{{ 'METRICS' | translate }}:</h4>
+        <h4><img src="assets/icons/dot-arrow.png" alt="icon" style="width: 24px; height: 24px; margin-right: 10px;">{{ 'METRICS' | translate }}:</h4>
 
         <!-- Sentiment Counts -->
-        <h5>{{ 'SENTIMENT_COUNTS' | translate }}</h5>
+        <h5><img src="assets/icons/try.png" alt="icon" style="width: 24px; height: 24px; margin-right: 10px; margin-left: 10px;">{{ 'SENTIMENT_COUNTS' | translate }}</h5>
         <table>
           <tr>
-            <th>{{ 'SENTIMENT' | translate }}</th>
-            <th>{{ 'COUNT' | translate }}</th>
+            <th>{{ 'NEGATIVE' | translate }}</th>
+            <th>{{ 'POSITIVE' | translate }}</th>
+            <th>{{ 'NEUTRAL' | translate }}</th>
           </tr>
-          <tr *ngFor="let sentiment of getMetricKeys('sentiment_counts')">
-            <td>{{ sentiment.charAt(0).toUpperCase() + sentiment.slice(1) }}</td>
-            <td>{{ metrics.sentiment_counts[sentiment] }}</td>
+          <tr>
+            <td>{{ metrics.sentiment_counts.negative }}</td>
+            <td>{{ metrics.sentiment_counts.positive }}</td>
+            <td>{{ metrics.sentiment_counts.neutral }}</td>
           </tr>
         </table>
 
-        <!-- Topic Counts -->
-        <h5>{{ 'TOPIC_COUNTS' | translate }}</h5>
-        <table>
-          <tr>
-            <th>{{ 'TOPIC' | translate }}</th>
-            <th>{{ 'COUNT' | translate }}</th>
-          </tr>
-          <tr *ngFor="let topic of getMetricKeys('topic_counts')">
-            <ng-container *ngIf="topic !== 'NONE'">
-              <td>{{ formatValue(topic) }}</td>
-              <td>{{ metrics.topic_counts[topic] }}</td>
-            </ng-container>
-          </tr>
-        </table>
-
-        <!-- Top 5 Topics -->
-        <h5>{{ 'TOP_5_TOPICS' | translate }}</h5>
-        <table>
-          <tr>
-            <th>{{ 'TOPIC' | translate }}</th>
-            <th>{{ 'COUNT' | translate }}</th>
-          </tr>
-          <tr *ngFor="let topic of getMetricKeys('top_5_topics')">
-            <ng-container *ngIf="topic !== 'NONE'">
-              <td>{{ formatValue(topic) }}</td>
-              <td>{{ metrics.top_5_topics[topic] }}</td>
-            </ng-container>
-          </tr>
-        </table>
+        <!-- Grid Layout for Topics -->
+        <div class="table-grid">
+          <div class="table-container">
+            <!-- Topic Counts -->
+            <h5><img src="assets/icons/try.png" alt="icon" style="width: 24px; height: 24px; margin-right: 10px; margin-left: 10px;">{{ 'TOPIC_COUNTS' | translate }}</h5>
+            <table>
+              <tr>
+                <th>{{ 'TOPIC' | translate }}</th>
+                <th>{{ 'COUNT' | translate }}</th>
+              </tr>
+              <tr *ngFor="let topic of getMetricKeys('topic_counts')">
+                <ng-container *ngIf="topic !== 'NONE'">
+                  <td>{{ formatValue(topic) }}</td>
+                  <td>{{ metrics.topic_counts[topic] }}</td>
+                </ng-container>
+              </tr>
+            </table>
+          </div>
+          <div class="table-container">
+            <!-- Top 5 Topics -->
+            <h5><img src="assets/icons/try.png" alt="icon" style="width: 24px; height: 24px; margin-right: 10px; margin-left: 10px;">{{ 'TOP_5_TOPICS' | translate }}</h5>
+            <table>
+              <tr>
+                <th>{{ 'TOPIC' | translate }}</th>
+                <th>{{ 'COUNT' | translate }}</th>
+              </tr>
+              <tr *ngFor="let topic of getMetricKeys('top_5_topics')">
+                <ng-container *ngIf="topic !== 'NONE'">
+                  <td>{{ formatValue(topic) }}</td>
+                  <td>{{ metrics.top_5_topics[topic] }}</td>
+                </ng-container>
+              </tr>
+            </table>
+          </div>
+        </div>
 
         <!-- Most Frequent Sentiment Per Topic -->
-        <h5>{{ 'MOST_FREQ_SENTIMENT_PER_TOPIC' | translate }}</h5>
+        <h5><img src="assets/icons/try.png" alt="icon" style="width: 24px; height: 24px; margin-right: 10px; margin-left: 10px;">{{ 'MOST_FREQ_SENTIMENT_PER_TOPIC' | translate }}</h5>
         <table>
           <tr>
             <th>{{ 'TOPIC' | translate }}</th>
@@ -100,12 +126,12 @@
             <ng-container *ngIf="topic !== 'NONE'">
               <td>{{ formatValue(topic) }}</td>
               <td>{{ metrics.most_freq_sentiment_per_topic[topic].charAt(0).toUpperCase() + metrics.most_freq_sentiment_per_topic[topic].slice(1)}}</td>
+              <!--<td>{{ metrics.most_freq_sentiment_per_topic[topic] | titlecase }}</td>-->
             </ng-container>
           </tr>
         </table>
 
-        <!-- Most Frequent Topic Per Sentiment -->
-        <h5>{{ 'MOST_FREQ_TOPIC_PER_SENTIMENT' | translate }}</h5>
+        <h5 style="margin-top: 40px;"><img src="assets/icons/try.png" alt="icon" style="width: 24px; height: 24px; margin-right: 10px; margin-left: 10px;">{{ 'MOST_FREQ_TOPIC_PER_SENTIMENT' | translate }}</h5>
         <table>
           <tr>
             <th>{{ 'SENTIMENT' | translate }}</th>
@@ -113,7 +139,7 @@
           </tr>
           <ng-container *ngFor="let sentiment of getMetricKeys('most_freq_topic_per_sentiment')">
             <tr *ngIf="metrics.most_freq_topic_per_sentiment[sentiment] !== 'NONE'">
-              <td>{{ sentiment.charAt(0).toUpperCase() + sentiment.slice(1) }}</td>
+              <td>{{ sentiment | titlecase }}</td>
               <td>{{ formatValue(metrics.most_freq_topic_per_sentiment[sentiment]) }}</td>
             </tr>
           </ng-container>

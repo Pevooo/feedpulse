@@ -113,8 +113,8 @@
   "END_DATE": "End Date",
   "SEE_INSIGHTS": "See Insights",
   "SELECT_DATES_WARNING": "Please select both start and end dates to proceed.",
-  "REPORT_FROM": "Report from",
-  "TO": "to",
+  "REPORT_FROM": "From",
+  "TO": "To",
   "GOALS": "Goals",
   "ANALYTICS_IMAGES": "Analytics Images",
   "METRICS": "Metrics",
@@ -135,5 +135,9 @@
   "WELCOME_BACK": "Welcome back!",
   "LOGIN_FAILED": "Login Failed",
   "INVALID_CREDENTIALS": "Invalid credentials",
-  "OK": "Ok"
+  "OK": "Ok",
+  "IMPACT_REPORT": "Impact Report",
+  "NEGATIVE": "Negative",
+  "POSITIVE": "Positive",
+  "NEUTRAL": "Neutral"
 }
