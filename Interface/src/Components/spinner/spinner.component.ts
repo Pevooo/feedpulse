@@ -27,6 +27,7 @@ import { CommonModule } from '@angular/common';
     .spinner-gif {
       width: 120px;
       height: 120px;
+      filter: blur(0.04rem);
     }
   `]
 })
