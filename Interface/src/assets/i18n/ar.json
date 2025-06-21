@@ -136,5 +136,8 @@
   "LOGIN_FAILED": "فشل تسجيل الدخول",
   "INVALID_CREDENTIALS": "بيانات الاعتماد غير صحيحة",
   "OK": "حسنًا",
-  "IMPACT_REPORT": "IMPACT_REPORT"
+  "IMPACT_REPORT": "تقرير تأثير",
+  "NEGATIVE": "سلبي",
+  "POSITIVE": "إيجابي",
+  "NEUTRAL": "محايد"
 }

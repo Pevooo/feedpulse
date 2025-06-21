@@ -136,5 +136,8 @@
   "LOGIN_FAILED": "Échec de la Connexion",
   "INVALID_CREDENTIALS": "Identifiants invalides",
   "OK": "Ok",
-  "IMPACT_REPORT": "RAPPORT D'IMPACT"
+  "IMPACT_REPORT": "RAPPORT D'IMPACT",
+  "NEGATIVE": "Négatif",
+  "POSITIVE": "Positive",
+  "NEUTRAL": "Neutre"
 }

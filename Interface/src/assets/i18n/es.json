@@ -136,5 +136,8 @@
   "LOGIN_FAILED": "Error al Iniciar Sesión",
   "INVALID_CREDENTIALS": "Credenciales inválidas",
   "OK": "Aceptar",
-  "IMPACT_REPORT": "INFORME DE IMPACTO"
+  "IMPACT_REPORT": "INFORME DE IMPACTO",
+  "NEGATIVE": "Negativo",
+  "POSITIVE": "Positiva",
+  "NEUTRAL": "Neutro"
 }

@@ -136,5 +136,8 @@
   "LOGIN_FAILED": "Login Failed",
   "INVALID_CREDENTIALS": "Invalid credentials",
   "OK": "Ok",
-  "IMPACT_REPORT": "Impact Report"
+  "IMPACT_REPORT": "Impact Report",
+  "NEGATIVE": "Negative",
+  "POSITIVE": "Positive",
+  "NEUTRAL": "Neutral"
 }
