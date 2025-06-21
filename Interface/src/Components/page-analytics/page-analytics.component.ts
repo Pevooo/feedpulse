@@ -17,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { ChatbotComponent } from './chatbot/chatbot.component';
 import { PageAnalyticsService } from '../../app/services/page-analytics.service';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-page-analytics',
@@ -34,7 +35,7 @@ export class PageAnalyticsComponent implements OnInit, OnDestroy {
   pageName = '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metrics: any;
-  
+
   private subscription: Subscription = new Subscription();
 
   constructor(
@@ -47,7 +48,7 @@ export class PageAnalyticsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Get data from service instead of query parameters
     const analyticsData = this.pageAnalyticsService.getAnalyticsData();
-    
+
     if (analyticsData) {
       this.facebookId = analyticsData.facebookId;
       this.pageName = analyticsData.pageName;
@@ -61,7 +62,7 @@ export class PageAnalyticsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // Clean up subscription
     this.subscription.unsubscribe();
-    
+
     // Clear the analytics data from service when leaving the component
     this.pageAnalyticsService.clearAnalyticsData();
   }
@@ -74,7 +75,7 @@ export class PageAnalyticsComponent implements OnInit, OnDestroy {
     const formatToPythonIso = (date: string) => {
       return new Date(date).toISOString().replace('Z', '');
     };
-    const apiUrl = `https://feedpulse.francecentral.cloudapp.azure.com/report`; // replace with your actual API
+    const apiUrl = `${environment.apiUrl}/api/v1/organization/report`;
     const body = {
       page_id: this.facebookId,
       start_date: formatToPythonIso(this.startDate),
@@ -84,12 +85,13 @@ export class PageAnalyticsComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.http.post<any>(apiUrl, body).subscribe({
       next: (res) => {
-        if (res.status === 'SUCCESS') {
-          this.goals = res.body.goals || [];
-          this.chartImages = res.body.chart_rasters?.map((b64: string) =>
+        if (res.succeeded === true) {
+          console.log(res);
+          this.goals = res.data.body.goals || [];
+          this.chartImages = res.data.body.chart_rasters?.map((b64: string) =>
             this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${b64}`)
           ) || [];
-          this.metrics = res.body.metrics || {};
+          this.metrics = res.data.body.metrics || {};
         } else {
           console.error('❌ API returned failure:', res);
         }
