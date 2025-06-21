@@ -9,12 +9,14 @@
       </button>
     </ng-container>
     <ng-template #notLoggedIn>
+        <div class="welcome-box">
       <h1>FeedPulse</h1>
       <p>{{ 'WELCOME_SUBTITLE' | translate }}</p>
       <a routerLink="/signup" routerLinkActive="active" class="btn">{{ 'GET_STARTED' | translate }}</a>
       <button class="gif-button" (click)="onButtonClick()">
         <img src="assets/gif/video.webp" alt="Button GIF"> {{ 'WATCH_VIDEO' | translate }}
       </button>
+  </div>
     </ng-template>
   </div>
   <div class="right-side">

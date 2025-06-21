@@ -65,6 +65,7 @@ export class NavbarComponent implements OnDestroy {
     this.isLoggedIn = this.authService.isLoggedIn();
     this.cdr.detectChanges();
     this.router.navigate(['/login']);
+    this.menuOpen = false;
   }
 
   getCurrentLanguage(): string {
@@ -78,4 +79,7 @@ export class NavbarComponent implements OnDestroy {
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
+  closeMenu() {
+  this.menuOpen = false;
+}
 }
