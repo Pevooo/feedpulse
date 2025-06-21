@@ -10,6 +10,7 @@ namespace web_api.Controllers
     [ApiController]
     public class OrganizationController : AppControllerBase
     {
+
         [HttpPost(Router.Organization.Create)]
         public async Task<IActionResult> Create([FromForm] AddOrganizationCommand command)
         {

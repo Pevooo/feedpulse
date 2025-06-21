@@ -3,17 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import {
   Component,
   OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   DomSanitizer,
   SafeUrl,
 } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ChatbotComponent } from './chatbot/chatbot.component';
+import { PageAnalyticsService } from '../../app/services/page-analytics.service';
 
 @Component({
   selector: 'app-page-analytics',
@@ -22,7 +25,7 @@ import { ChatbotComponent } from './chatbot/chatbot.component';
   templateUrl: './page-analytics.component.html',
   styleUrls: ['./page-analytics.component.css']
 })
-export class PageAnalyticsComponent implements OnInit {
+export class PageAnalyticsComponent implements OnInit, OnDestroy {
   facebookId = '';
   startDate = '';
   endDate = '';
@@ -31,16 +34,36 @@ export class PageAnalyticsComponent implements OnInit {
   pageName = '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metrics: any;
-  constructor(private route: ActivatedRoute,
-     private http: HttpClient,
-     private sanitizer: DomSanitizer
-    ) {}
+  
+  private subscription: Subscription = new Subscription();
+
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private sanitizer: DomSanitizer,
+    private pageAnalyticsService: PageAnalyticsService
+  ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      this.facebookId = params['facebookId'];
-      this.pageName = params['pageName'];
-    });
+    // Get data from service instead of query parameters
+    const analyticsData = this.pageAnalyticsService.getAnalyticsData();
+    
+    if (analyticsData) {
+      this.facebookId = analyticsData.facebookId;
+      this.pageName = analyticsData.pageName;
+    } else {
+      // If no data in service, redirect back to dashboard
+      console.warn('No analytics data found, redirecting to dashboard');
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscription
+    this.subscription.unsubscribe();
+    
+    // Clear the analytics data from service when leaving the component
+    this.pageAnalyticsService.clearAnalyticsData();
   }
 
   getAnalytics() {
