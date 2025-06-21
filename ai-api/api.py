@@ -37,8 +37,8 @@ class FeedPulseAPI:
     ):
         self.flask_app = Flask(__name__)
 
-        # TODO: Restrict to only the WEB API DOMAIN
-        CORS(self.flask_app)
+        # Restrict to only the WEB API DOMAIN
+        CORS(self.flask_app, origins=["https://feedpulse-d0ebhmb4gucybhdg.italynorth-01.azurewebsites.net"])
         self.report_handler = report_handler
         self.topic_detector = topic_detector
         self.feedback_classifier = feedback_classifier
