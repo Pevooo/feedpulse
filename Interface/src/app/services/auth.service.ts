@@ -8,6 +8,9 @@ import { PLATFORM_ID } from '@angular/core';
 import { inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { IRegistrationModel } from '../interfaces/IRegisterModel';
+import { CookieService } from 'ngx-cookie-service';
+import { jwtDecode } from 'jwt-decode';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +18,71 @@ import { IRegistrationModel } from '../interfaces/IRegisterModel';
 export class AuthService {
   apiurl:string = environment.apiUrl;
   private platformId:object = inject(PLATFORM_ID);
-  constructor(private http:HttpClient) {}
+  constructor(private http:HttpClient, private cookieService: CookieService) {}
+  
+  // Get access token from cookies
+  getAccessToken(): string | null {
+    if (isPlatformBrowser(this.platformId)) {
+      return this.cookieService.get('accessToken') || null;
+    }
+    return null;
+  }
+
+  // Get refresh token from cookies
+  getRefreshToken(): string | null {
+    if (isPlatformBrowser(this.platformId)) {
+      return this.cookieService.get('refreshToken') || null;
+    }
+    return null;
+  }
+
+  // Check if token is expired using client-side validation
+  isTokenExpired(): boolean {
+    const token = this.getAccessToken();
+    if (!token) return true;
+    
+    try {
+      const decoded: { exp: number } = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decoded.exp < currentTime;
+    } catch {
+      return true;
+    }
+  }
+
+  // Validate token with backend
+  validateToken(): Observable<ApiResponse<string>> {
+    const token = this.getAccessToken();
+    if (!token) {
+      throw new Error('No access token found');
+    }
+    return this.http.get<ApiResponse<string>>(`${environment.apiUrl}/api/v1/authentication/validate-token?AccessToken=${token}`);
+  }
+
+  // Refresh token using backend endpoint
+  refreshToken(): Observable<ApiResponse<AuthResponse>> {
+    const accessToken = this.getAccessToken();
+    const refreshToken = this.getRefreshToken();
+    
+    if (!accessToken || !refreshToken) {
+      throw new Error('Missing tokens for refresh');
+    }
+
+    const formData = new FormData();
+    formData.append('AccessToken', accessToken);
+    formData.append('RefreshToken', refreshToken);
+
+    return this.http.post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/api/v1/authentication/refresh-token`, formData);
+  }
+
+  // Store new tokens after refresh
+  storeTokens(accessToken: string, refreshToken: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.cookieService.set('accessToken', accessToken);
+      this.cookieService.set('refreshToken', refreshToken);
+    }
+  }
+
   login(username: string, password: string): Observable<ApiResponse<AuthResponse>> {
     // Create form data
     const formData = new FormData();
@@ -63,14 +130,14 @@ export class AuthService {
   }
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      this.cookieService.delete('accessToken');
+      this.cookieService.delete('refreshToken');
     }
   }
 
   isLoggedIn(): boolean {
     if (isPlatformBrowser(this.platformId)) {
-      return !!localStorage.getItem('accessToken');
+      return this.cookieService.check('accessToken');
     }
     return false; // Default to false on server side
   }

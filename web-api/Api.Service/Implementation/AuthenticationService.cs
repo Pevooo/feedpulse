@@ -50,6 +50,7 @@ namespace Api.Service.Implementation
                 RefreshToken = RefreshToken.Token,
                 AppUserId = user.Id,
 
+
             };
             _ = await _userRefreshTokenRepository.AddAsync(UserRefreshToken);
             var Result = new JWTAuthRes();
@@ -98,7 +99,7 @@ namespace Api.Service.Implementation
             {
                 return ("AlgorithmIsWrong", null);
             }
-            if (JwtToken.ValidTo > DateTime.UtcNow)
+            if (JwtToken.ValidTo < DateTime.UtcNow)
             {
                 return ("TokenIsNotExpired", null);
             }
@@ -133,7 +134,7 @@ namespace Api.Service.Implementation
             var response = new JWTAuthRes();
             response.AccessToken = newToken;
             var refreshTokenResult = new RefreshToken();
-            refreshTokenResult.UserName = jwtToken.Claims.FirstOrDefault(x => x.Type == nameof(UserClaimModel.UserName)).Value;
+            refreshTokenResult.UserName = user.UserName;
             refreshTokenResult.Token = refreshToken;
             refreshTokenResult.Expireat = (DateTime)expiryDate;
             response.RefreshToken = refreshTokenResult;

@@ -10,6 +10,7 @@ import { DashboardComponent } from '../Components/dashboard/dashboard.component'
 import { AddOrganizationComponent } from '../Components/add-organization/add-organization.component';
 import { PageAnalyticsComponent } from '../Components/page-analytics/page-analytics.component';
 import { PrivacyPolicyComponent} from '../Components/privacy-policy/privacy-policy.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -18,9 +19,9 @@ export const routes: Routes = [
   { path: 'services', component: ServicesComponent },
   { path: 'contact-us', component: ContactusComponent },
   { path: 'signup', component: SignupComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'add-organization', component: AddOrganizationComponent },
-  {path:'page-analytics',component:PageAnalyticsComponent},
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'add-organization', component: AddOrganizationComponent, canActivate: [AuthGuard] },
+  {path:'page-analytics',component:PageAnalyticsComponent, canActivate: [AuthGuard]},
   {path: 'privacy-policy', component: PrivacyPolicyComponent},
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];

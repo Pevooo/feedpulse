@@ -15,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { FacebookPage } from '../../app/interfaces/Facebook_Page';
 import { FacebookService } from '../../app/services/facebook.service';
+import { PageAnalyticsService } from '../../app/services/page-analytics.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,6 +38,7 @@ export class DashboardComponent implements OnInit{
   constructor(
     private facebookService: FacebookService,
     private router: Router,
+    private pageAnalyticsService: PageAnalyticsService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -159,19 +161,31 @@ export class DashboardComponent implements OnInit{
   }
 
   goToAnalytics(page: FacebookPage) {
-    const facebookId = page.id;
-    const pageName = page.name;
-    console.log('Navigating to page-analytics with ID:', facebookId);
-    this.router.navigate(['/page-analytics'], {
-      queryParams: { facebookId, pageName }
-    });
+    const analyticsData = {
+      facebookId: page.id,
+      pageName: page.name,
+      userId: this.userData?.id,
+      accessToken: page.accessToken
+    };
+    
+    // Set data in service (hidden from URL)
+    this.pageAnalyticsService.setAnalyticsData(analyticsData);
+    
+    // Navigate without query parameters
+    this.router.navigate(['/page-analytics']);
   }
 
   goToMockPage() {
-    const facebookId = "448242228374517";
-    this.router.navigate(['/page-analytics'], {
-      queryParams: { facebookId }
-    });
+    const analyticsData = {
+      facebookId: "448242228374517",
+      pageName: "Mock Page"
+    };
+    
+    // Set data in service (hidden from URL)
+    this.pageAnalyticsService.setAnalyticsData(analyticsData);
+    
+    // Navigate without query parameters
+    this.router.navigate(['/page-analytics']);
   }
 
   private calculateRegisteredPages(): void {

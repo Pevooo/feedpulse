@@ -17,6 +17,7 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 import { SignInModel } from '../../app/interfaces/ISignInModel';
 import { AuthService } from '../../app/services/auth.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -28,15 +29,14 @@ import { AuthService } from '../../app/services/auth.service';
 export class LoginComponent  {
 Model: SignInModel={ userName: "", password: "" };
 
-constructor(private authService: AuthService,private router:Router, private translate: TranslateService) {
+constructor(private authService: AuthService,private router:Router, private translate: TranslateService, private cookieService: CookieService) {
 
 }
 onSubmit() {
   this.authService.login(this.Model.userName, this.Model.password).subscribe({
     next: (response) => {
       if (response.succeeded && response.data) {
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshToken', response.data.refreshToken.token);
+        this.authService.storeTokens(response.data.accessToken, response.data.refreshToken.token);
 
         this.translate.get(['LOGIN_SUCCESS', 'WELCOME_BACK']).subscribe(translations => {
           Swal.fire({

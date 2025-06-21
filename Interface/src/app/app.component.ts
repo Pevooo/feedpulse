@@ -7,6 +7,7 @@ import { initFacebookSDK } from "./utils/facebook-sdk-loader";
 import {
   LanguageService,
 } from './services/language.service';
+import { AuthService } from './services/auth.service';
 import { FooterComponent } from '../Components/footer/footer.component';
 import { NavbarComponent } from '../Components/navbar/navbar.component';
 import { SpinnerComponent } from '../Components/spinner/spinner.component';
@@ -29,10 +30,29 @@ export class AppComponent implements OnInit {
   title = 'FeedPulse';
 
 
-  constructor(public languageService: LanguageService) {}
+  constructor(
+    public languageService: LanguageService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     initFacebookSDK();
+    
+    // Validate token on application startup
+    if (this.authService.isLoggedIn()) {
+      this.authService.validateToken().subscribe({
+        next: (response) => {
+          if (!response.succeeded || response.data !== 'NotExpired') {
+            console.log('Token validation failed on startup, logging out');
+            this.authService.logout();
+          }
+        },
+        error: (error) => {
+          console.error('Token validation error on startup:', error);
+          this.authService.logout();
+        }
+      });
+    }
   }
 
 
