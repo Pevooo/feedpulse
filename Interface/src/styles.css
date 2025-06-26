@@ -1,16 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @font-face {
-  font-family: 'BrownedeCalvin';
-  src: url('/assets/fonts/BrownedeCalvin-Regular.otf') format('opentype');
-}
-@font-face {
-  font-family: 'NunitoSans';
-  src: url('/assets/fonts/NunitoSans-LightItalic.ttf') format('opentype');
-}
-@font-face {
-  font-family: 'Helmet';
-  src: url('/assets/fonts/Helmet-Regular.ttf') format('opentype');
+  font-family: 'Lato';
+  src: url('/assets/fonts/Lato-Regular.ttf') format('opentype');
 }
 body{
-    font-family:  "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family:  "Lato";
 }
