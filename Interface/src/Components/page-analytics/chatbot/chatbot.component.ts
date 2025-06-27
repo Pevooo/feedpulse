@@ -51,7 +51,7 @@ export class ChatbotComponent implements OnInit {
       content: this.newMessage,
       isUser: true,
       timestamp: new Date(),
-      icon: 'fa-user'
+      icon: ''
     };
 
     this.messages.push(userMessage);
