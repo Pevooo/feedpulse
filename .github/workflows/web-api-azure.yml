@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'web-api/**'
   workflow_dispatch:
 
 jobs:
