@@ -47,9 +47,9 @@ FeedPulse addresses the challenge of processing large volumes of user feedback o
 
 | Component | Technology |
 |-----------|----------|
-| Frontend  | Angular, TypeScript |
-| Web API   | ASP.NET Core (C#) |
-| AI API    | Python, Apache Spark, Delta Lake |
+| Frontend  | Angular |
+| Web API   | .NET Core (C#) |
+| AI API    | Flask, Apache Spark |
 | Storage   | Delta Lake |
 | CI/CD     | GitHub Actions |
 | Cloud     | Azure VM, Azure App Service, Vercel |
