@@ -4,7 +4,7 @@
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">
       <h1 style="color: #20c0bd;">{{ 'WELCOME_TITLE' | translate }}</h1>
       <p style="color: #f7f8fc;">{{ 'WELCOME_SUBTITLE' | translate }}</p>
-      <button class="gif-button" (click)="onButtonClick()" routerLink="/dashboard" routerLinkActive="active" style="color: #f7f8fc; font-weight: bold; font-size: 24px;">
+      <button class="gif-button" routerLink="/dashboard" routerLinkActive="active" style="color: #f7f8fc; font-weight: bold; font-size: 24px;">
         <img src="assets/gif/report.webp" alt="Button GIF"> {{ 'CREATE_REPORT' | translate }}
       </button>
     </ng-container>

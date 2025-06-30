@@ -29,8 +29,7 @@ export class HomeComponent implements OnDestroy {
   }
 
   onButtonClick() {
-    console.log('GIF button clicked!');
-    // Or navigate / do something else
+    window.open('https://drive.google.com/file/d/1CFZwv6BEjMsZVODQrzFkgmt9UnJaBxnt/view?usp=sharing', '_blank');
   }
 
   @HostListener('window:scroll', [])
