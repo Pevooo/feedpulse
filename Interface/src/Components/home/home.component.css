@@ -24,7 +24,7 @@
   align-items: center; /* vertical alignment */
   justify-content: center;
   position: relative;
-  background: url('../../assets/hero-bg.png');
+  background: url('../../assets/hero-bg.webp');
   background-position: right top;
   background-repeat: no-repeat;
   max-width: 100%;
@@ -291,7 +291,7 @@
     position: relative;
   }
   .timeline-section {
-    background-image: url('../../assets/home.jpg');
+    background-image: url('../../assets/home.webp');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
