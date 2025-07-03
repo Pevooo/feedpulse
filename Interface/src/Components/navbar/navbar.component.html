@@ -18,15 +18,15 @@
           <option value="es">🌍 español</option>
         </select>
     </li>
-    <li><a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }">{{ 'HOME' | translate }}</a></li>
-    <li><a routerLink="/about" routerLinkActive="active active-link">{{ 'ABOUT_US' | translate }}</a></li>
+    <li><a routerLink="/home" routerLinkActive="active active-link" [routerLinkActiveOptions]="{ exact: true }"(click)="closeMenu()">{{ 'HOME' | translate }}</a></li>
+    <li><a routerLink="/about" routerLinkActive="active active-link"(click)="closeMenu()">{{ 'ABOUT_US' | translate }}</a></li>
     <ng-container *ngIf="isLoggedIn; else notLoggedIn">
-      <li><a routerLink="/dashboard" routerLinkActive="active active-link">{{ 'INSIGHTS' | translate }}</a></li>
-      <li><a href="#" (click)="onLogout($event)">{{ 'LOGOUT' | translate }}</a></li>
+      <li><a routerLink="/dashboard" routerLinkActive="active active-link"(click)="closeMenu()">{{ 'INSIGHTS' | translate }}</a></li>
+      <li><a href="#" (click)="onLogout($event)" >{{ 'LOGOUT' | translate }}</a></li>
     </ng-container>
     <ng-template #notLoggedIn>
-      <li><a routerLink="/login" routerLinkActive="active active-link">{{ 'LOGIN' | translate }}</a></li>
-      <li><a routerLink="/signup" routerLinkActive="active active-link">{{ 'SIGNUP' | translate }}</a></li>
+      <li><a routerLink="/login" routerLinkActive="active active-link"(click)="closeMenu()">{{ 'LOGIN' | translate }}</a></li>
+      <li><a routerLink="/signup" routerLinkActive="active active-link"(click)="closeMenu()">{{ 'SIGNUP' | translate }}</a></li>
     </ng-template>
   </ul>
 </nav>
